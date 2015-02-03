@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LGBTWhip Api" default="build">
+    <property name="CONF_DIR" value="${basedir}/etc"/>
+    <property name="SRC_DIR" value="${basedir}/src"/>
+    <property name="TEST_DIR" value="${basedir}/test"/>
+    <property name="BUILD_DIR" value="${basedir}/build"/>
+    <property name="VENDOR_DIR" value="${basedir}/vendor"/>
+    
+    <taskdef name="parallel-apply" classname="co.byng.antparallelapply.taskdefs.optional.ParallelApply"/>
+
+    
+
+    <condition property="COMPOSER_EXECUTABLE" else="composer">
+        <isset property="COMPOSER_EXECUTABLE"/>
+    </condition>
+
+    <condition property="PHPUNIT_EXECUTABLE" else="phpunit">
+        <isset property="PHPUNIT_EXECUTABLE"/>
+    </condition>
+
+
+
+    <target name="clean" depends="clean-composer">
+        <delete dir="${BUILD_DIR}"/>
+    </target>
+
+    <target name="clean-composer">
+        <delete dir="${VENDOR_DIR}"/>
+    </target>
+
+    <target name="build" depends="prepare,lint,composer-install,test"/>
+    
+    <target name="prepare">
+        <mkdir dir="${BUILD_DIR}"/>
+    </target>
+    
+    <target name="lint">
+        <parallel-apply logThreshold="1" threadCount="80" executable="${PHP_EXECUTABLE}" failonerror="true">
+            <arg value="-l"/>
+
+            <fileset dir="${SRC_DIR}">
+                <include name="**/*.php"/>
+            </fileset>
+        </parallel-apply>
+    </target>
+    
+    <target name="composer-install">
+        <exec executable="${COMPOSER_EXECUTABLE}" dir="${basedir}">
+            <arg value="install"/>
+        </exec>
+    </target>
+    
+    <target name="test">
+        <exec executable="phpunit" dir="${basedir}">
+            <arg value="-c"/>
+            <arg path="${CONF_DIR}"/>
+        </exec>
+    </target>
+</project>
