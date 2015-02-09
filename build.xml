@@ -9,9 +9,13 @@
     <taskdef name="parallel-apply" classname="co.byng.antparallelapply.taskdefs.optional.ParallelApply"/>
 
     
-
+    
     <condition property="COMPOSER_EXECUTABLE" else="composer">
         <isset property="COMPOSER_EXECUTABLE"/>
+    </condition>
+
+    <condition property="PHP_EXECUTABLE" else="php">
+        <isset property="PHP_EXECUTABLE"/>
     </condition>
 
     <condition property="PHPUNIT_EXECUTABLE" else="phpunit">
@@ -51,7 +55,7 @@
     </target>
     
     <target name="test">
-        <exec executable="phpunit" dir="${basedir}">
+        <exec executable="${PHPUNIT_EXECUTABLE}" dir="${basedir}">
             <arg value="-c"/>
             <arg path="${CONF_DIR}"/>
         </exec>
