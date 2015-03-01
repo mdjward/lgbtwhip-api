@@ -34,10 +34,7 @@ class ConstituencyController
      * 
      * @param MapItClient $mapItClient
      */
-    public function __construct(
-        Serializer $serializer,
-        MapItClient $mapItClient
-    ) {
+    public function __construct(MapItClient $mapItClient) {
         $this->mapItClient = $mapItClient;
     }
     
