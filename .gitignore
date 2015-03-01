@@ -3,3 +3,4 @@
 /var/cache/**
 /vendor
 /vendor/**
+/etc/config.yml

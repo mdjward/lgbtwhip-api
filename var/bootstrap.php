@@ -15,19 +15,36 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 
 
-$configurationPath = realpath(__DIR__ . '/../etc/di_container');
+$baseConfigPath = realpath(__DIR__ . '/../etc');
+$configPath = $baseConfigPath . '/di_container';
 
 $container = new ContainerBuilder();
-$loader = new YamlFileLoader($container, new FileLocator([$configurationPath]));
+$loader = new YamlFileLoader($container, new FileLocator([$configPath]));
+
+
 
 /* @var $file SplFileInfo */
-foreach (new DirectoryIterator($configurationPath) as $file) {
+foreach (new DirectoryIterator($configPath) as $file) {
     if (!$file->isFile()) {
         continue;
     }
     
     $loader->load($file->getFilename());
 }
+
+
+
+$envConfigFile = new SplFileInfo($baseConfigPath . '/config.yml');
+$distConfigFile = new SplFileObject($envConfigFile->getPath() . '/config.yml.dist');
+
+if (!$envConfigFile->isFile()) {
+    copy($distConfigFile->getPathname(), $envConfigFile->getPathname());
+}
+
+$loader->load($envConfigFile->getPath());
+
+
+
 
 $container->compile();
 $controller = $container->get('thelgbtwhip.api.controller.constituency');
