@@ -54,5 +54,3 @@ $loader->load($envConfigFile->getPathname());
 
 // Compile the container
 $container->compile();
-
-$repository = $container->get('thelgbtwhip.api.orm.repository.constituency');
