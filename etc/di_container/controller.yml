@@ -6,5 +6,6 @@ services:
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
+            request:        @request
             mapItClient:    @thelgbtwhip.api.external.client.mapit
 

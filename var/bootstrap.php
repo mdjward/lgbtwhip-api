@@ -15,13 +15,16 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 
 
-$baseConfigPath = realpath(__DIR__ . '/../etc');
+$rootDir = realpath(__DIR__ . '/..');
+
+$baseConfigPath = $rootDir . '/etc';;
 $configPath = $baseConfigPath . '/di_container';
 
 // Initialise the container builder and YAML file loader
 $container = new ContainerBuilder();
-$container->setParameter('root_dir', realpath(__DIR__ . '/..'));
+$container->setParameter('root_dir', $rootDir);
 $container->setParameter('config_dir', $baseConfigPath);
+$container->setParameter('cache_dir', $rootDir . '/var/cache');
 
 $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 

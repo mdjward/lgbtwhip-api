@@ -24,11 +24,15 @@ if (!isset($container) || !($container instanceof ContainerInterface)) {
 /* @var $app Slim */
 $app = $container->get('thelgbtwhip.api.app');
 
-$app->get(
-    '/constituency/search',
-    function() use ($app, $container) {
-        return print $container->get('thelgbtwhip.api.controller.constituency')->resolveByPostcodeAction(
-            $app->request->get('postcode')
-        );
-    }
-);
+// Handle constituency routes
+$app->group('/constituency', function() use ($app, $container) {
+    $app->get(
+        '/search',
+        function() use ($app, $container) {
+            return print $container->get('thelgbtwhip.api.controller.constituency')->resolveByPostcodeAction(
+                $app->request->get('postcode')
+            );
+        }
+    );
+});
+

@@ -1,12 +1,14 @@
 parameters:
     
-services:
     
+    
+services:
+
     thelgbtwhip.api.external.client.your_next_mp:
         class: TheLgbtWhip\Api\External\Client\MapItClient
         arguments:
             httpClient: @thelgbtwhip.api.external.client.your_next_mp.http_client
-        
+
     thelgbtwhip.api.external.client.your_next_mp.http_client:
         class: GuzzleHttp\Client
         arguments:

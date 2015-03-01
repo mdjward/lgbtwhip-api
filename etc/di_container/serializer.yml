@@ -1,0 +1,26 @@
+parameters:
+    
+    thelgbtwhip.api.serializer.builder.cache_dir:       %cache_dir%/serializer
+    thelgbtwhip.api.serializer.namespace_mappings:
+        TheLgbtWhip\Api\Model\View:                         %config_dir%/serializer
+        
+    thelgbtwhip.api.serializer.naming_strategy.class:   JMS\Serializer\Naming\CamelCaseNamingStrategy
+    
+services:
+    
+    thelgbtwhip.api.serializer.builder:
+        class: JMS\Serializer\SerializerBuilder
+        factory:
+            - JMS\Serializer\SerializerBuilder
+            - create
+        calls:
+            - [setDebug, [%mode.debug%]]
+            - [setCacheDir, [%thelgbtwhip.api.serializer.builder.cache_dir%]]
+            - [setMetadataDirs, [%thelgbtwhip.api.serializer.namespace_mappings%]]
+            - [setNamingStrategy, [%thelgbtwhip.api.serializer.naming_strategy.class%]]
+    
+    thelgbtwhip.api.serializer:
+        class: JMS\Serializer\Serializer
+        factory:
+            - @thelgbtwhip.api.serializer.builder
+            - build

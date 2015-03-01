@@ -1,0 +1,16 @@
+TheLgbtWhip\Api\Model\View\Constituency:
+    exclusion_policy: NONE
+    xml_root_name: constituency
+    read_only: false
+    access_type: 
+        
+    properties:
+        id:
+            type: integer
+            xml_attribute: true
+        
+        name:
+            type: string
+            xml_attribute: false
+            xml_element:
+                cdata: false

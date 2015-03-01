@@ -14,4 +14,3 @@ require_once $varPath . '/routing.php';
 
 /* @var $app \Slim\Slim */
 $app->run();
-

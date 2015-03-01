@@ -1,6 +1,6 @@
 parameters:
     
-    thelgbtwhip.api.orm.mapping_path:                               
+    thelgbtwhip.api.orm.mapping_path:                               %config_dir%/doctrine
     
     thelgbtwhip.api.orm.entity_manager.class:                       Doctrine\ORM\EntityManager
     thelgbtwhip.api.orm.configuration.class:                        Doctrine\ORM\Configuration
@@ -14,7 +14,7 @@ services:
             - createYAMLMetadataConfiguration
         arguments:
             paths:
-                - %config_dir%/doctrine
+                - %thelgbtwhip.api.orm.mapping_path%
             isDevMode:  %mode.debug%
 
     thelgbtwhip.api.orm.entity_manager:
