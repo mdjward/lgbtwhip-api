@@ -1,5 +1,5 @@
 TheLgbtWhip\Api\Model\View\Constituency:
-    exclusion_policy: NONE
+    exclusion_policy: ALL
     xml_root_name: constituency
     read_only: false
     access_type: 

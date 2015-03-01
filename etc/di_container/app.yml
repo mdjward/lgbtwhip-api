@@ -22,16 +22,18 @@ services:
         
     
     
+    app:
+        alias: thelgbtwhip.api.app
+    
     request:
         alias: thelgbtwhip.api.request
         
     response:
-        alias: thelgbtwhip.api.request
+        alias: thelgbtwhip.api.response
         
     environment:
         alias: thelgbtwhip.api.environment
         
     env:
         alias: thelgbtwhip.api.environment
-            
-            
+

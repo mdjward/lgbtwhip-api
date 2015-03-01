@@ -29,7 +29,7 @@ $app->group('/constituency', function() use ($app, $container) {
     $app->get(
         '/search',
         function() use ($app, $container) {
-            return print $container->get('thelgbtwhip.api.controller.constituency')->resolveByPostcodeAction(
+            return $container->get('thelgbtwhip.api.controller.constituency')->resolveByPostcodeAction(
                 $app->request->get('postcode')
             );
         }

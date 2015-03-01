@@ -20,7 +20,7 @@ use TheLgbtWhip\Api\Repository\ConstituencyRepository;
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class ConstituencyController
+class ConstituencyController extends AbstractController
 {
     
     /**
@@ -35,9 +35,10 @@ class ConstituencyController
     private $constituencyRepository;
 
 
+
     /**
      * @param MapItClient $mapItClient
-     * @param \TheLgbtWhip\Api\Repository\ConstituencyRepository $constituencyRepository
+     * @param ConstituencyRepository $constituencyRepository
      */
     public function __construct(MapItClient $mapItClient, ConstituencyRepository $constituencyRepository) {
         $this->mapItClient = $mapItClient;
@@ -46,12 +47,18 @@ class ConstituencyController
 
     /**
      * @param string $givenPostcode
-     * @return \TheLgbtWhip\Api\Model\View\Constituency
+     * @return Constituency
      */
     public function resolveByPostcodeAction($givenPostcode)
     {
         $id = $this->mapItClient->getConstituencyFromPostcode($givenPostcode);
-        return $this->constituencyRepository->find($id);
+        
+        $entity = $this->constituencyRepository->find(1);
+        
+        $this->response->setBody('');
+        /*$this->response->setBody(
+            $this->constituencyRepository->find(1)
+        );*/
     }
     
 }

@@ -10,6 +10,8 @@
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use TheLgbtWhip\Api\DependencyInjection\ControllerCompilerPass;
+use TheLgbtWhip\Api\DependencyInjection\ListenerCompilerPass;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -54,6 +56,9 @@ if (!$envConfigFile->isFile()) {
 $loader->load($envConfigFile->getPathname());
 
 
+
+// Add compiler passes
+$container->addCompilerPass(new ControllerCompilerPass());
 
 // Compile the container
 $container->compile();
