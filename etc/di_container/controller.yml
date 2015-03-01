@@ -6,6 +6,7 @@ services:
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
-            request:        @request
-            mapItClient:    @thelgbtwhip.api.external.client.mapit
-
+            response:               @response
+            mapItClient:            @thelgbtwhip.api.external.client.mapit
+            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
+            
