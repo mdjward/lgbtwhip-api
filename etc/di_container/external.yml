@@ -1,0 +1,9 @@
+parameters:
+    
+    
+    
+services:
+    
+    thelgbtwhip.api.external.client.mapit:
+        class: TheLgbtWhip\Api\External\Client\MapItClient
+        arguments: []

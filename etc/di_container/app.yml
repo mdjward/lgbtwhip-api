@@ -1,0 +1,9 @@
+parameters:
+    
+services:
+    
+    thelgbtwhip.api.app:
+        class: Slim\Slim
+        arguments:
+            -
+                container: @service_container

@@ -1,0 +1,10 @@
+parameters:
+    
+    
+services:
+    
+    thelgbtwhip.api.controller.constituency:
+        class: TheLgbtWhip\Api\Controller\ConstituencyController
+        arguments:
+            mapItClient:    @thelgbtwhip.api.external.client.mapit
+

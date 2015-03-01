@@ -10,6 +10,8 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
+use TheLgbtWhip\Api\External\Client\MapItClient;
+
 
 
 /**
@@ -20,9 +22,30 @@ namespace TheLgbtWhip\Api\Controller;
 class ConstituencyController
 {
     
+    /**
+     *
+     * @var MapItClient
+     */
+    private $mapItClient;
+    
+    
+    
+    /**
+     * 
+     * @param MapItClient $mapItClient
+     */
+    public function __construct(MapItClient $mapItClient)
+    {
+        $this->mapItClient = $mapItClient;
+    }
+    
+    /**
+     * 
+     * @param string $givenPostcode
+     */
     public function resolveByPostcodeAction($givenPostcode)
     {
-        
+        return $givenPostcode;
     }
     
 }

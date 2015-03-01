@@ -7,4 +7,11 @@
  * @author M.D.Ward <dev@mattdw.co.uk>
  */
 
-require_once __DIR__ . '/../var/bootstrap.php';
+$varPath = __DIR__ . '/../var';
+
+require_once $varPath . '/bootstrap.php';
+require_once $varPath . '/routing.php';
+
+/* @var $app \Slim\Slim */
+$app->run();
+
