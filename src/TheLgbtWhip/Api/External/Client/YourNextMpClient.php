@@ -1,9 +1,9 @@
 <?php
 /**
- * MapItClient.php
- * Definition of class MapItClient
+ * YourNextMpClient.php
+ * Definition of class YourNextMpClient
  * 
- * Created 01-Mar-2015 13:29:32
+ * Created 01-Mar-2015 15:00:15
  *
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  * @copyright (c) 2015, Byng Systems Ltd
@@ -13,13 +13,11 @@ namespace TheLgbtWhip\Api\External\Client;
 
 
 /**
- * MapItClient
+ * YourNextMpClient
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class MapItClient extends AbstractRestServiceClient
+class YourNextMpClient extends AbstractRestServiceClient
 {
-    
-    
     
 }
