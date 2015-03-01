@@ -1,21 +1,49 @@
 parameters:
     
+    thelgbtwhip.api.orm.mapping_file_extension:                     .orm.yml
     thelgbtwhip.api.orm.mapping_path:                               %config_dir%/doctrine
+    thelgbtwhip.api.orm.cache_path:                                 %cache_dir%/doctrine/cache
+    thelgbtwhip.api.orm.proxy_path:                                 %cache_dir%/doctrine/proxy
     
+    thelgbtwhip.api.orm.file_locator.class:                         Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator
+    thelgbtwhip.api.orm.driver.class:                               Doctrine\ORM\Mapping\Driver\YamlDriver
     thelgbtwhip.api.orm.entity_manager.class:                       Doctrine\ORM\EntityManager
     thelgbtwhip.api.orm.configuration.class:                        Doctrine\ORM\Configuration
     
 services:
     
+    thelgbtwhip.api.orm.cache:
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments:
+            directory:      %thelgbtwhip.api.orm.cache_path%
+    
+    thelgbtwhip.api.orm.file_locator:
+        class: %thelgbtwhip.api.orm.file_locator.class%
+        arguments:
+            namespacePrefixes:
+                TheLgbtWhip\Api\Model\View:     %thelgbtwhip.api.orm.mapping_path%
+            fileExtension:      %thelgbtwhip.api.orm.mapping_file_extension%
+            
+    
+    thelgbtwhip.api.orm.driver:
+        class: %thelgbtwhip.api.orm.driver.class%
+        arguments:
+            paths:
+                - %thelgbtwhip.api.orm.mapping_path%
+        calls:
+            - [setLocator, [@thelgbtwhip.api.orm.file_locator]]
+    
     thelgbtwhip.api.orm.configuration:
         class: %thelgbtwhip.api.orm.configuration.class%
         factory: 
             - Doctrine\ORM\Tools\Setup
-            - createYAMLMetadataConfiguration
+            - createConfiguration
         arguments:
-            paths:
-                - %thelgbtwhip.api.orm.mapping_path%
             isDevMode:  %mode.debug%
+            proxyDir:   %thelgbtwhip.api.orm.proxy_path%
+            cache:      @thelgbtwhip.api.orm.cache
+        calls:
+            - [setMetadataDriverImpl, [@thelgbtwhip.api.orm.driver]]
 
     thelgbtwhip.api.orm.entity_manager:
         class: %thelgbtwhip.api.orm.entity_manager.class%
@@ -29,5 +57,5 @@ services:
                 port:       %orm.db.port%
                 user:       %orm.db.user%
                 password:   %orm.db.password%
-                dbName:     %orm.db.dbName%
+                dbname:     %orm.db.dbName%
             config: @thelgbtwhip.api.orm.configuration
