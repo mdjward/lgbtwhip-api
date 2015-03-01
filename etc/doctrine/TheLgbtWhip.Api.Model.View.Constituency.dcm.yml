@@ -1,6 +1,7 @@
 TheLgbtWhip\Api\Model\View\Constituency:
     type: entity
     table: constituencies
+    repositoryClass: TheLgbtWhip\Api\Repository\ConstituencyRepository
     id:
         id:
             column: constituency_id

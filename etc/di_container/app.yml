@@ -23,7 +23,7 @@ services:
     
     
     request:
-        alias: thelgbtwhip.api.requeest
+        alias: thelgbtwhip.api.request
         
     response:
         alias: thelgbtwhip.api.request
@@ -32,6 +32,6 @@ services:
         alias: thelgbtwhip.api.environment
         
     env:
-        alias:
+        alias: thelgbtwhip.api.environment
             
             

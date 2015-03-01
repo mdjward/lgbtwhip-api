@@ -30,7 +30,6 @@ $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 /* @var $file SplFileInfo */
 // Iterate through every single 
 foreach (new DirectoryIterator($configPath) as $file) {
-    if (!$file->isFile()) {
     // Only process *.yml files
     if (!$file->isFile() || strtolower($file->getExtension()) !== 'yml') {
         continue;
@@ -55,3 +54,5 @@ $loader->load($envConfigFile->getPathname());
 
 // Compile the container
 $container->compile();
+
+$repository = $container->get('thelgbtwhip.api.orm.repository.constituency');
