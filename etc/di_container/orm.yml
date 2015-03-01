@@ -1,0 +1,33 @@
+parameters:
+    
+    thelgbtwhip.api.orm.mapping_path:                               
+    
+    thelgbtwhip.api.orm.entity_manager.class:                       Doctrine\ORM\EntityManager
+    thelgbtwhip.api.orm.configuration.class:                        Doctrine\ORM\Configuration
+    
+services:
+    
+    thelgbtwhip.api.orm.configuration:
+        class: %thelgbtwhip.api.orm.configuration.class%
+        factory: 
+            - Doctrine\ORM\Tools\Setup
+            - createYAMLMetadataConfiguration
+        arguments:
+            paths:
+                - %config_dir%/doctrine
+            isDevMode:  %mode.debug%
+
+    thelgbtwhip.api.orm.entity_manager:
+        class: %thelgbtwhip.api.orm.entity_manager.class%
+        factory:
+            - Doctrine\ORM\EntityManager
+            - create
+        arguments:
+            conn:
+                driver:     %orm.db.driver%
+                host:       %orm.db.host%
+                port:       %orm.db.port%
+                user:       %orm.db.user%
+                password:   %orm.db.password%
+                dbName:     %orm.db.dbName%
+            config: @thelgbtwhip.api.orm.configuration

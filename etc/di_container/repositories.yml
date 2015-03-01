@@ -1,0 +1,8 @@
+parameters:
+    
+    thelgbtwhip.api.orm.model.constituency.class:               TheLgbtWhip\Api\
+    thelgbtwhip.api.orm.repository.constituency.class:          
+    
+services:
+    
+    

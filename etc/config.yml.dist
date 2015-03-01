@@ -1,4 +1,13 @@
 parameters:
     
+    mode.debug:                 false
+
     your_next_mp.base_url:      http://yournextmp.popit.mysociety.org/api/v0.1/
     mapit.base_url:             http://mapit.mysociety.org/
+
+    orm.db.driver:              pdo_mysql
+    orm.db.host:                localhost
+    orm.db.port:                3306
+    orm.db.user:                root
+    orm.db.password:            ~
+    orm.db.name:                thelgbtwhip_api

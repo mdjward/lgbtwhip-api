@@ -8,4 +8,4 @@ class Constituency
     public $id;
     public $name;
     public $candidates;
-} 
+}

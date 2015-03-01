@@ -14,6 +14,7 @@ use TheLgbtWhip\Api\External\Client\MapItClient;
 use TheLgbtWhip\Api\Model\View\Constituency;
 
 
+
 /**
  * ConstituencyController
  * 

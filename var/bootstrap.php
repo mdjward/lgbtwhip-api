@@ -19,6 +19,9 @@ $baseConfigPath = realpath(__DIR__ . '/../etc');
 $configPath = $baseConfigPath . '/di_container';
 
 $container = new ContainerBuilder();
+$container->setParameter('root_dir', realpath(__DIR__ . '/..'));
+$container->setParameter('config_dir', $baseConfigPath);
+
 $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 
 
@@ -41,10 +44,8 @@ if (!$envConfigFile->isFile()) {
     copy($distConfigFile->getPathname(), $envConfigFile->getPathname());
 }
 
-$loader->load($envConfigFile->getPath());
-
+$loader->load($envConfigFile->getPathname());
 
 
 
 $container->compile();
-$controller = $container->get('thelgbtwhip.api.controller.constituency');
