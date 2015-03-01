@@ -9,10 +9,11 @@
         "symfony/yaml": "2.*",
         "jms/serializer": "0.16.*",
         "icanboogie/inflector": "1.2",
-        "guzzlehttp/guzzle": "~5.2",
-        "hafriedlander/phockito": "~1.0"
+        "guzzlehttp/guzzle": "~5.2"
     },
-    "require-dev": {    
+    "require-dev": {
+        "": "",
+        "hafriedlander/phockito": "~1.0",
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
