@@ -9,15 +9,18 @@
  */
 
 use Slim\Slim;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 
-if (!isset($container)) {
+// This script is not intended to run directly; if the container isn't set, then terminate
+if (!isset($container) || !($container instanceof ContainerInterface)) {
     die('Dependency injection container is unavailable.');
 }
 
-/* @var $container ContainerBuilder */
+
+
+/* @var $container ContainerInterface */
 /* @var $app Slim */
 $app = $container->get('thelgbtwhip.api.app');
 

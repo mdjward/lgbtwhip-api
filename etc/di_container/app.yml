@@ -7,3 +7,31 @@ services:
         arguments:
             -
                 container: @service_container
+
+    thelgbtwhip.api.request:
+        class: Slim\Http\Request
+        factory: [@thelgbtwhip.api.app, request]
+        
+    thelgbtwhip.api.response:
+        class: Slim\Http\Response
+        factory: [@thelgbtwhip.api.app, response]
+        
+    thelgbtwhip.api.environment:
+        class: Slim\Http\Environment
+        factory: [@thelgbtwhip.api.app, environment]
+        
+    
+    
+    request:
+        alias: thelgbtwhip.api.requeest
+        
+    response:
+        alias: thelgbtwhip.api.request
+        
+    environment:
+        alias: thelgbtwhip.api.environment
+        
+    env:
+        alias:
+            
+            

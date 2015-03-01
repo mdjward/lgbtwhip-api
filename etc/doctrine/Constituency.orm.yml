@@ -13,4 +13,3 @@ TheLgbtWhip\Api\Model\View\Constituency:
             type: string
             length: 200
 
-    
