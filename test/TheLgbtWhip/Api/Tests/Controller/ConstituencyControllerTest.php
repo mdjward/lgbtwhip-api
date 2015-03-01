@@ -2,7 +2,7 @@
 
 namespace TheLgbtWhip\Api\Tests\Controller;
 
-use Phockito;
+use \Slim\Http\Response;
 use PHPUnit_Framework_TestCase as TestCase;
 use TheLgbtWhip\Api\Controller\ConstituencyController;
 use TheLgbtWhip\Api\Model\View\Constituency;
@@ -46,16 +46,23 @@ class ConstituencyControllerTest extends TestCase
      */
     private $constituency;
 
+    /**
+     * @var Response
+     */
+    private $response;
+
 
     /**
      * 
      */
     protected function setUp()
     {
-        $this->_mockConstituency();
+        $this->constituency = $this->_mockConstituency();
+
+        $this->response = new Response();
         $this->client = mock('TheLgbtWhip\Api\External\Client\MapItClient');
         $this->constituencyRepository = mock('TheLgbtWhip\Api\Repository\ConstituencyRepository');
-        $this->controller = new ConstituencyController($this->client, $this->constituencyRepository);
+        $this->controller = new ConstituencyController($this->response, $this->client, $this->constituencyRepository);
     }
 
     /**
@@ -76,10 +83,26 @@ class ConstituencyControllerTest extends TestCase
         $this->assertEquals(self::TEST_NAME, $result->name);
     }
 
+    /**
+     * @test
+     */
+    public function testResolveByPostcodeReturns404WhenPostcodeNotFound()
+    {
+        // given
+        when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(null);;
+
+        // when
+        $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
+
+        // then
+        $this->assertEquals(404, $this->response->getStatus());
+    }
+
     private function _mockConstituency()
     {
-        $this->constituency = new Constituency();
-        $this->constituency->id = self::TEST_ID;
-        $this->constituency->name = self::TEST_NAME;
+        $constituency = new Constituency();
+        $constituency->id = self::TEST_ID;
+        $constituency->name = self::TEST_NAME;
+        return $constituency;
     }
 }
