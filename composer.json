@@ -5,6 +5,7 @@
         "slim/slim": "2.*",
         "doctrine/orm": "*",
         "symfony/dependency-injection": "2.*",
+        "symfony/config": "2.*",
         "symfony/yaml": "2.*"
     },
     "require-dev": {
