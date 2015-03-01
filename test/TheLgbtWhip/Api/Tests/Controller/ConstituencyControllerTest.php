@@ -62,7 +62,7 @@ class ConstituencyControllerTest extends TestCase
     public function testResolveByPostcodeGetsNameFromMapit()
     {
         // given
-        Phockito::when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(self::TEST_NAME);
+        when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(self::TEST_NAME);
 
         // when
         $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
