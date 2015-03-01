@@ -11,7 +11,7 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use TheLgbtWhip\Api\External\Client\MapItClient;
-
+use TheLgbtWhip\Api\Model\View\Constituency;
 
 
 /**
@@ -37,14 +37,16 @@ class ConstituencyController
     public function __construct(MapItClient $mapItClient) {
         $this->mapItClient = $mapItClient;
     }
-    
+
     /**
-     * 
      * @param string $givenPostcode
+     * @return \TheLgbtWhip\Api\Model\View\Constituency
      */
     public function resolveByPostcodeAction($givenPostcode)
     {
-        return $givenPostcode;
+        $constituency = new Constituency();
+        $constituency->name = $this->mapItClient->getConstituencyFromPostcode($givenPostcode);
+        return $constituency;
     }
     
 }

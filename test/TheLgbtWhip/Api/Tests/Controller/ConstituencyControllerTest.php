@@ -19,7 +19,8 @@ class ConstituencyControllerTest extends TestCase
      * 
      */
     const TEST_POSTCODE = "TestCode";
-    
+    const TEST_NAME = "Test Name";
+
     /**
      *
      * @var MapItClient 
@@ -46,12 +47,27 @@ class ConstituencyControllerTest extends TestCase
     /**
      * @test
      */
-    public function testResolvePostcodeReturnsThePostcode()
+    public function testResolvePostcodeReturnsConstituency()
     {
         // when
         $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
 
         // then
-        $this->assertSame(self::TEST_POSTCODE, $result);
+        $this->assertInstanceOf('TheLgbtWhip\Api\Model\View\Constituency', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function testResolveByPostcodeGetsNameFromMapit()
+    {
+        // given
+        Phockito::when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(self::TEST_NAME);
+
+        // when
+        $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
+
+        // then
+        $this->assertEquals(self::TEST_NAME, $result->name);
     }
 }
