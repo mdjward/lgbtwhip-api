@@ -1,13 +1,10 @@
 <?php
-/**
- * phpunit.bootstrap.php
- * 
- * Created 01-Mar-2015 16:08:49
- *
- * @author M.D.Ward <matthew.ward@byng-systems.com>
- * @copyright (c) 2015, Byng Systems Ltd
- */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// The root of the codebase
+define('APPLICATION_PATH_ROOT', realpath(__DIR__ . '/../'));
+
+// Include Phockito
+require_once(APPLICATION_PATH_ROOT . '/vendor/hafriedlander/phockito/Phockito_Globals.php');
 Phockito::include_hamcrest();
