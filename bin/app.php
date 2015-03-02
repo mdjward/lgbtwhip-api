@@ -7,10 +7,19 @@
  * @author M.D.Ward <dev@mattdw.co.uk>
  */
 
+use Slim\Slim;
+
+
+
+// Establish the /var base path
 $varPath = __DIR__ . '/../var';
 
-require_once $varPath . '/bootstrap.php';
-require_once $varPath . '/routing.php';
+// Load the container by retrieving from cache and/or building
+$container = require_once $varPath . '/bootstrap.php';
 
-/* @var $app \Slim\Slim */
+// Load the application by applying routing configuration
+$app = require_once $varPath . '/routing.php';
+
+// Execute
+/* @var $app Slim */
 $app->run();

@@ -36,3 +36,5 @@ $app->group('/constituency', function() use ($app, $container) {
     );
 });
 
+// Return the Slim application to the calling script
+return $app;

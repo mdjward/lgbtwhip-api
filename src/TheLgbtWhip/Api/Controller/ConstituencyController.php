@@ -10,7 +10,6 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
-use Slim\Http\Response;
 use TheLgbtWhip\Api\External\Client\MapItClient;
 use TheLgbtWhip\Api\Model\View\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
@@ -34,21 +33,17 @@ class ConstituencyController extends AbstractController
      * @var ConstituencyRepository
      */
     private $constituencyRepository;
-    /**
-     * @var \Slim\Http\Response
-     */
-    private $response;
 
 
 
     /**
-     * @param \Slim\Http\Response $response
      * @param MapItClient $mapItClient
      * @param ConstituencyRepository $constituencyRepository
      */
-    public function __construct(Response $response, MapItClient $mapItClient, ConstituencyRepository $constituencyRepository)
-    {
-        $this->response = $response;
+    public function __construct(
+        MapItClient $mapItClient,
+        ConstituencyRepository $constituencyRepository
+    ) {
         $this->mapItClient = $mapItClient;
         $this->constituencyRepository = $constituencyRepository;
     }
@@ -60,13 +55,12 @@ class ConstituencyController extends AbstractController
     public function resolveByPostcodeAction($givenPostcode)
     {
         $id = $this->mapItClient->getConstituencyFromPostcode($givenPostcode);
-        $constituency = $this->constituencyRepository->find($id);
-        if (is_null($constituency)) {
-            $this->response->setStatus(404);
-            return null;
-        } else {
+        
+        if (($constituency = $this->constituencyRepository->find($id)) !== null) {
             return $constituency;
         }
+        
+        $this->response->setStatus(404);
     }
 
 }
