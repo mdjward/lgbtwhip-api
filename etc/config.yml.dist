@@ -10,4 +10,4 @@ parameters:
     orm.db.port:                3306
     orm.db.user:                root
     orm.db.password:            ~
-    orm.db.name:                thelgbtwhip_api
+    orm.db.dbName:              thelgbtwhip_api
