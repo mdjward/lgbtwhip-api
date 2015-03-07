@@ -62,7 +62,8 @@ class ConstituencyControllerTest extends TestCase
         $this->response = new Response();
         $this->client = mock('TheLgbtWhip\Api\External\Client\MapItClient');
         $this->constituencyRepository = mock('TheLgbtWhip\Api\Repository\ConstituencyRepository');
-        $this->controller = new ConstituencyController($this->response, $this->client, $this->constituencyRepository);
+        $this->controller = new ConstituencyController($this->client, $this->constituencyRepository);
+        $this->controller->setResponse($this->response);
     }
 
     /**
