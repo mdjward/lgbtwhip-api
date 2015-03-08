@@ -35,7 +35,7 @@ class Party extends AbstractModelWithId
     
     /**
      *
-     * @var Collection<Candidate>
+     * @var Collection
      */
     protected $candidates;
     
@@ -87,7 +87,7 @@ class Party extends AbstractModelWithId
 
     /**
      * 
-     * @return Collection<Candidate>
+     * @return Collection
      */
     public function getCandidates()
     {

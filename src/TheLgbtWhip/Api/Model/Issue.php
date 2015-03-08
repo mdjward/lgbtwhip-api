@@ -3,6 +3,7 @@
 namespace TheLgbtWhip\Api\Model;
 
 use DateTime;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 
@@ -57,7 +58,7 @@ class Issue extends AbstractModelWithId
     
     /**
      *
-     * @var Collection<Vote>
+     * @var Collection
      */
     protected $votes;
     
@@ -136,7 +137,7 @@ class Issue extends AbstractModelWithId
 
     /**
      * 
-     * @return Collection<Vote>
+     * @return Collection
      */
     public function getVotes()
     {
@@ -251,4 +252,4 @@ class Issue extends AbstractModelWithId
         return $this;
     }
     
-} 
+}

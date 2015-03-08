@@ -62,19 +62,19 @@ class Candidate extends AbstractModelWithId
     
     /**
      *
-     * @var Collection<Term>
+     * @var Collection
      */
     protected $termsAsMp;
     
     /**
      *
-     * @var Collection<Vote>
+     * @var Collection
      */
     protected $votes;
     
     /**
      *
-     * @var Collection<View>
+     * @var Collection
      */
     protected $views;
     
@@ -173,7 +173,7 @@ class Candidate extends AbstractModelWithId
 
     /**
      * 
-     * @return Collection<Vote>
+     * @return Collection
      */
     public function getVotes()
     {
@@ -182,7 +182,7 @@ class Candidate extends AbstractModelWithId
 
     /**
      * 
-     * @return Collection<View>
+     * @return Collection
      */
     public function getViews()
     {
