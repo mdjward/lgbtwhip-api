@@ -32,6 +32,12 @@ class Vote extends AbstractModelWithId
     
     /**
      *
+     * @var Issue
+     */
+    protected $issue;
+    
+    /**
+     *
      * @var Candidate
      */
     protected $candidate;
@@ -43,6 +49,15 @@ class Vote extends AbstractModelWithId
     protected $voteCast;
     
     
+    
+    /**
+     * 
+     * @return Issue
+     */
+    public function getIssue()
+    {
+        return $this->issue;
+    }
     
     /**
      * 
@@ -62,6 +77,18 @@ class Vote extends AbstractModelWithId
         return $this->voteCast;
     }
 
+    /**
+     * 
+     * @param Issue $issue
+     * @return Vote
+     */
+    public function setIssue(Issue $issue)
+    {
+        $this->issue = $issue;
+        
+        return $this;
+    }
+        
     /**
      * 
      * @param Candidate $candidate
