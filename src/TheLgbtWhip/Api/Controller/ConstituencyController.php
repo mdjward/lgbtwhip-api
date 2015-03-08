@@ -11,7 +11,7 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use TheLgbtWhip\Api\External\Client\MapItClient;
-use TheLgbtWhip\Api\Model\View\Constituency;
+use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
 
 
