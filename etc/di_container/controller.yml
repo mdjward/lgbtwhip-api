@@ -10,3 +10,8 @@ services:
             constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
         tags:
             - { name: controller }
+
+    thelgbtwhip.api.controller.issue:
+        class: TheLgbtWhip\Api\Controller\IssueController
+        arguments:
+            thePublicWhipClient:    @thelgbtwhip.api.external.client.the_public_whip.client

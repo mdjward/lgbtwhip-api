@@ -36,5 +36,15 @@ $app->group('/constituency', function() use ($app, $container) {
     );
 });
 
+// Handle issue routes
+$app->get('/issue', function() use ($app, $container) {
+    
+    return $container->get('thelgbtwhip.api.controller.issue')->testAction(
+        11,
+        '2013-05-21'
+    );
+    
+});
+
 // Return the Slim application to the calling script
 return $app;
