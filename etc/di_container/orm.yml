@@ -1,7 +1,7 @@
 parameters:
     
     thelgbtwhip.api.orm.mapping_file_extension:                     .orm.yml
-    thelgbtwhip.api.orm.mapping_path:                               %config_dir%/doctrine
+    thelgbtwhip.api.orm.mapping_path:                               %config_dir%/orm
     thelgbtwhip.api.orm.cache_path:                                 %cache_dir%/doctrine/cache
     thelgbtwhip.api.orm.proxy_path:                                 %cache_dir%/doctrine/proxy
     
@@ -9,6 +9,17 @@ parameters:
     thelgbtwhip.api.orm.driver.class:                               Doctrine\ORM\Mapping\Driver\YamlDriver
     thelgbtwhip.api.orm.entity_manager.class:                       Doctrine\ORM\EntityManager
     thelgbtwhip.api.orm.configuration.class:                        Doctrine\ORM\Configuration
+    
+    thelgbtwhip.api.orm.entity.candidate.class:                     TheLgbtWhip\Api\Model\Candidate
+    thelgbtwhip.api.orm.entity.constituency.class:                  TheLgbtWhip\Api\Model\Constituency
+    thelgbtwhip.api.orm.entity.issue.class:                         TheLgbtWhip\Api\Model\Issue
+    thelgbtwhip.api.orm.entity.party.class:                         TheLgbtWhip\Api\Model\Party
+    thelgbtwhip.api.orm.entity.term.class:                          TheLgbtWhip\Api\Model\Term
+    thelgbtwhip.api.orm.entity.view.class:                          TheLgbtWhip\Api\Model\View
+    thelgbtwhip.api.orm.entity.vote.class:                          TheLgbtWhip\Api\Model\Vote
+    
+    thelgbtwhip.api.orm.entity.candidate.repository.class:          TheLgbtWhip\Api\Repository\CandidateRepository
+    thelgbtwhip.api.orm.entity.constituency.repository.class:       TheLgbtWhip\Api\Repository\ConstituencyRepository
     
 services:
     
@@ -21,9 +32,8 @@ services:
         class: %thelgbtwhip.api.orm.file_locator.class%
         arguments:
             namespacePrefixes:
-                TheLgbtWhip\Api\Model\View:     %thelgbtwhip.api.orm.mapping_path%
+                %thelgbtwhip.api.orm.mapping_path%: TheLgbtWhip\Api\Model
             fileExtension:      %thelgbtwhip.api.orm.mapping_file_extension%
-            
     
     thelgbtwhip.api.orm.driver:
         class: %thelgbtwhip.api.orm.driver.class%
@@ -59,3 +69,15 @@ services:
                 password:   %orm.db.password%
                 dbname:     %orm.db.dbName%
             config: @thelgbtwhip.api.orm.configuration
+
+
+
+    thelgbtwhip.api.orm.entity.candidate.repository:
+        class: %thelgbtwhip.api.orm.entity.candidate.repository.class%
+        factory: [@thelgbtwhip.api.orm.entity_manager, getRepository]
+        arguments: [%thelgbtwhip.api.orm.entity.candidate.class%]
+
+    thelgbtwhip.api.orm.entity.constituency.repository:
+        class: %thelgbtwhip.api.orm.entity.constituency.repository.class%
+        factory: [@thelgbtwhip.api.orm.entity_manager, getRepository]
+        arguments: [%thelgbtwhip.api.orm.entity.constituency.class%]

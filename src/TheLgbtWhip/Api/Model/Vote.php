@@ -88,7 +88,7 @@ class Vote extends AbstractModelWithId
         
         return $this;
     }
-        
+    
     /**
      * 
      * @param Candidate $candidate
@@ -110,7 +110,7 @@ class Vote extends AbstractModelWithId
      */
     public function setVoteCast($voteCast)
     {
-        if (!is_string($voteCast)) {
+        /*if (!is_string($voteCast)) {
             throw new InvalidArgumentException(
                 'Vote cast must be given as a string'
             );
@@ -127,7 +127,11 @@ class Vote extends AbstractModelWithId
         
         throw new UnexpectedValueException(
             "Invalid vote cast value '{$voteCast}'"
-        );
+        );*/
+        
+        $this->voteCast = $voteCast;
+        
+        return $this;
     }
     
 }

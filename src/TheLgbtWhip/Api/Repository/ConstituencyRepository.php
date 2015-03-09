@@ -22,6 +22,16 @@ use Doctrine\ORM\EntityRepository;
 class ConstituencyRepository extends EntityRepository
 {
     
-    
+    /**
+     * 
+     * @param string $name
+     * @return Constituency|null
+     */
+    public function findOneByName($name)
+    {
+        return $this->findOneBy([
+            'name' => $name
+        ]);
+    }
     
 }

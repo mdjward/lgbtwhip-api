@@ -1,0 +1,36 @@
+TheLgbtWhip\Api\Model\Party:
+    type: entity
+    table: parties
+    id:
+        id:
+            column: party_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        name:
+            column: name
+            type: string
+            length: 255
+            nullable: false
+        logo:
+            column: logo
+            type: blob
+            nullable: true
+        websiteUrl:
+            column: website_url
+            type: string
+            length: 255
+        colour:
+            column: colour
+            type: string
+            length: 10
+    
+    oneToMany:
+        candidates:
+            targetEntity: Candidate
+            mappedBy: party
+            fetch: EXTRA_LAZY
+    indexes:
+        name:
+            columns: [name]

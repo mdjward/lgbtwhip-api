@@ -1,4 +1,4 @@
-TheLgbtWhip\Api\Model\View\Constituency:
+TheLgbtWhip\Api\Model\Constituency:
     type: entity
     table: constituencies
     repositoryClass: TheLgbtWhip\Api\Repository\ConstituencyRepository
@@ -13,4 +13,8 @@ TheLgbtWhip\Api\Model\View\Constituency:
             column: name
             type: string
             length: 200
-
+    oneToMany:
+        candidates:
+            targetEntity: Candidate
+            mappedBy: constituency
+            cascade: ["persist", "merge"]

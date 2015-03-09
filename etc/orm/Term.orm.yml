@@ -1,0 +1,34 @@
+TheLgbtWhip\Api\Model\Term:
+    type: entity
+    table: terms
+    id:
+        id:
+            column: term_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        startDate:
+            column: start_date
+            type: date
+            nullable: false
+        endDate:
+            column: end_date
+            type: date
+            nullable: true
+
+    manyToOne:
+        candidate:
+            targetEntity: Candidate
+            joinColumns:
+                candidate_id:
+                    referencedColumnName: candidate_id
+                    nullable: false
+            fetch: EAGER
+        party:
+            targetEntity: party
+            joinColumns:
+                party_id:
+                    referencedColumnName: party_id
+                    nullable: true
+            fetch: EAGER

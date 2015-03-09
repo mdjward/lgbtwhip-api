@@ -1,0 +1,75 @@
+TheLgbtWhip\Api\Model\Candidate:
+    type: entity
+    table: candidates
+    repositoryClass: TheLgbtWhip\Api\Repository\CandidateRepository
+    id:
+        id:
+            column: candidate_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        name:
+            column: name
+            type: string
+            length: 255
+            nullable: false
+        twitter:
+            column: twitter
+            type: string
+            length: 100
+            nullable: true
+        website:
+            column: website
+            type: string
+            length: 255
+            nullable: true
+        wikipedia:
+            column: wikipedia
+            type: string
+            length: 512
+            nullable: true
+        email:
+            column: email
+            type: string
+            length: 256
+            nullable: false
+        photo:
+            column: photo
+            type: blob
+            nullable: true
+    manyToOne:
+        party:
+            targetEntity: Party
+            inversedBy: candidates
+            fetch: EAGER
+            joinColumns:
+                party_id:
+                    referencedColumnName: party_id
+                    nullable: true
+        constituency:
+            targetEntity: Constituency
+            inversedBy: candidates
+            fetch: EAGER
+            joinColumns:
+                constituency_id:
+                    referencedColumnName: constituency_id
+                    nullable: false
+    oneToMany:
+        termsAsMp:
+            targetEntity: Term
+            mappedBy: candidate
+            fetch: EXTRA_LAZY
+        votes:
+            targetEntity: Vote
+            mappedBy: candidate
+            fetch: EXTRA_LAZY
+        views:
+            targetEntity: View
+            mappedBy: candidate
+            fetch: LAZY
+    indexes:
+        name:
+            columns: [name]
+        email:
+            columns: [email]

@@ -1,0 +1,32 @@
+TheLgbtWhip\Api\Model\Vote:
+    type: entity
+    table: votes
+    id:
+        id:
+            column: vote_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        voteCast:
+            column: vote_cast
+            type: string
+            length: 25
+            nullable: false
+    manyToOne:
+        issue:
+            targetEntity: Issue
+            joinColumns:
+                issue_id:
+                    referencedColumnName: issue_id
+                    nullable: false
+            fetch: LAZY
+        candidate:
+            targetEntity: Candidate
+            joinColumns:
+                candidate_id:
+                    referencedColumnName: candidate_id
+                    nullable: false
+    indexes:
+        issue_candidate:
+            columns: [issue_id, candidate_id]

@@ -1,0 +1,30 @@
+TheLgbtWhip\Api\Model\View:
+    type: entity
+    table: views
+    id:
+        id:
+            column: view_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        historicStance:
+            column: historic_stance
+            type: text
+            nullable: false
+        currentStance:
+            column: current_stance
+            type: text
+            nullable: false
+    manyToOne:
+        candidate:
+            targetEntity: Candidate
+            joinColumns:
+                candidate_id:
+                    referencedColumnName: candidate_id
+            fetch: LAZY
+        issue:
+            targetEntity: Issue
+            joinColumns:
+                issue_id:
+                    referencedColumnName: issue_id

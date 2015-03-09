@@ -1,0 +1,47 @@
+TheLgbtWhip\Api\Model\Issue:
+    type: entity
+    table: issues
+    repositoryClass: TheLgbtWhip\Api\Repository\IssueRepository
+    id:
+        id:
+            column: issue_id
+            type: integer
+            generator:
+                strategy: auto
+    fields:
+        title:
+            column: title
+            type: string
+            length: 512
+            nullable: false
+        description:
+            column: description
+            type: text
+            nullable: true
+        relevantAct:
+            column: relevant_act
+            type: string
+            length: 512
+            nullable: true
+        url:
+            column: url
+            type: string
+            length: 512
+            nullable: true
+        isProgressiveStance:
+            column: stance
+            type: boolean
+            nullable: false
+        publicWhipId:
+            column: public_whip_id
+            type: integer
+            nullable: true
+        publicWhipDate:
+            column: public_whip_date
+            type: date
+            nullable: true
+    oneToMany:
+        votes:
+            targetEntity: Vote
+            mappedBy: issue
+            fetch: EXTRA_LAZY

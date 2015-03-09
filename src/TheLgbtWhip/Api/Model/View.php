@@ -90,7 +90,7 @@ class View extends AbstractModelWithId
         
         return $this;
     }
-
+    
     /**
      * 
      * @param string $historicStance
