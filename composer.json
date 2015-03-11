@@ -4,6 +4,7 @@
     "require": {
         "slim/slim": "2.*",
         "doctrine/orm": "*",
+        "doctrine/migrations": "1.0.*@dev",
         "symfony/dependency-injection": "2.*",
         "symfony/config": "2.*",
         "symfony/yaml": "2.*",

@@ -1,0 +1,101 @@
+parameters:
+    
+    thelgbtwhip.api.migrations.configuration.class:     Doctrine\DBAL\Migrations\Configuration\Configuration
+    thelgbtwhip.api.migrations.configuration.table:     db_migrations
+    thelgbtwhip.api.migrations.configuration.namespace: TheLgbtWhip\Api\Migrations
+    thelgbtwhip.api.migrations.configuration.directory: %migrations_dir%
+    
+    thelgbtwhip.api.migrations.commands.abstract.class: Doctrine\DBAL\Migrations\Tools\Console\Command\AbstractCommand
+    thelgbtwhip.api.migrations.commands.diff.class:     Doctrine\DBAL\Migrations\Tools\Console\Command\DiffCommand
+    thelgbtwhip.api.migrations.commands.execute.class:  Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand
+    thelgbtwhip.api.migrations.commands.generate.class: Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand
+    thelgbtwhip.api.migrations.commands.execute.class:  Doctrine\DBAL\Migrations\Tools\Console\Command\ExecuteCommand
+    thelgbtwhip.api.migrations.commands.latest.class:   Doctrine\DBAL\Migrations\Tools\Console\Command\LatestCommand
+    thelgbtwhip.api.migrations.commands.migrate.class:  Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand
+    thelgbtwhip.api.migrations.commands.status.class:   Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand
+    thelgbtwhip.api.migrations.commands.version.class:  Doctrine\DBAL\Migrations\Tools\Console\Command\VersionCommand
+    
+    thelgbtwhip.api.migrations.helpers.conn.class:      Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper
+    thelgbtwhip.api.migrations.helpers.em.class:        Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper
+    thelgbtwhip.api.migrations.helpers.dialog.class:    Symfony\Component\Console\Helper\DialogHelper
+    thelgbtwhip.api.migrations.helper_set.class:        Symfony\Component\Console\Helper\HelperSet
+    
+services:
+    
+    thelgbtwhip.api.migrations.configuration:
+        class: %thelgbtwhip.api.migrations.configuration.class%
+        arguments:
+            connection: "@=service('thelgbtwhip.api.orm.entity_manager').getConnection()"
+        calls:
+            - [setMigrationsTableName, [%thelgbtwhip.api.migrations.configuration.table%]]
+            - [setMigrationsNamespace, [%thelgbtwhip.api.migrations.configuration.namespace%]]
+            - [setMigrationsDirectory, [%thelgbtwhip.api.migrations.configuration.directory%]]
+            - [registerMigrationsFromDirectory, [%thelgbtwhip.api.migrations.configuration.directory%]]
+    
+    thelgbtwhip.api.migrations.commands.abstract:
+        class: %thelgbtwhip.api.migrations.commands.abstract.class%
+        abstract: true
+        calls:
+            - [setMigrationConfiguration, [@thelgbtwhip.api.migrations.configuration]]
+
+    thelgbtwhip.api.migrations.command.diff:
+        class: %thelgbtwhip.api.migrations.commands.diff.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.execute:
+        class: %thelgbtwhip.api.migrations.commands.execute.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.generate:
+        class: %thelgbtwhip.api.migrations.commands.generate.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.latest:
+        class: %thelgbtwhip.api.migrations.commands.latest.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.migrate:
+        class: %thelgbtwhip.api.migrations.commands.migrate.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.status:
+        class: %thelgbtwhip.api.migrations.commands.status.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.command.version:
+        class: %thelgbtwhip.api.migrations.commands.version.class%
+        parent: thelgbtwhip.api.migrations.commands.abstract
+
+    thelgbtwhip.api.migrations.commands:
+        class: SplFixedArray
+        arguments:
+            size: 7
+        calls:
+            - [offsetSet, [0, @thelgbtwhip.api.migrations.command.diff]]
+            - [offsetSet, [1, @thelgbtwhip.api.migrations.command.execute]]
+            - [offsetSet, [2, @thelgbtwhip.api.migrations.command.generate]]
+            - [offsetSet, [3, @thelgbtwhip.api.migrations.command.latest]]
+            - [offsetSet, [4, @thelgbtwhip.api.migrations.command.migrate]]
+            - [offsetSet, [5, @thelgbtwhip.api.migrations.command.status]]
+            - [offsetSet, [6, @thelgbtwhip.api.migrations.command.version]]
+
+    thelgbtwhip.api.migrations.helpers.conn:
+        class: %thelgbtwhip.api.migrations.helpers.conn.class%
+        arguments:
+            connection: @thelgbtwhip.api.orm.connection
+        
+    thelgbtwhip.api.migrations.helpers.em:
+        class: %thelgbtwhip.api.migrations.helpers.em.class%
+        arguments:
+            entityManager: @thelgbtwhip.api.orm.entity_manager
+
+    thelgbtwhip.api.migrations.helpers.dialog:
+        class: %thelgbtwhip.api.migrations.helpers.dialog.class%
+
+    thelgbtwhip.api.migrations.helper_set:
+        class: %thelgbtwhip.api.migrations.helper_set.class%
+        arguments:
+            helpers:
+                db: @thelgbtwhip.api.migrations.helpers.conn
+                em: @thelgbtwhip.api.migrations.helpers.em
+                dialog: @thelgbtwhip.api.migrations.helpers.dialog

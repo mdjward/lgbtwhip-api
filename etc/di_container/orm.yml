@@ -8,6 +8,7 @@ parameters:
     thelgbtwhip.api.orm.file_locator.class:                         Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator
     thelgbtwhip.api.orm.driver.class:                               Doctrine\ORM\Mapping\Driver\YamlDriver
     thelgbtwhip.api.orm.entity_manager.class:                       Doctrine\ORM\EntityManager
+    thelgbtwhip.api.orm.connection.class:                           Doctrine\ORM\EntityManager
     thelgbtwhip.api.orm.configuration.class:                        Doctrine\ORM\Configuration
     
     thelgbtwhip.api.orm.entity.candidate.class:                     TheLgbtWhip\Api\Model\Candidate
@@ -69,6 +70,12 @@ services:
                 password:   %orm.db.password%
                 dbname:     %orm.db.dbName%
             config: @thelgbtwhip.api.orm.configuration
+            
+    thelgbtwhip.api.orm.connection:
+        class: %thelgbtwhip.api.orm.connection.class%
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getConnection
 
 
 

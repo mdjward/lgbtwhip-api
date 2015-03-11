@@ -55,6 +55,9 @@ $container = new ContainerBuilder();
 $container->setParameter('root_dir', $rootDir);
 $container->setParameter('config_dir', $baseConfigPath);
 $container->setParameter('cache_dir', $cacheDir);
+$container->setParameter('src_dir', $rootDir . '/src');
+$container->setParameter('test_dir', $rootDir . '/test');
+$container->setParameter('migrations_dir', $rootDir . '/migrations');
 
 $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 

@@ -8,8 +8,6 @@
  * @copyright (c) 2015, Byng Systems Ltd
  */
 
-use Doctrine\ORM\Tools\Console\ConsoleRunner;
-
 
 
 // Establish the /var base path
@@ -18,7 +16,12 @@ $varPath = __DIR__ . '/var';
 // Load the container by retrieving from cache and/or building
 $container = require_once $varPath . '/bootstrap.php';
 
-// Initialise and return the helper set for the console runner
-return ConsoleRunner::createHelperSet(
-    $container->get('thelgbtwhip.api.orm.entity_manager')
-);
+// Add migration commands to the Doctrine command set
+if (isset($commands)) {
+    $commands = array_merge(
+        $commands,
+        $container->get('thelgbtwhip.api.migrations.commands')->toArray()
+    );
+}
+
+return $container->get('thelgbtwhip.api.migrations.helper_set');
