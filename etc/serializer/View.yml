@@ -1,0 +1,35 @@
+TheLgbtWhip\Api\Model\View:
+    exclusion_policy: ALL
+    xml_root_name: view
+    access_type: public_method
+
+    properties:
+        issue:
+            type: TheLgbtWhip\Api\Model\Issue
+            accessor:
+                getter: getIssue
+                setter: setIssue
+            expose: true
+            max_depth: 1
+
+        candidate:
+            type: TheLgbtWhip\Api\Model\Candidate
+            accessor:
+                getter: getCandidate
+                setter: setCandidate
+            expose: true
+            max_depth: 1
+
+        historicStance:
+            type: string
+            accessor:
+                getter: getHistoricStance
+                setter: setHistoricStance
+            expose: true
+
+        currentStance:
+            type: string
+            accessor:
+                getter: getCurrentStance
+                setter: setCurrentStance
+            expose: true

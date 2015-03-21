@@ -1,0 +1,27 @@
+TheLgbtWhip\Api\Model\Vote:
+    exclusion_policy: ALL
+    xml_root_name: vote
+    access_type: public_method
+    
+    properties:
+        candidate:
+            type: TheLgbtWhip\Api\Model\Candidate
+            accessor:
+                getter: getCandidate
+                setter: setCandidate
+            expose: true
+        
+#        issue:
+#            type: TheLgbtWhip\Api\Model\Issue
+#            accessor:
+#                getter: getIssue
+#                setter: setIssue
+#            expose: true
+
+        voteCast:
+            type: string
+            accessor:
+                getter: getVoteCast
+                setter: setVoteCast
+            expose: true
+            xml_attribute: true

@@ -1,0 +1,35 @@
+TheLgbtWhip\Api\Model\Term:
+    exclusion_policy: ALL
+    xml_root_name: term
+    access_type: public_method
+
+    properties:
+        party:
+            type: TheLgbtWhip\Api\Model\Party
+            accessor:
+                getter: getParty
+                setter: setParty
+            expose: true
+            max_depth: 1
+
+        candidate:
+            type: TheLgbtWhip\Api\Model\Candidate
+            accessor:
+                getter: getCandidate
+                setter: setCandidate
+            expose: true
+            max_depth: 1
+
+        startDate:
+            type: DateTime<'Y-m-d', 'Europe/London'>
+            accessor:
+                getter: getStartDate
+                setter: setStartDate
+            expose: true
+
+        endDate:
+            type: DateTime<'Y-m-d', 'Europe/London'>
+            accessor:
+                getter: getEndDate
+                setter: setEndDate
+            expose: true

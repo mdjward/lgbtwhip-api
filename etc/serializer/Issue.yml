@@ -1,0 +1,55 @@
+TheLgbtWhip\Api\Model\Issue:
+    exclusion_policy: ALL
+    xml_root_name: issue
+    access_type: public_method
+    
+    properties:
+        title:
+            type: string
+            accessor:
+                getter: getTitle
+                setter: setTitle
+            expose: true
+            xml_element:
+                cdata: false
+  
+        description:
+            type: string
+            accessor:
+                getter: getDescription
+                setter: setDescription
+            expose: true
+            xml_element:
+                cdata: false
+  
+        relevantAct:
+            type: string
+            accessor:
+                getter: getRelevantAct
+                setter: setRelevantAct
+            expose: true
+            xml_element:
+                cdata: false
+  
+        publicWhipId:
+            type: string
+            accessor:
+                getter: getPublicWhipId
+                setter: setPublicWhipId
+            expose: true
+            xml_attribute: true
+
+        publicWhipDate:
+            type: DateTime<'Y-m-d', 'Europe/London'>
+            accessor:
+                getter: getPublicWhipDate
+                setter: setPublicWhipDate
+            expose: true
+            xml_attribute: true
+
+        votes:
+            type: ArrayCollection<TheLgbtWhip\Api\Model\Vote>
+            accessor:
+                getter: getVotes
+            read_only: true
+            expose: true

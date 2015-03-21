@@ -1,4 +1,3 @@
 RewriteEngine On
-RewriteBase /
-RewriteCond %{REQUEST_FILENAME} !app\.php$
+RewriteCond %{REQUEST_URI} !^/app\.php$
 RewriteRule (.*) /app.php [L,QSA]

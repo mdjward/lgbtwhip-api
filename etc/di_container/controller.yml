@@ -7,7 +7,7 @@ services:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
             mapItClient:            @thelgbtwhip.api.external.client.mapit
-            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
+            constituencyRepository: @thelgbtwhip.api.orm.entity.constituency.repository
         tags:
             - { name: controller }
 
@@ -15,3 +15,6 @@ services:
         class: TheLgbtWhip\Api\Controller\IssueController
         arguments:
             thePublicWhipClient:    @thelgbtwhip.api.external.client.the_public_whip.client
+            serializer:             @thelgbtwhip.api.serializer
+        tags:
+            - { name: controller }

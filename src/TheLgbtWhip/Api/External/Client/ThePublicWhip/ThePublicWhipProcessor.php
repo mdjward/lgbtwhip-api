@@ -43,7 +43,7 @@ class ThePublicWhipProcessor implements ThePublicWhipProcessorInterface
                 ->setVoteCast($voteData['voteCast'])
             ;
             
-            $processedVotes[] = $processedVotes;
+            $processedVotes[] = $vote;
         }
         
         return $processedVotes;
