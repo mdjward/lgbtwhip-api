@@ -8,30 +8,6 @@ parameters:
    
 services:
 
-    thelgbtwhip.api.external.client.your_next_mp:
-        class: TheLgbtWhip\Api\External\Client\MapItClient
-        arguments:
-            httpClient: @thelgbtwhip.api.external.client.your_next_mp.http_client
-
-    thelgbtwhip.api.external.client.your_next_mp.http_client:
-        class: GuzzleHttp\Client
-        arguments:
-            -
-                base_url: %your_next_mp.base_url%
-
-
-
-    thelgbtwhip.api.external.client.mapit:
-        class: TheLgbtWhip\Api\External\Client\MapItClient
-        arguments:
-            httpClient: @thelgbtwhip.api.external.client.mapit.http_client
-
-    thelgbtwhip.api.external.client.mapit.http_client:
-        class: GuzzleHttp\Client
-        arguments: [{base_url: %mapit.base_url%}]
-
-
-
     thelgbtwhip.api.external.client.the_public_whip.scraper.dom_implementation:
         class: DomImplementation
 

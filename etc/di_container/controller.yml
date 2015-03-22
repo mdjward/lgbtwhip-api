@@ -15,6 +15,6 @@ services:
         class: TheLgbtWhip\Api\Controller\IssueController
         arguments:
             thePublicWhipClient:    @thelgbtwhip.api.external.client.the_public_whip.client
-            serializer:             @thelgbtwhip.api.serializer
+            serializer:             @thelgbtwhip.api.serializer.candidate
         tags:
             - { name: controller }

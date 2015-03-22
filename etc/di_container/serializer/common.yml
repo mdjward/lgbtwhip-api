@@ -1,0 +1,12 @@
+parameters:
+
+    thelgbtwhip.api.serializer.naming_strategy.class:   JMS\Serializer\Naming\CamelCaseNamingStrategy
+    thelgbtwhip.api.serializer.real.class:              JMS\Serializer\Serializer
+    thelgbtwhip.api.serializer.wrapper.class:           TheLgbtWhip\Api\Serializer\DepthRespectingSerializer
+
+
+
+services:
+    
+    thelgbtwhip.api.serializer.naming_strategy:
+        class: %thelgbtwhip.api.serializer.naming_strategy.class%

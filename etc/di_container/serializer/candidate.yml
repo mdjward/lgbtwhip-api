@@ -1,0 +1,32 @@
+parameters:
+    
+    thelgbtwhip.api.serializer.candidate.builder.cache_dir:       %cache_dir%/serializer/candidate
+    thelgbtwhip.api.serializer.candidate.namespace_mappings:
+        TheLgbtWhip\Api\Model:                              %config_dir%/serializer/candidate
+    
+services:
+    
+    thelgbtwhip.api.serializer.candidate.builder:
+        class: JMS\Serializer\SerializerBuilder
+        factory:
+            - JMS\Serializer\SerializerBuilder
+            - create
+        calls:
+            - [setDebug, [%mode.debug%]]
+            - [setCacheDir, [%thelgbtwhip.api.serializer.candidate.builder.cache_dir%]]
+            - [setMetadataDirs, [%thelgbtwhip.api.serializer.candidate.namespace_mappings%]]
+            - [setPropertyNamingStrategy, [@thelgbtwhip.api.serializer.naming_strategy]]
+    
+    thelgbtwhip.api.serializer.candidate.real:
+        class: %thelgbtwhip.api.serializer.real.class%
+        factory:
+            - @thelgbtwhip.api.serializer.candidate.builder
+            - build
+
+    thelgbtwhip.api.serializer.candidate.wrapper:
+        class: %thelgbtwhip.api.serializer.wrapper.class%
+        arguments:
+            realSerializer: @thelgbtwhip.api.serializer.candidate.real
+
+    thelgbtwhip.api.serializer.candidate:
+        alias: thelgbtwhip.api.serializer.candidate.wrapper

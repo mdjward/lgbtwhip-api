@@ -65,15 +65,15 @@ $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 
 
 /* @var $file SplFileInfo */
-// Iterate through every single 
-foreach (new DirectoryIterator($configPath) as $file) {
+// Recursively iterate through every single YML file under the nominated directory
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPath)) as $file) {
     // Only process *.yml files
     if (!$file->isFile() || strtolower($file->getExtension()) !== 'yml') {
         continue;
     }
     
     // Load this file's DI configuration into the container
-    $loader->load($file->getFilename());
+    $loader->load($file->getPathname());
 }
 
 
