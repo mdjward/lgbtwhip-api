@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/autoload.php';
 
 // The root of the codebase
 define('APPLICATION_PATH_ROOT', realpath(__DIR__ . '/../'));

@@ -22,5 +22,8 @@
             "TheLgbtWhip\\Api\\Tests\\": "src/TheLgbtWhip/Api/Tests/",
             "TheLgbtWhip\\Api\\": "src/TheLgbtWhip/Api/"
         }
+    },
+    "config": {
+        "vendor-dir": "lib"
     }
 }

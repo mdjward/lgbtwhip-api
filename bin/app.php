@@ -12,13 +12,13 @@ use Slim\Slim;
 
 
 // Establish the /var base path
-$varPath = __DIR__ . '/../var';
+$optPath = __DIR__ . '/../opt';
 
 // Load the container by retrieving from cache and/or building
-$container = require_once $varPath . '/bootstrap.php';
+$container = require_once $optPath . '/bootstrap.php';
 
 // Load the application by applying routing configuration
-$app = require_once $varPath . '/routing.php';
+$app = require_once $optPath . '/routing.php';
 
 // Execute
 /* @var $app Slim */

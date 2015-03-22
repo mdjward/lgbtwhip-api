@@ -1,6 +1,6 @@
 /build
 /build/**
 /var/cache/**
-/vendor
-/vendor/**
+/lib
+/lib/**
 /etc/config.yml

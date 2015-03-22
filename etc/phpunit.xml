@@ -9,7 +9,7 @@
     processIsolation            = "false"
     stopOnFailure               = "false"
     syntaxCheck                 = "false"
-    bootstrap                   = "../var/phpunit.bootstrap.php"
+    bootstrap                   = "../opt/phpunit.bootstrap.php"
 >
 
     <testsuites>

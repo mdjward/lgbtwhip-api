@@ -4,7 +4,7 @@
     <property name="SRC_DIR" value="${basedir}/src"/>
     <property name="TEST_DIR" value="${basedir}/test"/>
     <property name="BUILD_DIR" value="${basedir}/build"/>
-    <property name="VENDOR_DIR" value="${basedir}/vendor"/>
+    <property name="VENDOR_DIR" value="${basedir}/lib"/>
     
     <taskdef name="parallel-apply" classname="co.byng.antparallelapply.taskdefs.optional.ParallelApply"/>
 

@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use TheLgbtWhip\Api\DependencyInjection\ControllerCompilerPass;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../lib/autoload.php';
 
 
 
@@ -57,7 +57,8 @@ $container->setParameter('config_dir', $baseConfigPath);
 $container->setParameter('cache_dir', $cacheDir);
 $container->setParameter('src_dir', $rootDir . '/src');
 $container->setParameter('test_dir', $rootDir . '/test');
-$container->setParameter('migrations_dir', $rootDir . '/migrations');
+$container->setParameter('opt_dir', __DIR__);
+$container->setParameter('migrations_dir', __DIR__ . '/migrations');
 
 $loader = new YamlFileLoader($container, new FileLocator([$configPath]));
 
