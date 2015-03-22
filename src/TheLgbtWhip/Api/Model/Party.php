@@ -2,12 +2,15 @@
 
 namespace TheLgbtWhip\Api\Model;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 
 /**
  * 
  */
-class Party extends AbstractModelWithId
+class Party extends AbstractModelWithSettableId
 {
     /**
      *

@@ -1,19 +1,21 @@
 parameters:
 
-
+    thelgbtwhip.api.external.client.your_next_mp.class:             TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpClient
+    thelgbtwhip.api.external.client.your_next_mp.processor.class:   TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpProcessor
 
 services:
     
     thelgbtwhip.api.external.client.your_next_mp:
-        class: TheLgbtWhip\Api\External\Client\MapItClient
+        class: %thelgbtwhip.api.external.client.your_next_mp.class%
         arguments:
             httpClient: @thelgbtwhip.api.external.client.your_next_mp.http_client
+            processor:  @thelgbtwhip.api.external.client.your_next_mp.processor
 
     thelgbtwhip.api.external.client.your_next_mp.http_client:
-        class: GuzzleHttp\Client
+        class: %thelgbtwhip.api.external.client.http_client.class%
         arguments:
             -
                 base_url: %your_next_mp.base_url%
 
-
-
+    thelgbtwhip.api.external.client.your_next_mp.processor:
+        class: %thelgbtwhip.api.external.client.your_next_mp.processor.class%

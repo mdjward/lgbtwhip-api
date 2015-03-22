@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * 
  */
-class Candidate extends AbstractModelWithId
+class Candidate extends AbstractModelWithSettableId
 {
     
     /**

@@ -2,7 +2,7 @@ parameters:
     
     thelgbtwhip.api.serializer.candidate.builder.cache_dir:       %cache_dir%/serializer/candidate
     thelgbtwhip.api.serializer.candidate.namespace_mappings:
-        TheLgbtWhip\Api\Model:                              %config_dir%/serializer/candidate
+        TheLgbtWhip\Api\Model:  %config_dir%/serializer/candidate
     
 services:
     

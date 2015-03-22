@@ -1,0 +1,32 @@
+parameters:
+    
+    thelgbtwhip.api.serializer.constituency.builder.cache_dir:      %cache_dir%/serializer/constituency
+    thelgbtwhip.api.serializer.constituency.namespace_mappings:
+        TheLgbtWhip\Api\Model:  %config_dir%/serializer/constituency
+    
+services:
+    
+    thelgbtwhip.api.serializer.constituency.builder:
+        class: JMS\Serializer\SerializerBuilder
+        factory:
+            - JMS\Serializer\SerializerBuilder
+            - create
+        calls:
+            - [setDebug, [%mode.debug%]]
+            - [setCacheDir, [%thelgbtwhip.api.serializer.constituency.builder.cache_dir%]]
+            - [setMetadataDirs, [%thelgbtwhip.api.serializer.constituency.namespace_mappings%]]
+            - [setPropertyNamingStrategy, [@thelgbtwhip.api.serializer.naming_strategy]]
+    
+    thelgbtwhip.api.serializer.constituency.real:
+        class: %thelgbtwhip.api.serializer.real.class%
+        factory:
+            - @thelgbtwhip.api.serializer.constituency.builder
+            - build
+
+    thelgbtwhip.api.serializer.constituency.wrapper:
+        class: %thelgbtwhip.api.serializer.wrapper.class%
+        arguments:
+            realSerializer: @thelgbtwhip.api.serializer.constituency.real
+
+    thelgbtwhip.api.serializer.constituency:
+        alias: thelgbtwhip.api.serializer.constituency.wrapper

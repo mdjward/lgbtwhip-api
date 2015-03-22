@@ -28,7 +28,7 @@ services:
             realProcessor:          @thelgbtwhip.api.external.client.the_public_whip.processor
 
     thelgbtwhip.api.external.client.the_public_whip.http_client:
-        class: GuzzleHttp\Client
+        class: %thelgbtwhip.api.external.client.http_client.class%
         arguments: [{base_url: %the_public_whip.base_url%}]
 
     thelgbtwhip.api.external.client.the_public_whip.base_url:

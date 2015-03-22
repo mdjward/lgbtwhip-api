@@ -1,0 +1,32 @@
+TheLgbtWhip\Api\Model\Party:
+    exclusion_policy: ALL
+    xml_root_name: party
+    access_type: public_method
+    
+    properties:
+        name:
+            type: string
+            accessor:
+                getter: getName
+                setter: setName
+            expose: true
+            xml_element:
+                cdata: false
+
+        websiteUrl:
+            type: string
+            accessor:
+                getter: getWebsiteUrl
+                setter: setWebsiteUrl
+            expose: true
+            xml_element:
+                cdata: false
+
+        colour:
+            type: string
+            accessor:
+                getter: getColour
+                setter: setColour
+            expose: true
+            xml_element:
+                cdata: false

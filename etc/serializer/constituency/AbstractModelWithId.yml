@@ -1,0 +1,13 @@
+TheLgbtWhip\Api\Model\AbstractModelWithId:
+    exclusion_policy: ALL
+    
+    properties:
+        id:
+            type: integer
+            access_type: public_method
+            accessor:
+                getter: getId
+            read_only: true
+            expose: true
+            xml_attribute: true
+

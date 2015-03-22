@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * 
  */
-class Constituency extends AbstractModelWithId
+class Constituency extends AbstractModelWithSettableId
 {
     
     /**

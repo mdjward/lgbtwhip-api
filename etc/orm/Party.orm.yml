@@ -5,8 +5,6 @@ TheLgbtWhip\Api\Model\Party:
         id:
             column: party_id
             type: integer
-            generator:
-                strategy: auto
     fields:
         name:
             column: name

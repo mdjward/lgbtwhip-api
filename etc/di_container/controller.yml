@@ -8,6 +8,7 @@ services:
         arguments:
             mapItClient:            @thelgbtwhip.api.external.client.mapit
             constituencyRepository: @thelgbtwhip.api.orm.entity.constituency.repository
+            serializer:             @thelgbtwhip.api.serializer.constituency
         tags:
             - { name: controller }
 

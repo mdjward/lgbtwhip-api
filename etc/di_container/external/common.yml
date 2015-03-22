@@ -1,0 +1,3 @@
+parameters:
+    
+    thelgbtwhip.api.external.client.http_client.class:  GuzzleHttp\Client

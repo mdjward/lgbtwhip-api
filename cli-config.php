@@ -10,11 +10,11 @@
 
 
 
-// Establish the /var base path
-$varPath = __DIR__ . '/var';
+// Establish the /opt base path
+$optPath = __DIR__ . '/opt';
 
 // Load the container by retrieving from cache and/or building
-$container = require_once $varPath . '/bootstrap.php';
+$container = require_once $optPath . '/bootstrap.php';
 
 // Add migration commands to the Doctrine command set
 if (isset($commands)) {

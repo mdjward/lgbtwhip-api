@@ -1,0 +1,57 @@
+TheLgbtWhip\Api\Model\Candidate:
+    exclusion_policy: ALL
+    xml_root_name: candidate
+    access_type: public_method
+    
+    properties:
+        name:
+            type: string
+            accessor:
+                getter: getName
+                setter: setName
+            expose: true
+            xml_element:
+                cdata: false
+
+        party:
+            type: TheLgbtWhip\Api\Model\Party
+            accessor:
+                getter: getParty
+                setter: setParty
+            expose: true
+
+        website:
+            type: string
+            access_type: public_method
+            accessor:
+                getter: getWebsite
+                setter: setWebsite
+            xml_element:
+                cdata: false
+
+        wikipedia:
+            type: string
+            accessor:
+                getter: getWikipedia
+                setter: setWikipedia
+            expose: true
+            xml_element:
+                cdata: false
+
+        email:
+            type: string
+            accessor:
+                getter: getEmail
+                setter: setEmail
+            expose: true
+            xml_element:
+                cdata: false
+            
+        termsAsMp:
+            type: ArrayCollection<TheLgbtWhip\Api\Model\Term>
+            accessor:
+                getter: getTermsAsMp
+            expose: true
+            read_only: true
+            xml_list:
+                entry_name: term

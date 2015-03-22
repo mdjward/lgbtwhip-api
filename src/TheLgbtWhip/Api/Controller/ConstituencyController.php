@@ -10,9 +10,11 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
-use TheLgbtWhip\Api\External\Client\MapItClient;
+use JMS\Serializer\SerializerInterface;
+use TheLgbtWhip\Api\External\Client\MapIt\MapItClient;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
+
 
 
 /**
@@ -33,19 +35,28 @@ class ConstituencyController extends AbstractController
      * @var ConstituencyRepository
      */
     private $constituencyRepository;
+    
+    /**
+     *
+     * @var SerializerInterface
+     */
+    private $serializer;
 
 
 
     /**
      * @param MapItClient $mapItClient
      * @param ConstituencyRepository $constituencyRepository
+     * @param SerializerInterface $serializer
      */
     public function __construct(
         MapItClient $mapItClient,
-        ConstituencyRepository $constituencyRepository
+        ConstituencyRepository $constituencyRepository,
+        SerializerInterface $serializer
     ) {
         $this->mapItClient = $mapItClient;
         $this->constituencyRepository = $constituencyRepository;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -54,13 +65,26 @@ class ConstituencyController extends AbstractController
      */
     public function resolveByPostcodeAction($givenPostcode)
     {
-        $id = $this->mapItClient->getConstituencyFromPostcode($givenPostcode);
+        $this->response->headers->set('Content-Type', 'application/json');
         
-        if (($constituency = $this->constituencyRepository->find($id)) !== null) {
-            return $constituency;
-        }
-        
-        $this->response->setStatus(404);
+        return $this->response->setBody(
+            $this->serializer->serialize(
+                $this->mapItClient->getConstituencyFromPostcode($givenPostcode),
+                'json'
+            )
+        );
     }
+    
+    /*public function resolveByNameAction($name)
+    {
+        $this->response->headers->set('Content-Type', 'application/json');
+        
+        return $this->response->setBody(
+            $this->serializer->serialize(
+                new \StdClass(),
+                'json'
+            )
+        );
+    }*/
 
 }

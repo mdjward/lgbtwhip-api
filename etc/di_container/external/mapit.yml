@@ -1,14 +1,21 @@
 parameters:
 
-
+    thelgbtwhip.api.external.client.mapit.class:                TheLgbtWhip\Api\External\Client\MapIt\MapItClient
+    thelgbtwhip.api.external.client.mapit.processor.class:      TheLgbtWhip\Api\External\Client\MapIt\MapItProcessor
 
 services:
 
     thelgbtwhip.api.external.client.mapit:
-        class: TheLgbtWhip\Api\External\Client\MapItClient
+        class: %thelgbtwhip.api.external.client.mapit.class%
         arguments:
             httpClient: @thelgbtwhip.api.external.client.mapit.http_client
+            processor:  @thelgbtwhip.api.external.client.mapit.processor
 
     thelgbtwhip.api.external.client.mapit.http_client:
-        class: GuzzleHttp\Client
+        class: %thelgbtwhip.api.external.client.http_client.class%
         arguments: [{base_url: %mapit.base_url%}]
+
+    thelgbtwhip.api.external.client.mapit.processor:
+        class: %thelgbtwhip.api.external.client.mapit.processor.class%
+        arguments:
+            yourNextMpClient:   @thelgbtwhip.api.external.client.your_next_mp
