@@ -2,17 +2,21 @@
 
 namespace TheLgbtWhip\Api\Tests\Controller;
 
-use \Slim\Http\Response;
+use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Slim\Http\Headers;
+use Slim\Http\Response;
+use StdClass;
 use TheLgbtWhip\Api\Controller\ConstituencyController;
-use TheLgbtWhip\Api\Model\View\Constituency;
+use TheLgbtWhip\Api\External\Client\MapIt\MapItClientInterface;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
-use TheLgbtWhip\Api\External\Client\MapItClient;
 
 
 
 /**
  * 
+ * @coversDefaultClass \TheLgbtWhip\Api\Controller\ConstituencyController
  */
 class ConstituencyControllerTest extends TestCase
 {
@@ -21,89 +25,93 @@ class ConstituencyControllerTest extends TestCase
      * 
      */
     const TEST_POSTCODE = "TestCode";
+    
+    /**
+     * 
+     */
     const TEST_NAME = "Test Name";
+    
+    /**
+     * 
+     */
     const TEST_ID = 123;
 
-    /**
-     *
-     * @var MapItClient 
-     */
-    private $client;
+    
     
     /**
      *
+     * @var MapItClientInterface
+     */
+    private $mapItClient;
+    
+    /**
+     * @var ConstituencyRepository
+     */
+    private $constituencyRepository;
+    
+    /**
+     *
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * @var ConstituencyController 
      */
     private $controller;
 
     /**
-     * @var ConstituencyRepository
-     */
-    private $constituencyRepository;
-
-    /**
-     * @var Constituency
-     */
-    private $constituency;
-
-    /**
      * @var Response
      */
     private $response;
+    
 
-
+    
     /**
      * 
      */
     protected function setUp()
     {
-        $this->constituency = $this->_mockConstituency();
-
-        $this->response = new Response();
-        $this->client = mock('TheLgbtWhip\Api\External\Client\MapItClient');
-        $this->constituencyRepository = mock('TheLgbtWhip\Api\Repository\ConstituencyRepository');
-        $this->controller = new ConstituencyController($this->client, $this->constituencyRepository);
+        $this->mapItClient = mock(MapItClientInterface::class);
+        $this->constituencyRepository = mock(ConstituencyRepository::class);
+        $this->serializer = mock(SerializerInterface::class);
+        
+        $this->controller = new ConstituencyController(
+            $this->mapItClient,
+            $this->constituencyRepository,
+            $this->serializer
+        );
+        
+        $this->response = mock(Response::class);
+        $this->response->headers = mock(Headers::class);
+        
         $this->controller->setResponse($this->response);
     }
-
+    
     /**
      * @test
+     * @covers ::__construct
+     * @covers ::resolveByPostcodeAction
      */
-    public function testResolveByPostcodeSetsConstituencyName()
+    public function testResolveByPostcodeAction()
     {
-        // given
-        when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(self::TEST_ID);
-        when($this->constituencyRepository->find(self::TEST_ID))->return($this->constituency);
-
-        // when
-        $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
-
-        // then
-        $this->assertInstanceOf('TheLgbtWhip\Api\Model\View\Constituency', $result);
-        $this->assertEquals(self::TEST_ID, $result->id);
-        $this->assertEquals(self::TEST_NAME, $result->name);
+        $postcode = 'AA1 1AA';
+        $mapItResponse = new StdClass();
+        $serializedContent = 'Arbitrary, notionally-serialized data';
+        
+        when($this->response->headers->set(identicalTo('Content-Type'), identicalTo('application/json')))->return(true);
+        
+        when($this->mapItClient->getConstituencyFromPostcode(identicalTo($postcode)))->return($mapItResponse);
+        when($this->serializer->serialize(identicalTo($mapItResponse), identicalTo('json')))->return($serializedContent);
+        when($this->response->setBody(identicalTo($serializedContent)))->return(null);
+        
+        $this->assertNull($this->controller->resolveByPostcodeAction($postcode));
+        
+        verify($this->response->headers, 1)->set(identicalTo('Content-Type'), identicalTo('application/json'));
+        
+        verify($this->mapItClient, 1)->getConstituencyFromPostcode(identicalTo($postcode));
+        verify($this->serializer, 1)->serialize(identicalTo($mapItResponse), identicalTo('json'));
+        verify($this->response, 1)->setBody(identicalTo($serializedContent));
     }
 
-    /**
-     * @test
-     */
-    public function testResolveByPostcodeReturns404WhenPostcodeNotFound()
-    {
-        // given
-        when($this->client->getConstituencyFromPostcode(self::TEST_POSTCODE))->return(null);;
-
-        // when
-        $result = $this->controller->resolveByPostcodeAction(self::TEST_POSTCODE);
-
-        // then
-        $this->assertEquals(404, $this->response->getStatus());
-    }
-
-    private function _mockConstituency()
-    {
-        $constituency = new Constituency();
-        $constituency->id = self::TEST_ID;
-        $constituency->name = self::TEST_NAME;
-        return $constituency;
-    }
 }

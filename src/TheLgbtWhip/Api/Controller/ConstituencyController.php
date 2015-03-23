@@ -11,7 +11,7 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use JMS\Serializer\SerializerInterface;
-use TheLgbtWhip\Api\External\Client\MapIt\MapItClient;
+use TheLgbtWhip\Api\External\Client\MapIt\MapItClientInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
 
@@ -27,7 +27,7 @@ class ConstituencyController extends AbstractController
 
     /**
      *
-     * @var MapItClient
+     * @var MapItClientInterface
      */
     private $mapItClient;
 
@@ -45,12 +45,12 @@ class ConstituencyController extends AbstractController
 
 
     /**
-     * @param MapItClient $mapItClient
+     * @param MapItClientInterface $mapItClient
      * @param ConstituencyRepository $constituencyRepository
      * @param SerializerInterface $serializer
      */
     public function __construct(
-        MapItClient $mapItClient,
+        MapItClientInterface $mapItClient,
         ConstituencyRepository $constituencyRepository,
         SerializerInterface $serializer
     ) {
