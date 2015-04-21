@@ -2,7 +2,6 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use DateTime;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use ReflectionClass;
 use TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClientInterface;
@@ -10,6 +9,7 @@ use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Issue;
 use TheLgbtWhip\Api\Model\Vote;
+use TheLgbtWhip\Api\Repository\IssueRepository;
 
 
 
@@ -29,6 +29,12 @@ class IssueController extends AbstractController
     
     /**
      *
+     * @var IssueRepository
+     */
+    protected $issueRepository;
+    
+    /**
+     *
      * @var SerializerInterface
      */
     protected $serializer;
@@ -38,14 +44,21 @@ class IssueController extends AbstractController
     /**
      * 
      * @param ThePublicWhipClientInterface $thePublicWhipClient
+     * @param IssueRepository $issueRepository
      * @param SerializerInterface $serializer
      */
     public function __construct(
         ThePublicWhipClientInterface $thePublicWhipClient,
+        IssueRepository $issueRepository,
         SerializerInterface $serializer
     ) {
         $this->thePublicWhipClient = $thePublicWhipClient;
         $this->serializer = $serializer;
+    }
+    
+    public function getIssueAction($uriKey)
+    {
+        
     }
     
     /**

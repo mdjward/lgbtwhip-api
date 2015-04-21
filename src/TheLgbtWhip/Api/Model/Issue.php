@@ -30,6 +30,12 @@ class Issue extends AbstractModelWithId
      *
      * @var string
      */
+    protected $uriKey;
+    
+    /**
+     *
+     * @var string
+     */
     protected $relevantAct;
     
     /**
@@ -62,6 +68,12 @@ class Issue extends AbstractModelWithId
      */
     protected $votes;
     
+    /**
+     *
+     * @var Collection
+     */
+    protected $views;
+    
     
     
     /**
@@ -70,6 +82,7 @@ class Issue extends AbstractModelWithId
     public function __construct()
     {
         $this->votes = new ArrayCollection();
+        $this->views = new ArrayCollection();
     }
     
     /**
@@ -89,7 +102,15 @@ class Issue extends AbstractModelWithId
     {
         return $this->description;
     }
-
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getUriKey() {
+        return $this->uriKey;
+    }
+    
     /**
      * 
      * @return string
@@ -143,7 +164,15 @@ class Issue extends AbstractModelWithId
     {
         return $this->votes;
     }
-
+    
+    /**
+     * 
+     * @return Collection
+     */
+    public function getViews() {
+        return $this->views;
+    }
+    
     /**
      * 
      * @param string $title
@@ -164,6 +193,17 @@ class Issue extends AbstractModelWithId
     public function setDescription($description)
     {
         $this->description = $description;
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param string $uriKey
+     * @return \TheLgbtWhip\Api\Model\Issue
+     */
+    public function setUriKey($uriKey) {
+        $this->uriKey = $uriKey;
         
         return $this;
     }
@@ -248,6 +288,30 @@ class Issue extends AbstractModelWithId
     public function removeVote(Vote $vote)
     {
         $this->votes->removeElement($vote);
+        
+        return $this;
+    }
+
+    /**
+     * 
+     * @param View $view
+     * @return Issue
+     */
+    public function addView(View $view)
+    {
+        $this->views->add($view);
+        
+        return $this;
+    }
+
+    /**
+     * 
+     * @param View $view
+     * @return Issue
+     */
+    public function removeView(View $view)
+    {
+        $this->views->removeElement($view);
         
         return $this;
     }

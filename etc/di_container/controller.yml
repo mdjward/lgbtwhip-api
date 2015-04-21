@@ -3,6 +3,14 @@ parameters:
     
 services:
     
+    thelgbtwhip.api.controller.candidate:
+        class: TheLgbtWhip\Api\Controller\CandidateController
+        arguments:
+            candidateRepository:    @thelgbtwhip.api.orm.entity.candidate.repository
+            serializer:             @thelgbtwhip.api.serializer.candidate
+        tags:
+            - { name: controller }
+
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:

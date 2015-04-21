@@ -1,16 +1,20 @@
 parameters:
     
-    thelgbtwhip.api.orm.model.constituency.class:               TheLgbtWhip\Api\Model\View\Constituency
-    
-    thelgbtwhip.api.orm.repository.constituency.class:          TheLgbtWhip\Api\Repository\ConstituencyRepository
-    
 services:
     
-    thelgbtwhip.api.orm.repository.constituency:
-        class: %thelgbtwhip.api.orm.repository.constituency.class%
+    thelgbtwhip.api.orm.repository.candidate:
+        class: TheLgbtWhip\Api\Repository\CandidateRepository
         factory:
             - @thelgbtwhip.api.orm.entity_manager
             - getRepository
         arguments:
-            - %thelgbtwhip.api.orm.model.constituency.class%
+            - TheLgbtWhip\Api\Model\Candidate
+
+    thelgbtwhip.api.orm.repository.constituency:
+        class: TheLgbtWhip\Api\Repository\ConstituencyRepository
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getRepository
+        arguments:
+            - TheLgbtWhip\Api\Model\Constituency
 

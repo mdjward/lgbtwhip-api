@@ -36,8 +36,18 @@ $app->group('/constituency', function() use ($app, $container) {
     );
 });
 
+// Handle candidate routes
+$app->group('candidate', function() use ($app, $container) {
+    
+    // Add/update views
+    $app->put(
+        '/view',
+        [$container->get('thelgbtwhip.api.controller.candidate'), 'updateViewAction']
+    );
+});
+
 // Handle issue routes
-$app->get('/issue', function() use ($app, $container) {
+$app->get('/issue', function() use ($container) {
     
     return $container->get('thelgbtwhip.api.controller.issue')->testAction(
         11,
@@ -45,6 +55,9 @@ $app->get('/issue', function() use ($app, $container) {
     );
     
 });
+
+// Handle not found by returning a blank string
+$app->notFound(function() {});
 
 // Return the Slim application to the calling script
 return $app;
