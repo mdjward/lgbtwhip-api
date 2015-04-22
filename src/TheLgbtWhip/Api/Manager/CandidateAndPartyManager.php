@@ -73,7 +73,12 @@ class CandidateAndPartyManager extends AbstractModelManager
      */
     public function saveParty(Party $party)
     {
-        if (($existingParty = $this->partyRepository->find($party->getId())) instanceof Party) {
+        $partyId = $party->getId();
+        
+        if (
+            $partyId !== null
+            && ($existingParty = $this->partyRepository->find($partyId)) instanceof Party
+        ) {
             return $existingParty;
         }
         

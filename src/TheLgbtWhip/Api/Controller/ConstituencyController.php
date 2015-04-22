@@ -11,9 +11,10 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use JMS\Serializer\SerializerInterface;
-use TheLgbtWhip\Api\External\Client\MapIt\MapItClientInterface;
+use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
+use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
 
 
@@ -27,7 +28,7 @@ class ConstituencyController extends AbstractController
 
     /**
      *
-     * @var MapItClientInterface
+     * @var PostcodeToConstituencyMappingInterface
      */
     private $mapItClient;
 
@@ -38,39 +39,51 @@ class ConstituencyController extends AbstractController
     
     /**
      *
-     * @var SerializerInterface
+     * @var ContentTypeSerializerWrapper
      */
-    private $serializer;
+    private $serializerWrapper;
 
 
 
     /**
-     * @param MapItClientInterface $mapItClient
+     * @param PostcodeToConstituencyMappingInterface $mapItClient
      * @param ConstituencyRepository $constituencyRepository
-     * @param SerializerInterface $serializer
+     * @param ContentTypeSerializerWrapper $serializerWrapper
      */
     public function __construct(
-        MapItClientInterface $mapItClient,
+        PostcodeToConstituencyMappingInterface $mapItClient,
         ConstituencyRepository $constituencyRepository,
-        SerializerInterface $serializer
+        ContentTypeSerializerWrapper $serializerWrapper
     ) {
         $this->mapItClient = $mapItClient;
         $this->constituencyRepository = $constituencyRepository;
-        $this->serializer = $serializer;
+        $this->serializerWrapper = $serializerWrapper;
     }
-
+    
+    public function setResponse(\Slim\Http\Response $response)
+    {
+        parent::setResponse($response);
+        
+        $this->setUpResponseHeaders();
+    }
+    
+    protected function setUpResponseHeaders()
+    {
+        $this->response->headers->set(
+            'Content-Type',
+            $this->serializerWrapper->getContentTypeFromFormat()
+        );
+    }
+    
     /**
      * @param string $givenPostcode
      * @return Constituency
      */
     public function resolveByPostcodeAction($givenPostcode)
     {
-        $this->response->headers->set('Content-Type', 'application/json');
-        
         return $this->response->setBody(
-            $this->serializer->serialize(
-                $this->mapItClient->getConstituencyFromPostcode($givenPostcode),
-                'json'
+            $this->serializerWrapper->serialize(
+                $this->mapItClient->getConstituencyFromPostcode($givenPostcode)
             )
         );
     }

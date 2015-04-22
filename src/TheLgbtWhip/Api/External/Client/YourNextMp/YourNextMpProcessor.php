@@ -128,6 +128,8 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         $matches = [];
         if (preg_match('#^(?:joint-)?party:(?:[0-9]+-)*([0-9]+)?$#', $partyData['id'], $matches)) {
             $party->setId($matches[1]);
+        } else {
+            $party->setId(0);
         }
         
         $party->setName($partyData['name']);
