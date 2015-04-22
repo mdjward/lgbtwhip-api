@@ -14,6 +14,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Party;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
+use TheLgbtWhip\Api\Repository\PartyRepository;
 
 
 
@@ -30,20 +31,29 @@ class CandidateAndPartyManager extends AbstractModelManager
      */
     protected $candidateRepository;
     
+    /**
+     *
+     * @var PartyRepository 
+     */
+    protected $partyRepository;
+    
     
     
     /**
      * 
      * @param ObjectManager $objectManager
      * @param CandidateRepository $candidateRepository
+     * @param PartyRepository $partyRepository
      */
     public function __construct(
         ObjectManager $objectManager,
-        CandidateRepository $candidateRepository
+        CandidateRepository $candidateRepository,
+        PartyRepository $partyRepository
     ) {
         parent::__construct($objectManager);
         
         $this->candidateRepository = $candidateRepository;
+        $this->partyRepository = $partyRepository;
     }
     
     /**
@@ -63,7 +73,14 @@ class CandidateAndPartyManager extends AbstractModelManager
      */
     public function saveParty(Party $party)
     {
-        return $this->mergeOrPersistObject($party);
+        if (($existingParty = $this->partyRepository->find($party->getId())) instanceof Party) {
+            return $existingParty;
+        }
+        
+        $this->objectManager->persist($party);
+        $this->objectManager->flush($party);
+        
+        return $party;
     }
     
 }
