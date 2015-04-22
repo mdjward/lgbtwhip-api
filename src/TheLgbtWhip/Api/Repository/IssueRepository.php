@@ -43,4 +43,16 @@ class IssueRepository extends EntityRepository
         ]);
     }
     
+    /**
+     * 
+     * @param string $uriKey
+     * @return Issue|null
+     */
+    public function findOneByUriKey($uriKey)
+    {
+        return $this->findOneBy([
+            'uriKey'    =>  $uriKey
+        ]);
+    }
+    
 }
