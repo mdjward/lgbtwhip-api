@@ -18,6 +18,11 @@ TheLgbtWhip\Api\Model\Issue:
             column: description
             type: text
             nullable: true
+        uriKey:
+            column: uri_key
+            type: string
+            length: 100
+            nullable: true
         relevantAct:
             column: relevant_act
             type: string
@@ -42,6 +47,10 @@ TheLgbtWhip\Api\Model\Issue:
             nullable: true
     oneToMany:
         votes:
+            targetEntity: Vote
+            mappedBy: issue
+            fetch: EXTRA_LAZY
+        views:
             targetEntity: Vote
             mappedBy: issue
             fetch: EXTRA_LAZY

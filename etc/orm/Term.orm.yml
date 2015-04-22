@@ -26,7 +26,7 @@ TheLgbtWhip\Api\Model\Term:
                     nullable: false
             fetch: EAGER
         party:
-            targetEntity: party
+            targetEntity: Party
             joinColumns:
                 party_id:
                     referencedColumnName: party_id
