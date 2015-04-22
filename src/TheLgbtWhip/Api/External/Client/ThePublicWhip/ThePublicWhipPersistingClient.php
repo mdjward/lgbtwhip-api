@@ -1,6 +1,7 @@
 <?php
 namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
+use TheLgbtWhip\Api\External\VoteRetrieverInterface;
 use TheLgbtWhip\Api\Model\Issue;
 use TheLgbtWhip\Api\Repository\IssueRepository;
 
@@ -11,7 +12,7 @@ use TheLgbtWhip\Api\Repository\IssueRepository;
  *
  * @author matt
  */
-class ThePublicWhipPersistingClient implements ThePublicWhipClientInterface
+class ThePublicWhipPersistingClient implements VoteRetrieverInterface
 {
     
     /**
@@ -30,7 +31,7 @@ class ThePublicWhipPersistingClient implements ThePublicWhipClientInterface
     
     /**
      * 
-     * @param \TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClient $realClient
+     * @param ThePublicWhipClient $realClient
      * @param IssueRepository $issueRepository
      */
     public function __construct(
@@ -38,11 +39,12 @@ class ThePublicWhipPersistingClient implements ThePublicWhipClientInterface
         IssueRepository $issueRepository
     ) {
         $this->realClient = $realClient;
+        $this->issueRepository = $issueRepository;
     }
     
     public function getVotesForIssue(Issue $issue)
     {
-        
+        ;
     }
     
 }

@@ -9,6 +9,7 @@ namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
 use GuzzleHttp\Client;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
+use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 
@@ -18,7 +19,7 @@ use TheLgbtWhip\Api\Model\Constituency;
  *
  * @author matt
  */
-class YourNextMpClient extends AbstractRestServiceClient implements YourNextMpClientInterface
+class YourNextMpClient extends AbstractRestServiceClient implements ConstituencyCandidatesRetrieverInterface
 {
     
     /**

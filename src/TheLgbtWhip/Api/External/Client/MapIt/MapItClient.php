@@ -4,6 +4,7 @@ namespace TheLgbtWhip\Api\External\Client\MapIt;
 
 use GuzzleHttp\Client;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
+use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 
@@ -13,7 +14,7 @@ use TheLgbtWhip\Api\Model\Constituency;
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class MapItClient extends AbstractRestServiceClient
+class MapItClient extends AbstractRestServiceClient implements PostcodeToConstituencyMappingInterface
 {
     
     /**

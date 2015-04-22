@@ -9,6 +9,7 @@
 namespace TheLgbtWhip\Api\External\Client\MapIt;
 
 use GuzzleHttp\Message\Response;
+use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 /**
@@ -24,6 +25,6 @@ interface MapItProcessorInterface
      * @param Response $response
      * @return Constituency
      */
-    public function processConstituencyData(Response $response);
+    public function processConstituencyData(ResponseInterface $response);
     
 }

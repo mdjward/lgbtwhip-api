@@ -5,6 +5,7 @@ namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 use GuzzleHttp\Client;
 use GuzzleHttp\Url;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
+use TheLgbtWhip\Api\External\VoteRetrieverInterface;
 use TheLgbtWhip\Api\Model\Issue;
 
 /**
@@ -12,7 +13,7 @@ use TheLgbtWhip\Api\Model\Issue;
  *
  * @author matt
  */
-class ThePublicWhipClient extends AbstractRestServiceClient implements ThePublicWhipClientInterface
+class ThePublicWhipClient extends AbstractRestServiceClient implements VoteRetrieverInterface
 {
     
     /**

@@ -8,8 +8,8 @@
 
 namespace TheLgbtWhip\Api\External\Client\MapIt;
 
-use GuzzleHttp\Message\Response;
-use TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpClientInterface;
+use GuzzleHttp\Message\ResponseInterface;
+use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 /**
@@ -22,31 +22,32 @@ class MapItProcessor implements MapItProcessorInterface
     
     /**
      *
-     * @var YourNextMpClientInterface
+     * @var ConstituencyCandidatesRetrieverInterface
      */
-    protected $yourNextMpClient;
+    protected $constituencyCandidateRetriever;
     
     
     
     /**
      * 
-     * @param YourNextMpClientInterface $yourNextMpClient
+     * @param ConstituencyCandidatesRetrieverInterface $constituencyCandidateRetriever
      */
-    public function __construct(YourNextMpClientInterface $yourNextMpClient)
-    {
-        $this->yourNextMpClient = $yourNextMpClient;
+    public function __construct(
+        ConstituencyCandidatesRetrieverInterface $constituencyCandidateRetriever
+    ) {
+        $this->constituencyCandidateRetriever = $constituencyCandidateRetriever;
     }
     
     /**
      * 
-     * @param Response $response
+     * @param ResponseInterface $response
      * @return Constituency
      */
-    public function processConstituencyData(Response $response)
+    public function processConstituencyData(ResponseInterface $response)
     {
         $constituency = $this->buildConstituencyFromResponse($response);
         
-        foreach ($this->yourNextMpClient->getCandidatesForConstituency($constituency) as $candidate) {
+        foreach ($this->constituencyCandidateRetriever->getCandidatesForConstituency($constituency) as $candidate) {
             $constituency->addCandidate($candidate);
         }
         
@@ -55,12 +56,12 @@ class MapItProcessor implements MapItProcessorInterface
     
     /**
      * 
-     * @param Response $response
+     * @param ResponseInterface $response
      * @return Constituency
      * @throws PostcodeResolutionException
      * @throws PostcodeInvalidResponseException
      */
-    protected function buildConstituencyFromResponse(Response $response)
+    protected function buildConstituencyFromResponse(ResponseInterface $response)
     {
         $constituencyData = $response->json();
         

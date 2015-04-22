@@ -8,7 +8,7 @@
 
 namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Party;
@@ -33,12 +33,12 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
      * 
      * @param integer $targetElectionYear
      */
-    public function __construct($targetElectionYear = 2015)
+    public function __construct($targetElectionYear)
     {
         $this->targetElectionYear = $targetElectionYear;
     }
     
-    public function processCandidates(Constituency $constituency, Response $response)
+    public function processCandidates(Constituency $constituency, ResponseInterface $response)
     {
         $responseData = $response->json();
         
@@ -52,7 +52,11 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         
         foreach ($responseData['result']['memberships'] as $membershipData) {
             try {
-                $candidate = $this->buildCandidate($response, $membershipData);
+                $candidate = $this->buildCandidate(
+                    $response,
+                    $membershipData,
+                    $constituency
+                );
                 $candidates[$candidate->getId()] = $candidate;
             } catch (YourNextMpException $ex) {
                 continue;
@@ -64,12 +68,17 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
     
     /**
      * 
-     * @param Response $response
+     * @param ResponseInterface $response
      * @param array $membershipData
+     * @param Constituency $constituency
      * @return Candidate
+     * @throws YourNextMpException
      */
-    protected function buildCandidate(Response $response, array $membershipData)
-    {
+    protected function buildCandidate(
+        ResponseInterface $response,
+        array $membershipData,
+        Constituency $constituency
+    ) {
         if (!isset($membershipData['person_id'])) {
             throw new YourNextMpException('Missing person details for candidate');
         }
@@ -84,6 +93,7 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         }
         
         $candidate = new Candidate();
+        $candidate->setConstituency($constituency);
         
         if (isset($personData['id'])) {
             $candidate->setId($personData['id']);
@@ -110,13 +120,13 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
     }
     
     protected function buildParty(
-        Response $response,
+        ResponseInterface $response,
         array $partyData
     ) {
         $party = new Party();
         
         $matches = [];
-        if (preg_match('#^party:([0-9]+)$#', $partyData['id'], $matches)) {
+        if (preg_match('#^(?:joint-)?party:(?:[0-9]+-)*([0-9]+)?$#', $partyData['id'], $matches)) {
             $party->setId($matches[1]);
         }
         

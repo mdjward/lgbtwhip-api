@@ -8,7 +8,7 @@
 
 namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
-use GuzzleHttp\Message\Response;
+use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 /**
@@ -18,6 +18,9 @@ use TheLgbtWhip\Api\Model\Constituency;
 interface YourNextMpProcessorInterface
 {
     
-    public function processCandidates(Constituency $constituency, Response $response);
+    public function processCandidates(
+        Constituency $constituency,
+        ResponseInterface $response
+    );
     
 }
