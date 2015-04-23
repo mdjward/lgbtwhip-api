@@ -5,8 +5,6 @@ parameters:
     thelgbtwhip.api.serializer.depth_respecting_wrapper.class:  TheLgbtWhip\Api\Serializer\DepthRespectingSerializer
     thelgbtwhip.api.serializer.content_type_wrapper.class:      TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper
 
-
-
 services:
     
     thelgbtwhip.api.serializer.naming_strategy:

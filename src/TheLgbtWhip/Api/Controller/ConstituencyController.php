@@ -66,7 +66,6 @@ class ConstituencyController extends AbstractSerializingController
         PostcodeToConstituencyMappingInterface $postcodeToConstituencyMapper,
         ConstituencyIdResolverInterface $constituencyIdResolver,
         ConstituencyNameResolverInterface $constituencyNameResolver,
-        ConstituencyRepository $constituencyRepository,
         ContentTypeSerializerWrapper $serializerWrapper
     ) {
         parent::__construct($serializerWrapper);
@@ -74,8 +73,6 @@ class ConstituencyController extends AbstractSerializingController
         $this->postcodeToConstituencyMapper = $postcodeToConstituencyMapper;
         $this->constituencyIdResolver = $constituencyIdResolver;
         $this->constituencyNameResolver = $constituencyNameResolver;
-        
-        $this->constituencyRepository = $constituencyRepository;
     }
     
     /**

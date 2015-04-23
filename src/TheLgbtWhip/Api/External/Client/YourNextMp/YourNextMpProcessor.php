@@ -73,7 +73,16 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
      */
     public function processCandidateSearchResults(ResponseInterface $response)
     {
-        return null;
+        $responseData = $response->json();
+        
+        if (!isset($responseData['result'][0])) {
+            throw new YourNextMpException(
+                $response,
+                'No candidate was found with given attribute(s)'
+            );
+        }
+        
+        return $this->buildCandidateFromSearch($response, $responseData['result'][0]);
     }
     
     /**
@@ -88,7 +97,7 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         if (!isset($responseData['result'][0])) {
             throw new YourNextMpException(
                 $response,
-                'No constituency was found with those results'
+                'No constituency was found with given attribute(s)'
             );
         }
         
@@ -99,17 +108,20 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
      * 
      * @param ResponseInterface $response
      * @param array $membershipData
-     * @param Constituency $constituency
+     * @param Constituency|null $constituency
      * @return Candidate
      * @throws YourNextMpException
      */
     protected function buildCandidate(
         ResponseInterface $response,
         array $membershipData,
-        Constituency $constituency
+        Constituency $constituency = null
     ) {
         if (!isset($membershipData['person_id'])) {
-            throw new YourNextMpException('Missing person details for candidate');
+            throw new YourNextMpException(
+                $response,
+                'Missing person details for candidate'
+            );
         }
         
         $personData = $membershipData['person_id'];
@@ -122,7 +134,10 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         }
         
         $candidate = new Candidate();
-        $candidate->setConstituency($constituency);
+        
+        if ($constituency !== null) {
+            $candidate->setConstituency($constituency);
+        }
         
         if (isset($personData['id'])) {
             $candidate->setId($personData['id']);
@@ -143,6 +158,84 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
                     $personData['party_memberships'][$this->targetElectionYear]
                 )
             );
+        }
+        
+        return $candidate;
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param array $personData
+     */
+    protected function buildCandidateFromSearch(
+        ResponseInterface $response,
+        array $personData
+    ) {
+        if (!isset($personData['id'])) {
+            throw new YourNextMpException(
+                $response,
+                'Missing person details for candidate'
+            );
+        }
+        
+        if (!isset($personData['standing_in'][$this->targetElectionYear])) {
+            throw new YourNextMpException(
+                $response,
+                'Person is not a candidate in the target election'
+            );
+        }
+        
+        $candidate = new Candidate();
+        
+        $candidate->setConstituency(
+            $this->buildConstituencyFromCandidateSearch(
+                $response,
+                $personData['standing_in'][$this->targetElectionYear]
+            )
+        );
+        
+        if (isset($personData['id'])) {
+            $candidate->setId($personData['id']);
+        }
+        
+        if (isset($personData['name'])) {
+            $candidate->setName($personData['name']);
+        }
+        
+        if (isset($personData['email'])) {
+            $candidate->setEmail($personData['email']);
+        }
+        
+        if (isset($personData['party_memberships'][$this->targetElectionYear])) {
+            $candidate->setParty(
+                $this->buildParty(
+                    $response,
+                    $personData['party_memberships'][$this->targetElectionYear]
+                )
+            );
+        }
+        
+        if (isset($personData['links']) && !empty($personData['links'])) {
+            foreach ($personData['links'] as $link) {
+                switch (strtolower($link['note'])) {
+                    case 'homepage':
+                        $candidate->setWebsite($link['url']);
+                        break;
+                }
+            }
+        }
+        
+        if (isset($personData['contact_details']) && !empty($personData['contact_details'])) {
+            foreach ($personData['contact_details'] as $contactDetails) {
+                switch (strtolower($contactDetails['type'])) {
+                    case 'twitter':
+                        $candidate->setTwitter($contactDetails['value']);
+                        break;
+                    case 'homepage':
+                        $candidate->setWebsite($contactDetails['value']);
+                }
+            }
         }
         
         return $candidate;
@@ -191,6 +284,24 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             $response,
             'Insufficient area data for constituency'
         );
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param array $constituencyData
+     * @return Constituency
+     */
+    protected function buildConstituencyFromCandidateSearch(
+        ResponseInterface $response,
+        array $constituencyData
+    ) {
+        $constituency = new Constituency();
+        
+        return $constituency
+            ->setName($constituencyData['name'])
+            ->setId($constituencyData['post_id'])
+        ;
     }
     
 }

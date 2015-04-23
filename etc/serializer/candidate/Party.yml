@@ -30,15 +30,3 @@ TheLgbtWhip\Api\Model\Party:
             expose: true
             xml_element:
                 cdata: false
-
-        candidates:
-            serialized_name: candidates
-            type: ArrayCollection<TheLgbtWhip\Api\Model\Candidate>
-            accessor:
-                getter: getCandidates
-            expose: true
-            read_only: true
-            xml_list:
-                inline: false
-                entry_name: candidate
-            max_depth: 1

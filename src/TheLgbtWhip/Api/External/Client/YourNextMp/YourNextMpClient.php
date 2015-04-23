@@ -99,16 +99,25 @@ class YourNextMpClient
     public function resolveCandidateByName($candidateName)
     {
         $request = $this->httpClient->createRequest('GET', 'search/persons');
-        $request->getQuery()->add(
-            sprintf(
-                'q=name:"%s"',
-                $candidateName
-            )
-        );
+        $request->getQuery()->add('q', sprintf('name:"%s"', $candidateName));
         
         return $this->processor->processCandidateSearchResults(
             $this->httpClient->send($request)
         );
+    }
+    
+    /**
+     * 
+     * @param RequestInterface $request
+     * @return Candidate
+     */
+    protected function resolveCandidate(RequestInterface $request)
+    {
+        $candidate = $this->processor->processCandidateSearchResults(
+            $this->httpClient->send($request)
+        );
+
+        return $candidate;
     }
     
     /**

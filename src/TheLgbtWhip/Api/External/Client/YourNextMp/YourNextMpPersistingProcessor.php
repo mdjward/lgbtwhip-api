@@ -62,12 +62,13 @@ class YourNextMpPersistingProcessor extends YourNextMpProcessor
      * 
      * @param ResponseInterface $response
      * @param array $membershipData
-     * @return Candidate
+     * @param Constituency $constituency
+     * @return Constituency
      */
     protected function buildCandidate(
         ResponseInterface $response,
         array $membershipData,
-        Constituency $constituency
+        Constituency $constituency = null
     ) {
         return $this->candidateAndPartyManager->saveCandidate(
             parent::buildCandidate($response, $membershipData, $constituency)

@@ -11,7 +11,9 @@ services:
         class: TheLgbtWhip\Api\Controller\CandidateController
         arguments:
             candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
-            serializer:                 @thelgbtwhip.api.serializer.candidate
+            candidateIdResolver:        @thelgbtwhip.api.external.client.your_next_mp.cacheable
+            candidateNameResolver:      @thelgbtwhip.api.external.client.your_next_mp.cacheable
+            serializer:                 @thelgbtwhip.api.serializer.candidate.content_type_wrapper
         tags:
             - { name: controller }
 
@@ -21,7 +23,6 @@ services:
             postcodeToConstituencyMapper:   @thelgbtwhip.api.external.client.mapit.cacheable
             constituencyIdResolver:         @thelgbtwhip.api.external.client.your_next_mp.cacheable
             constituencyNameResolver:       @thelgbtwhip.api.external.client.your_next_mp.cacheable
-            constituencyRepository:         @thelgbtwhip.api.orm.repository.constituency
             serializerWrapper:              @thelgbtwhip.api.serializer.constituency.content_type_wrapper
         tags:
             - { name: controller }

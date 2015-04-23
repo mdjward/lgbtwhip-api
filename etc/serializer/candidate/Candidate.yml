@@ -19,7 +19,7 @@ TheLgbtWhip\Api\Model\Candidate:
                 getter: getParty
                 setter: setParty
             expose: true
-            max_depth: 0
+            max_depth: 1
 
         constituency:
             type: TheLgbtWhip\Api\Model\Constituency
@@ -27,7 +27,7 @@ TheLgbtWhip\Api\Model\Candidate:
                 getter: getConstituency
                 setter: setConstituency
             expose: true
-            max_depth: 0
+            max_depth: 1
 
         website:
             type: string

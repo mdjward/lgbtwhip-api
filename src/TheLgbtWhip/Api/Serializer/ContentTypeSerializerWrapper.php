@@ -68,7 +68,7 @@ class ContentTypeSerializerWrapper
         }
         
         $matches = [];
-        if (preg_match("#^\s*(?:[^\/]+)\/([a-z0-9]+)#i", $contentType, $matches)) {
+        if (preg_match("#^\s*(?:[^\/]+)\/([^\s;]+)#i", $contentType, $matches)) {
             try {
                 $this->setFormat($matches[1]);
             } catch (UnexpectedValueException $ex) {
