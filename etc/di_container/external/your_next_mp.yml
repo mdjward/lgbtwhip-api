@@ -6,6 +6,17 @@ services:
             httpClient: @thelgbtwhip.api.external.client.your_next_mp.http_client
             processor:  @thelgbtwhip.api.external.client.your_next_mp.processor
 
+    thelgbtwhip.api.external.client.your_next_mp.cacheable:
+        class: TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpCachingClient
+        arguments:
+            httpClient:             @thelgbtwhip.api.external.client.your_next_mp.http_client
+            processor:              @thelgbtwhip.api.external.client.your_next_mp.processor
+            objectManager:          @thelgbtwhip.api.orm.entity_manager
+            candidateRepository:    @thelgbtwhip.api.orm.repository.candidate
+            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
+        tags:
+            - { name: cacheable, type: filesystem }
+
     thelgbtwhip.api.external.client.your_next_mp.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
         arguments:
@@ -16,4 +27,5 @@ services:
         class: TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpPersistingProcessor
         arguments:
             candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
+            constituencyManager:        @thelgbtwhip.api.orm.manager.constituency
             targetElectionYear:         %target_election.year%

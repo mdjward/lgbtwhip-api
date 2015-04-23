@@ -10,8 +10,10 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
+use Exception;
 use TheLgbtWhip\Api\External\ConstituencyIdResolverInterface;
 use TheLgbtWhip\Api\External\ConstituencyNameResolverInterface;
+use TheLgbtWhip\Api\External\ExternalServiceException;
 use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
@@ -91,20 +93,28 @@ class ConstituencyController extends AbstractSerializingController
     
     public function resolveByIdAction($id)
     {
-        return $this->response->setBody(
-            $this->serializerWrapper->serialize(
-                $this->constituencyIdResolver->resolveConstituencyById($id)
-            )
-        );
+        try {
+            return $this->response->setBody(
+                $this->serializerWrapper->serialize(
+                    $this->constituencyIdResolver->resolveConstituencyById($id)
+                )
+            );
+        } catch (ExternalServiceException $ex) {
+            throw new Exception($ex->getMessage(), 404, $ex);
+        }
     }
 
     public function resolveByNameAction($name)
     {
-        return $this->response->setBody(
-            $this->serializerWrapper->serialize(
-                $this->constituencyNameResolver->resolveConstituencyByName($name)
-            )
-        );
+        try {
+            return $this->response->setBody(
+                $this->serializerWrapper->serialize(
+                    $this->constituencyNameResolver->resolveConstituencyByName($name)
+                )
+            );
+        } catch (ExternalServiceException $ex) {
+            throw new Exception($ex->getMessage(), 404, $ex);
+        }
     }
 
 }

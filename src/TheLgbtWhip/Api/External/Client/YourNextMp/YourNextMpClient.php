@@ -9,6 +9,8 @@ namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
+use TheLgbtWhip\Api\Cache\Cacheable;
+use TheLgbtWhip\Api\Cache\CacheableTrait;
 use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
@@ -33,8 +35,7 @@ class YourNextMpClient
         CandidateNameResolverInterface,
         ConstituencyIdResolverInterface,
         ConstituencyNameResolverInterface
-{
-    
+{    
     /**
      *
      * @var YourNextMpProcessorInterface 
@@ -75,6 +76,11 @@ class YourNextMpClient
         );
     }
     
+    /**
+     * 
+     * @param integer $candidateId
+     * @return Candidate
+     */
     public function resolveCandidateById($candidateId)
     {
         $request = $this->httpClient->createRequest('GET', 'search/persons');
@@ -85,6 +91,11 @@ class YourNextMpClient
         );
     }
     
+    /**
+     * 
+     * @param string $candidateName
+     * @return Candidate
+     */
     public function resolveCandidateByName($candidateName)
     {
         $request = $this->httpClient->createRequest('GET', 'search/persons');
@@ -100,6 +111,11 @@ class YourNextMpClient
         );
     }
     
+    /**
+     * 
+     * @param integer $constituencyId
+     * @return Constituency
+     */
     public function resolveConstituencyById($constituencyId)
     {
         $request = $this->httpClient->createRequest('GET', 'search/posts');
@@ -108,6 +124,11 @@ class YourNextMpClient
         return $this->resolveConstituency($request);
     }
     
+    /**
+     * 
+     * @param string $constituencyName
+     * @return Constituency
+     */
     public function resolveConstituencyByName($constituencyName)
     {
         $request = $this->httpClient->createRequest('GET', 'search/posts');
@@ -116,6 +137,11 @@ class YourNextMpClient
         return $this->resolveConstituency($request);
     }
     
+    /**
+     * 
+     * @param RequestInterface $request
+     * @return Constituency
+     */
     protected function resolveConstituency(RequestInterface $request)
     {
         $constituency = $this->processor->processConstituencySearchResults(

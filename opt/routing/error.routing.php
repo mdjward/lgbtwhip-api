@@ -29,7 +29,7 @@ $app->error(function(Exception $ex) use ($controller) {
     return $controller->exceptionAction(
         new Exception(
             $ex->getMessage(),
-            500,
+            $ex->getCode() ?: 500,
             $ex
         )
     );
