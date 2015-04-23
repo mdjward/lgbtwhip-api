@@ -28,8 +28,6 @@ $app->get(
     '/search',
     function() use ($request, $response, $controller) {
     
-        throw new Exception('Random', 101);
-    
         $response->setStatus(401);
     
         return $controller->resolveByPostcodeAction(
