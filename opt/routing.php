@@ -24,40 +24,29 @@ if (!isset($container) || !($container instanceof ContainerInterface)) {
 /* @var $app Slim */
 $app = $container->get('thelgbtwhip.api.app');
 
+
+
+// Handle errors
+require_once __DIR__ . '/routing/error.routing.php';
+
+
+
 // Handle constituency routes
 $app->group('/constituency', function() use ($app, $container) {
-    $app->get(
-        '/search',
-        function() use ($app, $container) {
-            return $container->get('thelgbtwhip.api.controller.constituency')->resolveByPostcodeAction(
-                $app->request->get('postcode')
-            );
-        }
-    );
+    require_once __DIR__ . '/routing/constituency.routing.php';
 });
 
 // Handle candidate routes
-$app->group('candidate', function() use ($app, $container) {
-    
-    // Add/update views
-    $app->put(
-        '/view',
-        [$container->get('thelgbtwhip.api.controller.candidate'), 'updateViewAction']
-    );
+$app->group('/candidate', function() use ($app, $container) {
+    require_once __DIR__ . '/routing/candidate.routing.php';
 });
 
 // Handle issue routes
-$app->get('/issue', function() use ($container) {
-    
-    return $container->get('thelgbtwhip.api.controller.issue')->testAction(
-        11,
-        '2013-05-21'
-    );
-    
+$app->group('/issue', function() use ($app, $container) {
+    require_once __DIR__ . '/routing/issue.routing.php';
 });
 
-// Handle not found by returning a blank string
-$app->notFound(function() {});
+
 
 // Return the Slim application to the calling script
 return $app;
