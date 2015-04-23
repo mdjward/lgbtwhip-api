@@ -2,8 +2,47 @@
 
 namespace TheLgbtWhip\Api\Model;
 
+use InvalidArgumentException;
+use UnexpectedValueException;
+
+
+
+/**
+ * View - mappable model class to encapsulate information about a candidate's
+ * view on a certain issue
+ * 
+ * @author M.D.Ward <dev@mattdw.co.uk>
+ * @see Issue
+ * @see Candidate
+ */
 class View extends AbstractModelWithId
 {
+    
+    /**
+     * Indicates that the candidate would support the LGBT community
+     * in legislation regarding this issue
+     */
+    const SUPPORTS = -1;
+    
+    /**
+     * Indicates that the candidate would not support the LGBT community
+     * in legislation regarding this issue
+     */
+    const DOES_NOT_SUPPORT = -2;
+    
+    /**
+     * Indicates that the candidate declined to answer when asked (due to party
+     * policy, as an example)
+     */
+    const DECLINED_TO_ANSWER = -3;
+    
+    /**
+     * Indicates that the candidate - when asked - responded with an extreme
+     * degree of cuntishness
+     */
+    const WAS_A_MASSIVE_CUNT_WHEN_ASKED = -4;
+    
+    
     
     /**
      *
@@ -25,9 +64,21 @@ class View extends AbstractModelWithId
     
     /**
      *
+     * @var integer
+     */
+    protected $historicSupport;
+    
+    /**
+     *
      * @var string
      */
     protected $currentStance;
+    
+    /**
+     *
+     * @var integer
+     */
+    protected $currentSupport;
     
     
     
@@ -60,11 +111,29 @@ class View extends AbstractModelWithId
 
     /**
      * 
+     * @return integer|null
+     */
+    public function getHistoricSupport()
+    {
+        return $this->historicSupport;
+    }
+
+    /**
+     * 
      * @return string
      */
     public function getCurrentStance()
     {
         return $this->currentStance;
+    }
+
+    /**
+     * 
+     * @return integer|null
+     */
+    public function getCurrentSupport()
+    {
+        return $this->currentSupport;
     }
 
     /**
@@ -102,6 +171,18 @@ class View extends AbstractModelWithId
         
         return $this;
     }
+    
+    /**
+     * 
+     * @param integer $historicSupport
+     * @return View
+     */
+    public function setHistoricSupport($historicSupport)
+    {
+        $this->historicSupport = $historicSupport;
+        
+        return $this;
+    }
 
     /**
      * 
@@ -113,6 +194,32 @@ class View extends AbstractModelWithId
         $this->currentStance = $currentStance;
         
         return $this;
+    }
+    
+    /**
+     * 
+     * @param mixed $givenSupportValue
+     * @return integer
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
+     */
+    private function validateSupport($givenSupportValue)
+    {
+        if (!is_numeric($givenSupportValue)) {
+            throw new InvalidArgumentException('Given support value should be ');
+        }
+        
+        $givenSupportValue = (int) $givenSupportValue;
+        
+        switch ($givenSupportValue) {
+            case self::SUPPORTS:
+            case self::DOES_NOT_SUPPORT:
+            case self::DECLINED_TO_ANSWER:
+            case self::WAS_A_MASSIVE_CUNT_WHEN_ASKED:
+                return $givenSupportValue;
+        }
+        
+        throw new UnexpectedValueException('Unrecognised support constant' . $givenSupportValue);
     }
 
 } 

@@ -191,6 +191,37 @@ class Candidate extends AbstractModelWithSettableId
     
     /**
      * 
+     * @return array
+     */
+    public function getIssues()
+    {
+        $issues = [];
+        
+        /* @var $view View */
+        foreach ($this->views as $view) {
+            $issue = $view->getIssue();
+            $issueId = $issue->getId();
+            
+            if (!isset($issues[$issueId])) {
+                $issues[$issueId] = $issue;
+            }
+        }
+        
+        /* @var $vote Vote */
+        foreach ($this->votes as $vote) {
+            $issue = $vote->getIssue();
+            $issueId = $issue->getId();
+            
+            if (!isset($issues[$issueId])) {
+                $issues[$issueId] = $issue;
+            }
+        }
+        
+        return $issues;
+    }
+    
+    /**
+     * 
      * @param Constituency $constituency
      * @return Candidate
      */

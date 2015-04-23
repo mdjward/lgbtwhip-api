@@ -169,7 +169,8 @@ class Issue extends AbstractModelWithId
      * 
      * @return Collection
      */
-    public function getViews() {
+    public function getViews()
+    {
         return $this->views;
     }
     
