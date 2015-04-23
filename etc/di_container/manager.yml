@@ -1,0 +1,14 @@
+services:
+    
+    thelgbtwhip.api.orm.manager.candidate_and_party:
+        class: TheLgbtWhip\Api\Manager\CandidateAndPartyManager
+        arguments:
+            objectManager:          @thelgbtwhip.api.orm.entity_manager
+            candidateRepository:    @thelgbtwhip.api.orm.repository.candidate
+            partyRepository:        @thelgbtwhip.api.orm.repository.party
+
+    thelgbtwhip.api.orm.manager.constituency:
+        class: TheLgbtWhip\Api\Manager\ConstituencyManager
+        arguments:
+            objectManager:          @thelgbtwhip.api.orm.entity_manager
+            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency

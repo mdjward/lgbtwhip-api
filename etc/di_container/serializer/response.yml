@@ -1,0 +1,37 @@
+parameters:
+    
+    thelgbtwhip.api.serializer.response.builder.cache_dir:  %cache_dir%/serializer/response
+    thelgbtwhip.api.serializer.response.namespace_mappings: {'':  %config_dir%/serializer/response}
+    
+services:
+    
+    thelgbtwhip.api.serializer.response.builder:
+        class: JMS\Serializer\SerializerBuilder
+        factory:
+            - JMS\Serializer\SerializerBuilder
+            - create
+        calls:
+            - [setDebug, [%mode.debug%]]
+            - [setCacheDir, [%thelgbtwhip.api.serializer.response.builder.cache_dir%]]
+            - [setMetadataDirs, [%thelgbtwhip.api.serializer.response.namespace_mappings%]]
+            - [setPropertyNamingStrategy, [@thelgbtwhip.api.serializer.naming_strategy]]
+    
+    thelgbtwhip.api.serializer.response.real:
+        class: %thelgbtwhip.api.serializer.real.class%
+        factory:
+            - @thelgbtwhip.api.serializer.response.builder
+            - build
+
+    thelgbtwhip.api.serializer.response.depth_respecting_wrapper:
+        class: %thelgbtwhip.api.serializer.depth_respecting_wrapper.class%
+        arguments:
+            realSerializer: @thelgbtwhip.api.serializer.response.real
+
+    thelgbtwhip.api.serializer.response:
+        alias: thelgbtwhip.api.serializer.response.depth_respecting_wrapper
+
+    thelgbtwhip.api.serializer.response.content_type_wrapper:
+        class: %thelgbtwhip.api.serializer.content_type_wrapper.class%
+        arguments:
+            serializer: @thelgbtwhip.api.serializer.response
+            contentType: "@=service('thelgbtwhip.api.request.headers').get('Accept', 'text/json')"

@@ -12,7 +12,7 @@ TheLgbtWhip\Api\Model\Candidate:
             expose: true
             xml_element:
                 cdata: false
-  
+        
         party:
             type: TheLgbtWhip\Api\Model\Party
             accessor:

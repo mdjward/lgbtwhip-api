@@ -2,6 +2,8 @@ parameters:
     
     mode.debug:                 false
 
+    target_election.year:       2015
+
     your_next_mp.base_url:      http://yournextmp.popit.mysociety.org/api/v0.1/
     mapit.base_url:             http://mapit.mysociety.org/
     the_public_whip.base_url:   http://www.publicwhip.org.uk/division.php

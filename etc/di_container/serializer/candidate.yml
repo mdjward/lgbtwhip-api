@@ -23,10 +23,16 @@ services:
             - @thelgbtwhip.api.serializer.candidate.builder
             - build
 
-    thelgbtwhip.api.serializer.candidate.wrapper:
-        class: %thelgbtwhip.api.serializer.wrapper.class%
+    thelgbtwhip.api.serializer.candidate.depth_respecting_wrapper:
+        class: %thelgbtwhip.api.serializer.depth_respecting_wrapper.class%
         arguments:
             realSerializer: @thelgbtwhip.api.serializer.candidate.real
 
     thelgbtwhip.api.serializer.candidate:
-        alias: thelgbtwhip.api.serializer.candidate.wrapper
+        alias: thelgbtwhip.api.serializer.candidate.depth_respecting_wrapper
+
+    thelgbtwhip.api.serializer.candidate.content_type_wrapper:
+        class: %thelgbtwhip.api.serializer.content_type_wrapper.class%
+        arguments:
+            serializer: @thelgbtwhip.api.serializer.candidate
+            contentType: "@=service('thelgbtwhip.api.request.headers').get('Accept', 'text/json')"

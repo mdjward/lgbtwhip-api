@@ -1,20 +1,34 @@
-parameters:
-    
 services:
     
-    thelgbtwhip.api.orm.repository.candidate:
-        class: TheLgbtWhip\Api\Repository\CandidateRepository
-        factory:
-            - @thelgbtwhip.api.orm.entity_manager
-            - getRepository
-        arguments:
-            - TheLgbtWhip\Api\Model\Candidate
-
     thelgbtwhip.api.orm.repository.constituency:
         class: TheLgbtWhip\Api\Repository\ConstituencyRepository
         factory:
             - @thelgbtwhip.api.orm.entity_manager
             - getRepository
         arguments:
-            - TheLgbtWhip\Api\Model\Constituency
+            entityName: TheLgbtWhip\Api\Model\Constituency
 
+    thelgbtwhip.api.orm.repository.candidate:
+        class: TheLgbtWhip\Api\Repository\CandidateRepository
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getRepository
+        arguments:
+            entityName: TheLgbtWhip\Api\Model\Candidate
+
+    thelgbtwhip.api.orm.repository.party:
+        class: TheLgbtWhip\Api\Repository\PartyRepository
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getRepository
+        arguments:
+            entityName: TheLgbtWhip\Api\Model\Party
+
+    thelgbtwhip.api.orm.repository.issue:
+        class: TheLgbtWhip\Api\Repository\IssueRepository
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getRepository
+        arguments:
+            entityName: TheLgbtWhip\Api\Model\Issue
+        

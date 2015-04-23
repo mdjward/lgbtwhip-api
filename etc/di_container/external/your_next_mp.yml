@@ -1,12 +1,7 @@
-parameters:
-
-    thelgbtwhip.api.external.client.your_next_mp.class:             TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpClient
-    thelgbtwhip.api.external.client.your_next_mp.processor.class:   TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpProcessor
-
 services:
     
     thelgbtwhip.api.external.client.your_next_mp:
-        class: %thelgbtwhip.api.external.client.your_next_mp.class%
+        class: TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpClient
         arguments:
             httpClient: @thelgbtwhip.api.external.client.your_next_mp.http_client
             processor:  @thelgbtwhip.api.external.client.your_next_mp.processor
@@ -18,4 +13,7 @@ services:
                 base_url: %your_next_mp.base_url%
 
     thelgbtwhip.api.external.client.your_next_mp.processor:
-        class: %thelgbtwhip.api.external.client.your_next_mp.processor.class%
+        class: TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpPersistingProcessor
+        arguments:
+            candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
+            targetElectionYear:         %target_election.year%

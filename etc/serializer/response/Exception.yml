@@ -1,0 +1,23 @@
+Exception:
+    exclusion_policy: ALL
+    xml_root_name: error
+    access_type: public_method
+    read_only: true
+    
+    properties:
+        
+        code:
+            type: integer
+            access_type: public_method
+            accessor:
+                getter: getCode
+            expose: true
+            xml_attribute: true
+        
+        message:
+            type: string
+            accessor:
+                getter: getMessage
+            expose: true
+            xml_element:
+                cdata: false

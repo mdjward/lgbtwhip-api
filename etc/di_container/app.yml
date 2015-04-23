@@ -1,5 +1,3 @@
-parameters:
-    
 services:
     
     thelgbtwhip.api.app:
@@ -7,6 +5,8 @@ services:
         arguments:
             -
                 container: @service_container
+                #debug: %mode.debug%
+                debug: false
 
     thelgbtwhip.api.request:
         class: Slim\Http\Request
@@ -19,7 +19,13 @@ services:
     thelgbtwhip.api.environment:
         class: Slim\Http\Environment
         factory: [@thelgbtwhip.api.app, environment]
-        
+
+
+
+    thelgbtwhip.api.request.headers:
+        class: Slim\Http\Headers
+        factory: [@thelgbtwhip.api.request, headers]
+    
     
     
     app:

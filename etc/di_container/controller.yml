@@ -1,22 +1,26 @@
-parameters:
-    
-    
 services:
+    
+    thelgbtwhip.api.controller.error:
+        class: TheLgbtWhip\Api\Controller\ErrorController
+        arguments:
+            serializerWrapper:  @thelgbtwhip.api.serializer.response.content_type_wrapper
+        tags:
+            - { name: controller }
     
     thelgbtwhip.api.controller.candidate:
         class: TheLgbtWhip\Api\Controller\CandidateController
         arguments:
-            candidateRepository:    @thelgbtwhip.api.orm.entity.candidate.repository
-            serializer:             @thelgbtwhip.api.serializer.candidate
+            candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
+            serializer:                 @thelgbtwhip.api.serializer.candidate
         tags:
             - { name: controller }
 
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
-            mapItClient:            @thelgbtwhip.api.external.client.mapit
-            constituencyRepository: @thelgbtwhip.api.orm.entity.constituency.repository
-            serializer:             @thelgbtwhip.api.serializer.constituency
+            mapItClient:            @thelgbtwhip.api.external.client.mapit.cacheable
+            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
+            serializerWrapper:      @thelgbtwhip.api.serializer.constituency.content_type_wrapper
         tags:
             - { name: controller }
 
