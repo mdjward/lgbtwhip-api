@@ -18,9 +18,11 @@ services:
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
-            mapItClient:            @thelgbtwhip.api.external.client.mapit.cacheable
-            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
-            serializerWrapper:      @thelgbtwhip.api.serializer.constituency.content_type_wrapper
+            postcodeToConstituencyMapper:   @thelgbtwhip.api.external.client.mapit.cacheable
+            constituencyIdResolver:         @thelgbtwhip.api.external.client.your_next_mp
+            constituencyNameResolver:       @thelgbtwhip.api.external.client.your_next_mp
+            constituencyRepository:         @thelgbtwhip.api.orm.repository.constituency
+            serializerWrapper:              @thelgbtwhip.api.serializer.constituency.content_type_wrapper
         tags:
             - { name: controller }
 

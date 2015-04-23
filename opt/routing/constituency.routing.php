@@ -9,30 +9,43 @@
  */
 
 use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Slim;
 use TheLgbtWhip\Api\Controller\ConstituencyController;
 
 
 
 /* @var $controller ConstituencyController */
+/* @var $app Slim */
 /* @var $request Request */
-/* @var $response Response */
 $controller = $container->get('thelgbtwhip.api.controller.constituency');
 $request = $app->request;
-$response = $app->response;
 
 
 
 // Search
 $app->get(
     '/search',
-    function() use ($request, $response, $controller) {
-    
-        $response->setStatus(401);
+    function() use ($request, $controller) {
     
         return $controller->resolveByPostcodeAction(
             $request->get('postcode')
         );
+        
     }
 );
 
+$app->get(
+    '/',
+    function() use ($app, $request, $controller) {
+        
+        if (($id = $request->get('id')) !== null) {
+            return $controller->resolveByIdAction($id);
+        }
+        
+        if (($name = $request->get('name')) !== null) {
+            return $controller->resolveByNameAction($name);
+        }
+        
+        $app->pass();
+    }
+);

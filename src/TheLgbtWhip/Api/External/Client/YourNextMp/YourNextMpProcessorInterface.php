@@ -18,9 +18,28 @@ use TheLgbtWhip\Api\Model\Constituency;
 interface YourNextMpProcessorInterface
 {
     
+    /**
+     * 
+     * @param Constituency $constituency
+     * @param ResponseInterface $response
+     */
     public function processCandidates(
         Constituency $constituency,
         ResponseInterface $response
     );
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @return Candidate
+     */
+    public function processCandidateSearchResults(ResponseInterface $response);
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @return Constituency
+     */
+    public function processConstituencySearchResults(ResponseInterface $response);
     
 }

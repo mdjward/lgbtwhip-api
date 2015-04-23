@@ -69,6 +69,35 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
     /**
      * 
      * @param ResponseInterface $response
+     * @return Candidate
+     */
+    public function processCandidateSearchResults(ResponseInterface $response)
+    {
+        return null;
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @return Constituency
+     */
+    public function processConstituencySearchResults(ResponseInterface $response)
+    {
+        $responseData = $response->json();
+        
+        if (!isset($responseData['result'][0])) {
+            throw new YourNextMpException(
+                $response,
+                'No constituency was found with those results'
+            );
+        }
+        
+        return $this->buildConstituency($response, $responseData['result'][0]);
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
      * @param array $membershipData
      * @param Constituency $constituency
      * @return Candidate
@@ -135,6 +164,33 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         $party->setName($partyData['name']);
         
         return $party;
+    }
+    
+    protected function buildConstituency(
+        ResponseInterface $response,
+        array $constituencyData
+    ) {
+        $constituency = new Constituency();
+        
+        if (!isset($constituencyData['area']['name'])) {
+            throw new YourNextMpException(
+                $response,
+                'Area data not available for constituency'
+            );
+        }
+        
+        $areaData = $constituencyData['area'];
+        $constituency->setName($areaData['name']);
+        
+        $matches = [];
+        if (isset($areaData['id']) && preg_match('#mapit:([0-9]+)$#', $areaData['id'], $matches)) {
+            return $constituency->setId($matches[1]);
+        }
+        
+        throw new YourNextMpException(
+            $response,
+            'Insufficient area data for constituency'
+        );
     }
     
 }

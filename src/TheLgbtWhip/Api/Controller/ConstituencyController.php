@@ -10,7 +10,8 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
-use Slim\Http\Response;
+use TheLgbtWhip\Api\External\ConstituencyIdResolverInterface;
+use TheLgbtWhip\Api\External\ConstituencyNameResolverInterface;
 use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
@@ -30,8 +31,20 @@ class ConstituencyController extends AbstractSerializingController
      *
      * @var PostcodeToConstituencyMappingInterface
      */
-    private $mapItClient;
+    private $postcodeToConstituencyMapper;
 
+    /**
+     *
+     * @var ConstituencyIdResolverInterface 
+     */
+    private $constituencyIdResolver;
+    
+    /**
+     *
+     * @var ConstituencyNameResolverInterface 
+     */
+    private $constituencyNameResolver;
+    
     /**
      * @var ConstituencyRepository
      */
@@ -40,18 +53,26 @@ class ConstituencyController extends AbstractSerializingController
 
 
     /**
-     * @param PostcodeToConstituencyMappingInterface $mapItClient
+     * 
+     * @param PostcodeToConstituencyMappingInterface $postcodeToConstituencyMapper
+     * @param ConstituencyIdResolverInterface $constituencyIdResolver
+     * @param ConstituencyNameResolverInterface $constituencyNameResolver
      * @param ConstituencyRepository $constituencyRepository
      * @param ContentTypeSerializerWrapper $serializerWrapper
      */
     public function __construct(
-        PostcodeToConstituencyMappingInterface $mapItClient,
+        PostcodeToConstituencyMappingInterface $postcodeToConstituencyMapper,
+        ConstituencyIdResolverInterface $constituencyIdResolver,
+        ConstituencyNameResolverInterface $constituencyNameResolver,
         ConstituencyRepository $constituencyRepository,
         ContentTypeSerializerWrapper $serializerWrapper
     ) {
         parent::__construct($serializerWrapper);
         
-        $this->mapItClient = $mapItClient;
+        $this->postcodeToConstituencyMapper = $postcodeToConstituencyMapper;
+        $this->constituencyIdResolver = $constituencyIdResolver;
+        $this->constituencyNameResolver = $constituencyNameResolver;
+        
         $this->constituencyRepository = $constituencyRepository;
     }
     
@@ -63,21 +84,27 @@ class ConstituencyController extends AbstractSerializingController
     {
         return $this->response->setBody(
             $this->serializerWrapper->serialize(
-                $this->mapItClient->getConstituencyFromPostcode($givenPostcode)
+                $this->postcodeToConstituencyMapper->getConstituencyFromPostcode($givenPostcode)
             )
         );
     }
     
-    /*public function resolveByNameAction($name)
+    public function resolveByIdAction($id)
     {
-        $this->response->headers->set('Content-Type', 'application/json');
-        
         return $this->response->setBody(
-            $this->serializer->serialize(
-                new \StdClass(),
-                'json'
+            $this->serializerWrapper->serialize(
+                $this->constituencyIdResolver->resolveConstituencyById($id)
             )
         );
-    }*/
+    }
+
+    public function resolveByNameAction($name)
+    {
+        return $this->response->setBody(
+            $this->serializerWrapper->serialize(
+                $this->constituencyNameResolver->resolveConstituencyByName($name)
+            )
+        );
+    }
 
 }

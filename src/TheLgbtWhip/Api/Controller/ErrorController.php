@@ -52,7 +52,11 @@ class ErrorController extends AbstractSerializingController
     {
         return $this->errorAction(
             404,
-            'Unrecognised endpoint ' . $this->request->getPath()
+            sprintf(
+                'Not found: %s?',
+                $this->request->getPath(),
+                filter_input(INPUT_SERVER, 'QUERY_STRING')
+            )
         );
     }
     
