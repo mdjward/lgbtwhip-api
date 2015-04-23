@@ -10,7 +10,7 @@
  */
 namespace TheLgbtWhip\Api\Controller;
 
-use JMS\Serializer\SerializerInterface;
+use Slim\Http\Response;
 use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
@@ -23,7 +23,7 @@ use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
  *
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class ConstituencyController extends AbstractController
+class ConstituencyController extends AbstractSerializingController
 {
 
     /**
@@ -37,12 +37,6 @@ class ConstituencyController extends AbstractController
      */
     private $constituencyRepository;
     
-    /**
-     *
-     * @var ContentTypeSerializerWrapper
-     */
-    private $serializerWrapper;
-
 
 
     /**
@@ -55,24 +49,10 @@ class ConstituencyController extends AbstractController
         ConstituencyRepository $constituencyRepository,
         ContentTypeSerializerWrapper $serializerWrapper
     ) {
+        parent::__construct($serializerWrapper);
+        
         $this->mapItClient = $mapItClient;
         $this->constituencyRepository = $constituencyRepository;
-        $this->serializerWrapper = $serializerWrapper;
-    }
-    
-    public function setResponse(\Slim\Http\Response $response)
-    {
-        parent::setResponse($response);
-        
-        $this->setUpResponseHeaders();
-    }
-    
-    protected function setUpResponseHeaders()
-    {
-        $this->response->headers->set(
-            'Content-Type',
-            $this->serializerWrapper->getContentTypeFromFormat()
-        );
     }
     
     /**

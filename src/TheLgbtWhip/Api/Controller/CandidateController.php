@@ -1,24 +1,37 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace TheLgbtWhip\Api\Controller;
+
+use TheLgbtWhip\Api\Manager\CandidateAndPartyManager;
+use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
 /**
  * Description of CandidateController
  *
  * @author matt
  */
-class CandidateController extends AbstractController
+class CandidateController extends AbstractSerializingController
 {
     
-    public function candidatesAction()
-    {
+    /**
+     *
+     * @var CandidateAndPartyManager 
+     */
+    protected $candidateAndPartyManager;
+    
+    
+    
+    /**
+     * 
+     * @param CandidateAndPartyManager $candidateAndPartyManager
+     * @param ContentTypeSerializerWrapper $serializerWrapper
+     */
+    public function __construct(
+        CandidateAndPartyManager $candidateAndPartyManager,
+        ContentTypeSerializerWrapper $serializerWrapper
+    ) {
+        parent::__construct($serializerWrapper);
         
+        $this->candidateAndPartyManager = $candidateAndPartyManager;
     }
     
 }
