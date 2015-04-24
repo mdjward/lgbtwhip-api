@@ -1,9 +1,13 @@
 <?php
 namespace TheLgbtWhip\Api\Controller;
 
+use Exception;
+use TheLgbtWhip\Api\Adapter\CandidateAdapterInterface;
 use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
+use TheLgbtWhip\Api\External\ExternalServiceException;
 use TheLgbtWhip\Api\Manager\CandidateAndPartyManager;
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
 
@@ -34,6 +38,12 @@ class CandidateController extends AbstractSerializingController
      */
     protected $candidateNameResolver;
     
+    /**
+     *
+     * @var CandidateAdapterInterface
+     */
+    protected $candidateAdapter;
+    
     
     
     /**
@@ -41,12 +51,14 @@ class CandidateController extends AbstractSerializingController
      * @param CandidateAndPartyManager $candidateAndPartyManager
      * @param CandidateIdResolverInterface $candidateIdResolver
      * @param CandidateNameResolverInterface $candidateNameResolver
+     * @param CandidateAdapterInterface $candidateAdapter
      * @param ContentTypeSerializerWrapper $serializerWrapper
      */
     public function __construct(
         CandidateAndPartyManager $candidateAndPartyManager,
         CandidateIdResolverInterface $candidateIdResolver,
         CandidateNameResolverInterface $candidateNameResolver,
+        CandidateAdapterInterface $candidateAdapter,
         ContentTypeSerializerWrapper $serializerWrapper
     ) {
         parent::__construct($serializerWrapper);
@@ -54,6 +66,7 @@ class CandidateController extends AbstractSerializingController
         $this->candidateAndPartyManager = $candidateAndPartyManager;
         $this->candidateIdResolver = $candidateIdResolver;
         $this->candidateNameResolver = $candidateNameResolver;
+        $this->candidateAdapter = $candidateAdapter;
     }
     
     /**
@@ -67,7 +80,9 @@ class CandidateController extends AbstractSerializingController
         try {
             return $this->response->setBody(
                 $this->serializerWrapper->serialize(
-                    $this->candidateIdResolver->resolveCandidateById($id)
+                    $this->candidateAdapter->adaptCandidate(
+                        $this->candidateIdResolver->resolveCandidateById($id)
+                    )
                 )
             );
         } catch (ExternalServiceException $ex) {
@@ -86,7 +101,9 @@ class CandidateController extends AbstractSerializingController
         try {
             return $this->response->setBody(
                 $this->serializerWrapper->serialize(
-                    $this->candidateNameResolver->resolveCandidateByName($name)
+                    $this->candidateAdapter->adaptCandidate(
+                        $this->candidateNameResolver->resolveCandidateByName($name)
+                    )
                 )
             );
         } catch (ExternalServiceException $ex) {

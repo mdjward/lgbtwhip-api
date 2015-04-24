@@ -13,6 +13,7 @@ services:
             candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
             candidateIdResolver:        @thelgbtwhip.api.external.client.your_next_mp.cacheable
             candidateNameResolver:      @thelgbtwhip.api.external.client.your_next_mp.cacheable
+            candidateAggregator:        @thelgbtwhip.api.adapter.candidate
             serializer:                 @thelgbtwhip.api.serializer.candidate.content_type_wrapper
         tags:
             - { name: controller }
