@@ -65,20 +65,3 @@ TheLgbtWhip\Api\Model\Candidate:
             xml_list:
                 entry_name: term
             
-        votes:
-            type: ArrayCollection<TheLgbtWhip\Api\Model\Vote>
-            accessor:
-                getter: getVotes
-            expose: true
-            read_only: true
-            xml_list:
-                entry_name: vote
-            
-        views:
-            type: ArrayCollection<TheLgbtWhip\Api\Model\View>
-            accessor:
-                getter: getViews
-            expose: true
-            read_only: true
-            xml_list:
-                entry_name: view

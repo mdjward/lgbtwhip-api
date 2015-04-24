@@ -46,10 +46,3 @@ TheLgbtWhip\Api\Model\Issue:
                 setter: setPublicWhipDate
             expose: true
             xml_attribute: true
-
-        votes:
-            type: ArrayCollection<TheLgbtWhip\Api\Model\Vote>
-            accessor:
-                getter: getVotes
-            read_only: true
-            expose: true

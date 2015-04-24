@@ -1,0 +1,20 @@
+TheLgbtWhip\Api\Model\Adapted\Issue:
+    exclusion_policy: ALL
+    xml_root_name: issue
+    access_type: public_method
+    read_only: true
+    
+    properties:
+        vote:
+            type: TheLgbtWhip\Api\Model\Vote
+            accessor:
+                getter: getVote
+            expose: true
+            read_only: true
+            
+        view:
+            type: TheLgbtWhip\Api\Model\View
+            accessor:
+                getter: getView
+            expose: true
+            read_only: true
