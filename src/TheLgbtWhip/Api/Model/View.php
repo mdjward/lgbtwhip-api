@@ -36,12 +36,6 @@ class View extends AbstractModelWithId
      */
     const DECLINED_TO_ANSWER = -3;
     
-    /**
-     * Indicates that the candidate - when asked - responded with an extreme
-     * degree of cuntishness
-     */
-    const WAS_A_MASSIVE_CUNT_WHEN_ASKED = -4;
-    
     
     
     /**
@@ -176,10 +170,12 @@ class View extends AbstractModelWithId
      * 
      * @param integer $historicSupport
      * @return View
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
      */
     public function setHistoricSupport($historicSupport)
     {
-        $this->historicSupport = $historicSupport;
+        $this->historicSupport = $this->validateSupport($historicSupport);
         
         return $this;
     }
@@ -198,6 +194,20 @@ class View extends AbstractModelWithId
     
     /**
      * 
+     * @param integer $currentSupport
+     * @return View
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
+     */
+    public function setCurrentSupport($currentSupport)
+    {
+        $this->currentSupport = $this->validateSupport($currentSupport);
+        
+        return $this;
+    }
+        
+    /**
+     * 
      * @param mixed $givenSupportValue
      * @return integer
      * @throws InvalidArgumentException
@@ -206,7 +216,9 @@ class View extends AbstractModelWithId
     private function validateSupport($givenSupportValue)
     {
         if (!is_numeric($givenSupportValue)) {
-            throw new InvalidArgumentException('Given support value should be ');
+            throw new InvalidArgumentException(
+                'Given support value should be provided as an integer'
+            );
         }
         
         $givenSupportValue = (int) $givenSupportValue;
@@ -215,11 +227,12 @@ class View extends AbstractModelWithId
             case self::SUPPORTS:
             case self::DOES_NOT_SUPPORT:
             case self::DECLINED_TO_ANSWER:
-            case self::WAS_A_MASSIVE_CUNT_WHEN_ASKED:
                 return $givenSupportValue;
         }
         
-        throw new UnexpectedValueException('Unrecognised support constant' . $givenSupportValue);
+        throw new UnexpectedValueException(
+            'Unrecognised support constant' . $givenSupportValue
+        );
     }
 
 } 
