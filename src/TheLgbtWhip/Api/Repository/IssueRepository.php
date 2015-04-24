@@ -1,8 +1,11 @@
 <?php
 namespace TheLgbtWhip\Api\Repository;
 
+use DateTime;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Nette\DateTime;
+use Doctrine\ORM\Query\Expr\Join;
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
 
 
@@ -53,6 +56,35 @@ class IssueRepository extends EntityRepository
         return $this->findOneBy([
             'uriKey'    =>  $uriKey
         ]);
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return array
+     */
+    public function findByCandidate(Candidate $candidate)
+    {
+        $queryBuilder = $this->createQueryBuilder('i');
+        $expr = $queryBuilder->expr();
+        
+        $queryBuilder
+            ->join(
+                'i.votes',
+                'vt',
+                Join::WITH,
+                $expr->eq('vt.candidate', ':candidate')
+            )
+            ->join(
+                'i.views',
+                'vw',
+                Join::WITH,
+                $expr->eq('vw.candidate', ':candidate')
+            )
+            ->setParameter(':candidate', $candidate, Type::OBJECT)
+        ;
+        
+        return $queryBuilder->getQuery()->getResult();
     }
     
 }

@@ -1,0 +1,11 @@
+services:
+    
+    thelgbtwhip.api.adapter.candidate:
+        class: TheLgbtWhip\Api\Adapter\CandidateAdapter
+        arguments:
+            issueAdapter: @thelgbtwhip.api.adapter.issue
+
+    thelgbtwhip.api.adapter.issue:
+        class: TheLgbtWhip\Api\Adapter\IssueAdapter
+        arguments:
+            issueRepository: @thelgbtwhip.api.orm.repository.issue
