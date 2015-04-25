@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Url;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\VoteRetrieverInterface;
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
 
 /**
@@ -59,7 +60,7 @@ class ThePublicWhipClient extends AbstractRestServiceClient implements VoteRetri
     /**
      * 
      * @param Issue $issue
-     * @return type
+     * @return array
      */
     public function getVotesForIssue(Issue $issue)
     {

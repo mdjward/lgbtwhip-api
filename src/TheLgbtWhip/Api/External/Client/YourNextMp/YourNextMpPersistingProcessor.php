@@ -11,6 +11,9 @@
 namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
 use GuzzleHttp\Message\ResponseInterface;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
+use TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpProcessor;
+use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Manager\CandidateAndPartyManager;
 use TheLgbtWhip\Api\Manager\ConstituencyManager;
 use TheLgbtWhip\Api\Model\Candidate;
@@ -45,14 +48,22 @@ class YourNextMpPersistingProcessor extends YourNextMpProcessor
      * 
      * @param CandidateAndPartyManager $candidateAndPartyManager
      * @param ConstituencyManager $constituencyManager
+     * @param PastMpTermRetrieverInterface $pastMpTermRetriever
+     * @param CandidateVoteRetrieverInterface $candidateVoteRetriever
      * @param integer $targetElectionYear
      */
     public function __construct(
         CandidateAndPartyManager $candidateAndPartyManager,
         ConstituencyManager $constituencyManager,
+        PastMpTermRetrieverInterface $pastMpTermRetriever,
+        CandidateVoteRetrieverInterface $candidateVoteRetriever,
         $targetElectionYear
     ) {
-        parent::__construct($targetElectionYear);
+        parent::__construct(
+            $pastMpTermRetriever,
+            $candidateVoteRetriever,
+            $targetElectionYear
+        );
         
         $this->candidateAndPartyManager = $candidateAndPartyManager;
         $this->constituencyManager = $constituencyManager;
@@ -90,6 +101,12 @@ class YourNextMpPersistingProcessor extends YourNextMpProcessor
         );
     }
     
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param array $constituencyData
+     * @return Constituency
+     */
     protected function buildConstituency(
         ResponseInterface $response,
         array $constituencyData
@@ -97,6 +114,40 @@ class YourNextMpPersistingProcessor extends YourNextMpProcessor
         return $this->constituencyManager->saveConstituency(
             parent::buildConstituency($response, $constituencyData)
         );
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param array $constituencyData
+     * @return Constituency
+     */
+    protected function buildConstituencyFromCandidateSearch(
+        ResponseInterface $response,
+        array $constituencyData
+    ) {
+        return $this->constituencyManager->saveConstituency(
+            parent::buildConstituencyFromCandidateSearch(
+                $response,
+                $constituencyData
+            )
+        );
+    }
+    
+    protected function augmentCandidateWithVotes(Candidate $candidate)
+    {
+        /*
+         * The candidate may already have been augmented with votes; so if they
+         * previously served as an MP
+         */
+        if (
+            $candidate->getTermsAsMp()->count() > 0
+            && $candidate->getVotes()->count() > 0
+        ) {
+            return $candidate;
+        }
+        
+        return parent::augmentCandidateWithVotes($candidate);
     }
     
 }

@@ -47,11 +47,6 @@ class ConstituencyController extends AbstractSerializingController
      */
     private $constituencyNameResolver;
     
-    /**
-     * @var ConstituencyRepository
-     */
-    private $constituencyRepository;
-    
 
 
     /**

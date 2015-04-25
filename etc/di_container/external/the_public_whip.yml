@@ -1,11 +1,11 @@
 parameters:
-    
+
     thelgbtwhip.api.external.client.the_public_whip.scraper.class:                  TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipScraper 
     thelgbtwhip.api.external.client.the_public_whip.processor.class:                TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipProcessor
     thelgbtwhip.api.external.client.the_public_whip.persisting_processor.class:     TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipPersistingProcessor
     thelgbtwhip.api.external.client.the_public_whip.client.class:                   TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClient
     thelgbtwhip.api.external.client.the_public_whip.persisting_client.class:        TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipPersistingClient
-   
+
 services:
 
     thelgbtwhip.api.external.client.the_public_whip.scraper.dom_implementation:
@@ -25,11 +25,13 @@ services:
             entityManager:          @thelgbtwhip.api.orm.entity_manager
             candidateRepository:    @thelgbtwhip.api.orm.entity.candidate.repository
             constituencyRepository: @thelgbtwhip.api.orm.entity.constituency.repository
-            realProcessor:          @thelgbtwhip.api.external.client.the_public_whip.processor
+            candidateIssueManager:  @thelgbtwhip.api.orm.manager.candidate_issue
 
     thelgbtwhip.api.external.client.the_public_whip.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
         arguments: [{base_url: %the_public_whip.base_url%}]
+        tags:
+            - { name: cacheable, type: filesystem }
 
     thelgbtwhip.api.external.client.the_public_whip.base_url:
         class: GuzzleHttp\Url
@@ -47,9 +49,13 @@ services:
             processor:  @thelgbtwhip.api.external.client.the_public_whip.processor
             scraper:    @thelgbtwhip.api.external.client.the_public_whip.scraper
 
-#    thelgbtwhip.api.external.client.the_public_whip.persisting_client:
-#        class: %thelgbtwhip.api.external.client.the_public_whip.persisting_client.class%
-#        arguments:
-#            baseUrl:    @thelgbtwhip.api.external.client.the_public_whip.http_client
-#            processor:  @thelgbtwhip.api.external.client.the_public_whip.persisting_processor
-#            scraper:    @thelgbtwhip.api.external.client.the_public_whip.scraper
+    thelgbtwhip.api.external.client.the_public_whip.persisting_client:
+        class: %thelgbtwhip.api.external.client.the_public_whip.persisting_client.class%
+        arguments:
+            httpClient:             @thelgbtwhip.api.external.client.the_public_whip.http_client
+            baseUrl:                @thelgbtwhip.api.external.client.the_public_whip.base_url
+            processor:              @thelgbtwhip.api.external.client.the_public_whip.persisting_processor
+            scraper:                @thelgbtwhip.api.external.client.the_public_whip.scraper
+            candidateRepository:    @thelgbtwhip.api.orm.repository.candidate
+            issueRepository:        @thelgbtwhip.api.orm.repository.issue
+            voteRepository:         @thelgbtwhip.api.orm.repository.vote

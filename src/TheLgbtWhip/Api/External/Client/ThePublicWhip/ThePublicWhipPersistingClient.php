@@ -1,9 +1,13 @@
 <?php
 namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
-use TheLgbtWhip\Api\External\VoteRetrieverInterface;
-use TheLgbtWhip\Api\Model\Issue;
+use GuzzleHttp\Client;
+use GuzzleHttp\Url;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
+use TheLgbtWhip\Api\Model\Candidate;
+use TheLgbtWhip\Api\Repository\CandidateRepository;
 use TheLgbtWhip\Api\Repository\IssueRepository;
+use TheLgbtWhip\Api\Repository\VoteRepository;
 
 
 
@@ -12,14 +16,14 @@ use TheLgbtWhip\Api\Repository\IssueRepository;
  *
  * @author matt
  */
-class ThePublicWhipPersistingClient implements VoteRetrieverInterface
+class ThePublicWhipPersistingClient extends ThePublicWhipClient implements CandidateVoteRetrieverInterface
 {
     
     /**
      *
-     * @var ThePublicWhipClient
+     * @var CandidateRepository
      */
-    protected $realClient;
+    protected $candidateRepository;
     
     /**
      *
@@ -27,24 +31,55 @@ class ThePublicWhipPersistingClient implements VoteRetrieverInterface
      */
     protected $issueRepository;
     
+    /**
+     *
+     * @var VoteRepository
+     */
+    protected $voteRepository;
+    
     
     
     /**
      * 
-     * @param ThePublicWhipClient $realClient
-     * @param IssueRepository $issueRepository
+     * @param Client $httpClient
+     * @param Url $baseUrl
+     * @param ThePublicWhipProcessorInterface $processor
+     * @param ThePublicWhipScraper $scraper
      */
     public function __construct(
-        ThePublicWhipClient $realClient,
-        IssueRepository $issueRepository
+        Client $httpClient,
+        Url $baseUrl,
+        ThePublicWhipProcessorInterface $processor,
+        ThePublicWhipScraper $scraper,
+        CandidateRepository $candidateRepository,
+        IssueRepository $issueRepository,
+        VoteRepository $voteRepository
     ) {
-        $this->realClient = $realClient;
+        parent::__construct($httpClient, $baseUrl, $processor, $scraper);
+        
+        $this->candidateRepository = $candidateRepository;
         $this->issueRepository = $issueRepository;
+        $this->voteRepository = $voteRepository;
     }
     
-    public function getVotesForIssue(Issue $issue)
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return array
+     */
+    public function getVotesForCandidate(Candidate $candidate)
     {
-        ;
+        $votes = [];
+        
+        foreach ($this->issueRepository->findAll() as $issue) {
+            $existingVote = $this->voteRepository->findOneByCandidateAndIssue($candidate, $issue);
+            
+            if ($existingVote instanceof Vote) {
+                $votes[] = $existingVote;
+            }
+        }
+        
+        return $votes;
     }
     
 }

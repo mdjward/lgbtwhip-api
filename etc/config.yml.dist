@@ -4,6 +4,8 @@ parameters:
 
     target_election.year:       2015
 
+    they_work_for_you.base_url: http://www.theyworkforyou.com/api/
+    they_work_for_you.api_key:  APIKEY
     your_next_mp.base_url:      http://yournextmp.popit.mysociety.org/api/v0.1/
     mapit.base_url:             http://mapit.mysociety.org/
     the_public_whip.base_url:   http://www.publicwhip.org.uk/division.php

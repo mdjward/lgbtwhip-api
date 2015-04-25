@@ -58,14 +58,17 @@ TheLgbtWhip\Api\Model\Candidate:
             targetEntity: Term
             mappedBy: candidate
             fetch: EXTRA_LAZY
+            cascade: ["persist", "merge"]
         votes:
             targetEntity: Vote
             mappedBy: candidate
             fetch: EXTRA_LAZY
+            cascade: ["persist", "merge"]
         views:
             targetEntity: View
             mappedBy: candidate
             fetch: LAZY
+            cascade: ["persist", "merge"]
     indexes:
         name:
             columns: [name]

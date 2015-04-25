@@ -1,12 +1,13 @@
 <?php
 namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
-use Doctrine\ORM\EntityManager;
+use BadMethodCallException;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use TheLgbtWhip\Api\Manager\CandidateIssueManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Issue;
-use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
 
@@ -17,12 +18,12 @@ use TheLgbtWhip\Api\Repository\ConstituencyRepository;
  *
  * @author matt
  */
-class ThePublicWhipPersistingProcessor implements ThePublicWhipProcessorInterface
+class ThePublicWhipPersistingProcessor extends ThePublicWhipProcessor
 {
 
     /**
      *
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $entityManager;
     
@@ -40,29 +41,29 @@ class ThePublicWhipPersistingProcessor implements ThePublicWhipProcessorInterfac
     
     /**
      *
-     * @var ThePublicWhipProcessorInterface
+     * @var CandidateIssueManager
      */
-    protected $realProcessor;
+    protected $candidateIssueManager;
     
     
     
     /**
      * 
-     * @param EntityManager $entityManager
+     * @param EntityManagerInterface $entityManager
      * @param CandidateRepository $candidateRepository
      * @param ConstituencyRepository $constituencyRepository
      * @param ThePublicWhipProcessorInterface $realProcessor
      */
     public function __construct(
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         CandidateRepository $candidateRepository,
         ConstituencyRepository $constituencyRepository,
-        ThePublicWhipProcessorInterface $realProcessor
+        CandidateIssueManager $candidateIssueManager
     ) {
         $this->entityManager = $entityManager;
         $this->candidateRepository = $candidateRepository;
         $this->constituencyRepository = $constituencyRepository;
-        $this->realProcessor = $realProcessor;
+        $this->candidateIssueManager = $candidateIssueManager;
     }
     
     /**
@@ -72,33 +73,14 @@ class ThePublicWhipPersistingProcessor implements ThePublicWhipProcessorInterfac
      */
     public function processVoteData(Issue $issue, array $votes)
     {
-        $issue = $this->lazyPersistIssue($issue);
-
         if ($issue->getVotes()->count() > 0) {
             return $issue;
         }
-
+        
         $this->entityManager->beginTransaction();
-
+        
         try {
-
-            /* @var $vote Vote */
-            foreach ($this->realProcessor->processVoteData($issue, $votes) as $vote) {
-                
-                $candidate = $this->lazyPersistCandidate(
-                    $vote->getCandidate()
-                );
-                
-                $this->lazyPersistConstituency(
-                    $candidate->getConstituency()
-                );
-                
-                $this->persistVote(
-                    $vote
-                        ->setCandidate($candidate)
-                        ->setIssue($issue)
-                );
-            }
+            parent::processVoteData($issue, $votes);
             
             $this->entityManager->commit();
             
@@ -111,72 +93,53 @@ class ThePublicWhipPersistingProcessor implements ThePublicWhipProcessorInterfac
     
     /**
      * 
-     * @param Issue $issue
-     * @return Issue
-     */
-    protected function lazyPersistIssue(Issue $issue)
-    {
-        if ($issue->getId() === null) {
-            $this->entityManager->persist($issue);
-            $this->entityManager->flush($issue);
-        }
-        
-        return $issue;
-    }
-    
-    /**
-     * 
-     * @param Candidate $candidate
+     * @param array $voteData
+     * @param Constituency $constituency
      * @return Candidate
      */
-    protected function lazyPersistCandidate(Candidate $candidate)
-    {
-        $existingCandidate = $this->candidateRepository->findOneByName(
-            $candidate->getName()
+    protected function buildCandidate(
+        array $voteData,
+        Constituency $constituency
+    ) {
+        $existingCandidate = $this->candidateRepository->findOneByNameAndConstituency(
+            $voteData['name'],
+            $constituency
         );
         
         if ($existingCandidate instanceof Candidate) {
             return $existingCandidate;
         }
         
-        $this->entityManager->persist($candidate);
-        $this->entityManager->flush($candidate);
-        
-        return $candidate;
+        throw new CandidateNotStandingException($voteData['name']);
     }
     
     /**
      * 
-     * @param Constituency $constituency
-     * @return Constituency
-     */
-    protected function lazyPersistConstituency(Constituency $constituency)
-    {
-        $existingConstituency = $this->constituencyRepository->findOneByName(
-            $constituency->getName()
-        );
-        
-        if ($existingConstituency instanceof Constituency) {
-            return $existingConstituency;
-        }
-        
-        $this->entityManager->persist($constituency);
-        $this->entityManager->flush($constituency);
-        
-        return $constituency;
-    }
-    
-    /**
-     * 
-     * @param Vote $vote
+     * @param array $voteData
+     * @param Candidate $candidate
+     * @param Issue $issue
      * @return Vote
      */
-    protected function persistVote(Vote $vote)
+    protected function buildVote(
+        array $voteData,
+        Candidate $candidate,
+        Issue $issue
+    ) {
+        return $this->candidateIssueManager->saveVote(
+            parent::buildVote($voteData, $candidate, $issue)
+        );
+    }
+    
+    /**
+     * 
+     * @param array $voteData
+     * @throws BadMethodCallException
+     */
+    protected function buildConstituency(array $voteData)
     {
-        $this->entityManager->persist($vote);
-        $this->entityManager->flush($vote);
-        
-        return $vote;
+        throw new BadMethodCallException(
+            'Constituency construction is not supported in this implementation'
+        );
     }
     
 }

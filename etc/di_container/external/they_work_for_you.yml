@@ -1,0 +1,15 @@
+parameters:
+
+services:
+
+    thelgbtwhip.api.external.client.they_work_for_you.http_client:
+        class: %thelgbtwhip.api.external.client.http_client.class%
+        arguments: [{base_url: %they_work_for_you.base_url%}]
+        tags:
+            - { name: cacheable, type: filesystem }
+            
+    thelgbtwhip.api.external.client.they_work_for_you:
+        class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouClient
+        arguments:
+            httpClient: @thelgbtwhip.api.external.client.they_work_for_you.http_client
+            apiKey:     %they_work_for_you.api_key%

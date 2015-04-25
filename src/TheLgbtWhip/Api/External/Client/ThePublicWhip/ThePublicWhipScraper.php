@@ -43,7 +43,9 @@ class ThePublicWhipScraper
         $end = strpos($html, '</table>') - $start + 8;
 
         if ($start === false || $end === false) {
-            return null;
+            throw new ThePublicWhipScraperException(
+                'Unable to locate voting stats table on scraped resource'
+            );
         }
 
         $htmlFragment = str_replace("&", "&amp;", substr($html, $start, $end));

@@ -19,13 +19,15 @@ services:
 
     thelgbtwhip.api.external.client.your_next_mp.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
-        arguments:
-            -
-                base_url: %your_next_mp.base_url%
+        arguments: [{base_url: %your_next_mp.base_url%}]
+        tags:
+            - { name: cacheable, type: filesystem }
 
     thelgbtwhip.api.external.client.your_next_mp.processor:
         class: TheLgbtWhip\Api\External\Client\YourNextMp\YourNextMpPersistingProcessor
         arguments:
             candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
             constituencyManager:        @thelgbtwhip.api.orm.manager.constituency
+            pastMpTermRetriever:        @thelgbtwhip.api.external.client.they_work_for_you
+            candidateVoteRetriever:     @thelgbtwhip.api.external.client.the_public_whip.persisting_client
             targetElectionYear:         %target_election.year%

@@ -1,6 +1,7 @@
 TheLgbtWhip\Api\Model\Vote:
     type: entity
     table: votes
+    repositoryClass: TheLgbtWhip\Api\Repository\VoteRepository
     id:
         id:
             column: vote_id
@@ -27,6 +28,6 @@ TheLgbtWhip\Api\Model\Vote:
                 candidate_id:
                     referencedColumnName: candidate_id
                     nullable: false
-    indexes:
+    uniqueConstraints:
         issue_candidate:
             columns: [issue_id, candidate_id]

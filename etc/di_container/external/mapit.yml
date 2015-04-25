@@ -17,6 +17,8 @@ services:
     thelgbtwhip.api.external.client.mapit.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
         arguments: [{base_url: %mapit.base_url%}]
+        tags:
+            - { name: cacheable, type: filesystem }
 
     thelgbtwhip.api.external.client.mapit.processor:
         class: TheLgbtWhip\Api\External\Client\MapIt\MapItPersistingProcessor

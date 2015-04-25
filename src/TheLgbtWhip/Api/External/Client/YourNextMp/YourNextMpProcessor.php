@@ -9,6 +9,8 @@
 namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
 use GuzzleHttp\Message\ResponseInterface;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
+use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Party;
@@ -23,6 +25,18 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
     
     /**
      *
+     * @var PastMpTermRetrieverInterface
+     */
+    protected $pastMpTermsRetriever;
+    
+    /**
+     * 
+     * @var CandidateVoteRetrieverInterface
+     */
+    protected $candidateVoteRetriever;
+    
+    /**
+     *
      * @var integer
      */
     protected $targetElectionYear;
@@ -33,8 +47,14 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
      * 
      * @param integer $targetElectionYear
      */
-    public function __construct($targetElectionYear)
-    {
+    public function __construct(
+        PastMpTermRetrieverInterface $pastMpTermsRetriever,
+        CandidateVoteRetrieverInterface $candidateVoteRetriever,
+        $targetElectionYear
+    ) {
+        $this->pastMpTermsRetriever = $pastMpTermsRetriever;
+        $this->candidateVoteRetriever = $candidateVoteRetriever;
+        
         $this->targetElectionYear = $targetElectionYear;
     }
     
@@ -52,15 +72,25 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         
         foreach ($responseData['result']['memberships'] as $membershipData) {
             try {
-                $candidate = $this->buildCandidate(
-                    $response,
-                    $membershipData,
-                    $constituency
+                $candidate = $this->augmentCandidateWithVotes(
+                    $this->buildCandidate(
+                        $response,
+                        $membershipData['person_id'],
+                        $constituency
+                    )
                 );
+                
                 $candidates[$candidate->getId()] = $candidate;
             } catch (YourNextMpException $ex) {
                 continue;
             }
+        }
+        
+        if (!isset($membershipData['person_id'])) {
+            throw new YourNextMpException(
+                $response,
+                'Missing person details for candidate'
+            );
         }
         
         return $candidates;
@@ -82,7 +112,28 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             );
         }
         
-        return $this->buildCandidateFromSearch($response, $responseData['result'][0]);
+        $candidateData = $responseData['result'][0];
+        
+        if (!isset($candidateData['standing_in'][$this->targetElectionYear])) {
+            throw new YourNextMpException(
+                $response,
+                sprintf(
+                    'Target constituency could not be matched for candidate for %s',
+                    $this->targetElectionYear
+                )
+            );
+        }
+        
+        return $this->augmentCandidateWithVotes(
+            $this->buildCandidate(
+                $response,
+                $candidateData,
+                $this->buildConstituencyFromCandidateSearch(
+                    $response,
+                    $candidateData['standing_in'][$this->targetElectionYear]
+                )
+            )
+        );
     }
     
     /**
@@ -101,76 +152,16 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             );
         }
         
-        return $this->buildConstituency($response, $responseData['result'][0]);
+        return $this->buildConstituency(
+            $response,
+            $responseData['result'][0]
+        );
     }
     
-    /**
-     * 
-     * @param ResponseInterface $response
-     * @param array $membershipData
-     * @param Constituency|null $constituency
-     * @return Candidate
-     * @throws YourNextMpException
-     */
     protected function buildCandidate(
         ResponseInterface $response,
-        array $membershipData,
-        Constituency $constituency = null
-    ) {
-        if (!isset($membershipData['person_id'])) {
-            throw new YourNextMpException(
-                $response,
-                'Missing person details for candidate'
-            );
-        }
-        
-        $personData = $membershipData['person_id'];
-        
-        if (!isset($personData['standing_in'][$this->targetElectionYear])) {
-            throw new YourNextMpException(
-                $response,
-                'Person is not a candidate in the target election'
-            );
-        }
-        
-        $candidate = new Candidate();
-        
-        if ($constituency !== null) {
-            $candidate->setConstituency($constituency);
-        }
-        
-        if (isset($personData['id'])) {
-            $candidate->setId($personData['id']);
-        }
-        
-        if (isset($personData['name'])) {
-            $candidate->setName($personData['name']);
-        }
-        
-        if (isset($personData['email'])) {
-            $candidate->setEmail($personData['email']);
-        }
-        
-        if (isset($personData['party_memberships'][$this->targetElectionYear])) {
-            $candidate->setParty(
-                $this->buildParty(
-                    $response,
-                    $personData['party_memberships'][$this->targetElectionYear]
-                )
-            );
-        }
-        
-        return $candidate;
-    }
-    
-    /**
-     * 
-     * @param ResponseInterface $response
-     * @param array $personData
-     */
-    protected function buildCandidateFromSearch(
-        ResponseInterface $response,
-        array $personData
+        array $personData,
+        Constituency $constituency
     ) {
         if (!isset($personData['id'])) {
             throw new YourNextMpException(
@@ -187,13 +178,7 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         }
         
         $candidate = new Candidate();
-        
-        $candidate->setConstituency(
-            $this->buildConstituencyFromCandidateSearch(
-                $response,
-                $personData['standing_in'][$this->targetElectionYear]
-            )
-        );
+        $candidate->setConstituency($constituency);
         
         if (isset($personData['id'])) {
             $candidate->setId($personData['id']);
@@ -222,6 +207,9 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
                     case 'homepage':
                         $candidate->setWebsite($link['url']);
                         break;
+                    case 'wikipedia':
+                        $candidate->setWikipedia($link['url']);
+                        break;
                 }
             }
         }
@@ -232,8 +220,6 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
                     case 'twitter':
                         $candidate->setTwitter($contactDetails['value']);
                         break;
-                    case 'homepage':
-                        $candidate->setWebsite($contactDetails['value']);
                 }
             }
         }
@@ -259,6 +245,13 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         return $party;
     }
     
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param array $constituencyData
+     * @return Constituency
+     * @throws YourNextMpException
+     */
     protected function buildConstituency(
         ResponseInterface $response,
         array $constituencyData
@@ -302,6 +295,39 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             ->setName($constituencyData['name'])
             ->setId($constituencyData['post_id'])
         ;
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return Candidate
+     */
+    protected function augmentCandidateWithVotes(Candidate $candidate)
+    {
+        // Need to augment the candidate with their past terms as a prerequisite
+        $candidate = $this->augmentCandidateWithPastTermsAsMp($candidate);
+        
+        /**
+         * If the candidate has not served any terms as MP then it makes no
+         * sense to poll through their previous voting record
+         */
+        if ($candidate->getTermsAsMp()->count() > 0) {
+            foreach ($this->candidateVoteRetriever->getVotesForCandidate($candidate) as $vote) {
+                $candidate->addVote($vote);
+            }
+        }
+        
+        return $candidate;
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return Candidate
+     */
+    protected function augmentCandidateWithPastTermsAsMp(Candidate $candidate)
+    {
+        return $candidate;
     }
     
 }

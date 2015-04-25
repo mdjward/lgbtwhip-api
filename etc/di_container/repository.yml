@@ -31,4 +31,11 @@ services:
             - getRepository
         arguments:
             entityName: TheLgbtWhip\Api\Model\Issue
-        
+            
+    thelgbtwhip.api.orm.repository.vote:
+        class: TheLgbtWhip\Api\Repository\VoteRepository
+        factory:
+            - @thelgbtwhip.api.orm.entity_manager
+            - getRepository
+        arguments:
+            entityName: TheLgbtWhip\Api\Model\Vote
