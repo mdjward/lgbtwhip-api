@@ -18,10 +18,7 @@ class Version20150419132650 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE constituencies CHANGE constituency_id constituency_id INT NOT NULL');
-        $this->addSql('ALTER TABLE parties CHANGE party_id party_id INT NOT NULL');
         $this->addSql('ALTER TABLE issues ADD uri_key VARCHAR(100) DEFAULT NULL');
-        $this->addSql('ALTER TABLE candidates CHANGE candidate_id candidate_id INT NOT NULL');
         
         $this->addSql(
             "UPDATE issues SET uri_key = 'equal-age-of-consent' WHERE issue_id = 1"
@@ -56,9 +53,6 @@ class Version20150419132650 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE candidates CHANGE candidate_id candidate_id INT AUTO_INCREMENT NOT NULL');
-        $this->addSql('ALTER TABLE constituencies CHANGE constituency_id constituency_id INT AUTO_INCREMENT NOT NULL');
         $this->addSql('ALTER TABLE issues DROP uri_key');
-        $this->addSql('ALTER TABLE parties CHANGE party_id party_id INT AUTO_INCREMENT NOT NULL');
     }
 }
