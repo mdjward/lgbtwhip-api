@@ -22,10 +22,11 @@ services:
     thelgbtwhip.api.external.client.the_public_whip.persisting_processor:
         class: %thelgbtwhip.api.external.client.the_public_whip.persisting_processor.class%
         arguments:
-            entityManager:          @thelgbtwhip.api.orm.entity_manager
-            candidateRepository:    @thelgbtwhip.api.orm.entity.candidate.repository
-            constituencyRepository: @thelgbtwhip.api.orm.entity.constituency.repository
-            candidateIssueManager:  @thelgbtwhip.api.orm.manager.candidate_issue
+            entityManager:              @thelgbtwhip.api.orm.entity_manager
+            candidateRepository:        @thelgbtwhip.api.orm.entity.candidate.repository
+            constituencyRepository:     @thelgbtwhip.api.orm.entity.constituency.repository
+            candidateIssueManager:      @thelgbtwhip.api.orm.manager.candidate_issue
+            candidateIssueVoteChecker:  @thelgbtwhip.api.external.client.they_work_for_you
 
     thelgbtwhip.api.external.client.the_public_whip.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
@@ -59,3 +60,4 @@ services:
             candidateRepository:    @thelgbtwhip.api.orm.repository.candidate
             issueRepository:        @thelgbtwhip.api.orm.repository.issue
             voteRepository:         @thelgbtwhip.api.orm.repository.vote
+            candidateIssueManager:  @thelgbtwhip.api.orm.manager.candidate_issue

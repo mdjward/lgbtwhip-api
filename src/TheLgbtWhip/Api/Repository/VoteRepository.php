@@ -27,6 +27,25 @@ class VoteRepository extends EntityRepository
     
     /**
      * 
+     * @param Issue $issue
+     * @return array
+     */
+    public function findByIssue(Issue $issue)
+    {
+        $queryBuilder = $this->createQueryBuilder('v');
+        
+        return $queryBuilder
+            ->where($queryBuilder->expr()->eq('v.issue', ':issue'))
+            
+            ->setParameter(':issue', $issue, Type::OBJECT)
+            
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+    /**
+     * 
      * @param Candidate $candidate
      * @param Issue $issue
      * @return Vote|null

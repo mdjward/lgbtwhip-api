@@ -69,13 +69,13 @@ class IssueRepository extends EntityRepository
         $expr = $queryBuilder->expr();
         
         $queryBuilder
-            ->join(
+            ->leftJoin(
                 'i.votes',
                 'vt',
                 Join::WITH,
                 $expr->eq('vt.candidate', ':candidate')
             )
-            ->join(
+            ->leftJoin(
                 'i.views',
                 'vw',
                 Join::WITH,

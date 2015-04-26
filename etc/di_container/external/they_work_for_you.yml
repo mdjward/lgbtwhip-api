@@ -8,8 +8,12 @@ services:
         tags:
             - { name: cacheable, type: filesystem }
             
+    thelgbtwhip.api.external.client.they_work_for_you.processor:
+        class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouProcessor
+
     thelgbtwhip.api.external.client.they_work_for_you:
         class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouClient
         arguments:
             httpClient: @thelgbtwhip.api.external.client.they_work_for_you.http_client
+            processor:  @thelgbtwhip.api.external.client.they_work_for_you.processor
             apiKey:     %they_work_for_you.api_key%

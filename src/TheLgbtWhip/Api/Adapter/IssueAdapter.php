@@ -46,6 +46,13 @@ class IssueAdapter implements IssueAdapterInterface
     {
         $adaptedIssues = [];
         
+        foreach ($candidate->getVotes() as $vote) {
+            $adaptedIssues[$issue->getId()] = $this->buildAdaptedIssue(
+                $issue,
+                $candidate
+            );
+        }
+        
         /* @var $candidate Issue */
         foreach ($this->issueRepository->findByCandidate($candidate) as $issue) {
             $adaptedIssues[$issue->getId()] = $this->buildAdaptedIssue(

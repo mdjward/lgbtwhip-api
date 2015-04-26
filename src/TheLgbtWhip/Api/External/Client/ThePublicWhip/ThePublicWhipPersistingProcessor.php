@@ -4,10 +4,12 @@ namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 use BadMethodCallException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
 use TheLgbtWhip\Api\Manager\CandidateIssueManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Issue;
+use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
 use TheLgbtWhip\Api\Repository\ConstituencyRepository;
 
@@ -45,6 +47,12 @@ class ThePublicWhipPersistingProcessor extends ThePublicWhipProcessor
      */
     protected $candidateIssueManager;
     
+    /**
+     *
+     * @var CandidateIssueVoteCheckerInterface 
+     */
+    protected $candidateIssueVoteChecker;
+    
     
     
     /**
@@ -53,17 +61,20 @@ class ThePublicWhipPersistingProcessor extends ThePublicWhipProcessor
      * @param CandidateRepository $candidateRepository
      * @param ConstituencyRepository $constituencyRepository
      * @param ThePublicWhipProcessorInterface $realProcessor
+     * @param CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         CandidateRepository $candidateRepository,
         ConstituencyRepository $constituencyRepository,
-        CandidateIssueManager $candidateIssueManager
+        CandidateIssueManager $candidateIssueManager,
+        CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker
     ) {
         $this->entityManager = $entityManager;
         $this->candidateRepository = $candidateRepository;
         $this->constituencyRepository = $constituencyRepository;
         $this->candidateIssueManager = $candidateIssueManager;
+        $this->candidateIssueVoteChecker = $candidateIssueVoteChecker;
     }
     
     /**
@@ -133,12 +144,12 @@ class ThePublicWhipPersistingProcessor extends ThePublicWhipProcessor
     /**
      * 
      * @param array $voteData
-     * @throws BadMethodCallException
+     * @return Constituency|null
      */
     protected function buildConstituency(array $voteData)
     {
-        throw new BadMethodCallException(
-            'Constituency construction is not supported in this implementation'
+        return $this->constituencyRepository->findOneByName(
+            $voteData['constituency']
         );
     }
     

@@ -111,7 +111,16 @@ class View extends AbstractModelWithId
     {
         return $this->historicSupport;
     }
-
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getHistoricSupportAsString()
+    {
+        return $this->formatSupport($this->historicSupport);
+    }
+    
     /**
      * 
      * @return string
@@ -129,7 +138,16 @@ class View extends AbstractModelWithId
     {
         return $this->currentSupport;
     }
-
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getCurrentSupportAsString()
+    {
+        return $this->formatSupport($this->currentSupport);
+    }
+    
     /**
      * 
      * @param Candidate $candidate
@@ -208,6 +226,25 @@ class View extends AbstractModelWithId
         
     /**
      * 
+     * @param integer $support
+     * @return string|null
+     */
+    private function formatSupport($support)
+    {
+        switch ($support) {
+            case self::SUPPORTS:
+                return 'supports';
+            case self::DOES_NOT_SUPPORT:
+                return 'does not support';
+            case self::DECLINED_TO_ANSWER:
+                return 'declined to answer';
+        }
+        
+        return null;
+    }
+
+    /**
+     * 
      * @param mixed $givenSupportValue
      * @return integer
      * @throws InvalidArgumentException
@@ -235,4 +272,4 @@ class View extends AbstractModelWithId
         );
     }
 
-} 
+}

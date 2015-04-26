@@ -19,6 +19,12 @@ TheLgbtWhip\Api\Model\View:
                 setter: setCandidate
             expose: true
             max_depth: 1
+            
+        historicSupport:
+            type: string
+            accessor:
+                getter: getHistoricSupportAsString
+            read_only: true
 
         historicStance:
             type: string
@@ -33,3 +39,9 @@ TheLgbtWhip\Api\Model\View:
                 getter: getCurrentStance
                 setter: setCurrentStance
             expose: true
+
+        currentSupport:
+            type: string
+            accessor:
+                getter: getCurrentSupportAsString
+            read_only: true

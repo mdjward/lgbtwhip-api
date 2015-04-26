@@ -8,12 +8,17 @@
 
 namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
+use DateTime;
 use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
+use TheLgbtWhip\Api\Model\Issue;
 use TheLgbtWhip\Api\Model\Party;
+use TheLgbtWhip\Api\Model\Term;
+use TheLgbtWhip\Api\Model\View;
+use TheLgbtWhip\Api\Model\Vote;
 
 /**
  * Description of YourNextMpProcessor
@@ -307,14 +312,8 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         // Need to augment the candidate with their past terms as a prerequisite
         $candidate = $this->augmentCandidateWithPastTermsAsMp($candidate);
         
-        /**
-         * If the candidate has not served any terms as MP then it makes no
-         * sense to poll through their previous voting record
-         */
-        if ($candidate->getTermsAsMp()->count() > 0) {
-            foreach ($this->candidateVoteRetriever->getVotesForCandidate($candidate) as $vote) {
-                $candidate->addVote($vote);
-            }
+        foreach ($this->candidateVoteRetriever->getVotesForCandidate($candidate) as $vote) {
+            $candidate->addVote($vote);
         }
         
         return $candidate;

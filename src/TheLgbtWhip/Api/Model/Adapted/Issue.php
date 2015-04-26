@@ -63,9 +63,9 @@ class Issue extends BaseIssue
      * 
      * @return type
      */
-    public function getPastVote()
+    public function getVote()
     {
-        return $this->pastVote;
+        return $this->vote;
     }
 
     /**

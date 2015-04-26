@@ -10,13 +10,14 @@
  */
 namespace TheLgbtWhip\Api\External\Client\TheyWorkForYou;
 
-use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Query;
+use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
+use TheLgbtWhip\Api\Model\Issue;
 
 
 
@@ -25,8 +26,18 @@ use TheLgbtWhip\Api\Model\Constituency;
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class TheyWorkForYouClient extends AbstractRestServiceClient implements PastMpTermRetrieverInterface
+class TheyWorkForYouClient
+    extends AbstractRestServiceClient
+    implements
+        PastMpTermRetrieverInterface,
+        CandidateIssueVoteCheckerInterface
 {
+    
+    /**
+     *
+     * @var TheyWorkForYouProcessorInterface
+     */
+    protected $processor;
     
     /**
      *
@@ -39,15 +50,39 @@ class TheyWorkForYouClient extends AbstractRestServiceClient implements PastMpTe
     /**
      * 
      * @param Client $httpClient
+     * @param TheyWorkForYouProcessorInterface $processor
      * @param string $apiKey
      */
     public function __construct(
         Client $httpClient,
+        TheyWorkForYouProcessorInterface $processor,
         $apiKey
     ) {
         parent::__construct($httpClient);
         
+        $this->processor = $processor;
         $this->apiKey = $apiKey;
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param Issue $issue
+     * @return boolean
+     */
+    public function checkCandidateCouldHaveVoted(
+        Candidate $candidate,
+        Issue $issue
+    ) {
+        $request = $this->httpClient->createRequest('GET', 'getMps');
+        
+        $query = $this->setQueryDefaults($request->getQuery());
+        $query->set('date', $issue->getPublicWhipDate()->format('Y-m-d'));
+        
+        return $this->processor->checkCandidateWasMpOnDate(
+            $candidate,
+            $this->httpClient->send($request)->json()
+        );
     }
     
     public function findPastTermsForCandidate(Candidate $candidate)
@@ -60,16 +95,6 @@ class TheyWorkForYouClient extends AbstractRestServiceClient implements PastMpTe
         
         $query = $this->setQueryDefaults($request->getQuery());
         $query->set('constituency', $constituency->getName());
-        
-        return $this->httpClient->send($request)->json();
-    }
-    
-    public function findMps(DateTime $date)
-    {
-        $request = $this->httpClient->createRequest('GET', 'getMps');
-        
-        $query = $this->setQueryDefaults($request->getQuery());
-        $query->set('date', $date->format('Y-m-d'));
         
         return $this->httpClient->send($request)->json();
     }
