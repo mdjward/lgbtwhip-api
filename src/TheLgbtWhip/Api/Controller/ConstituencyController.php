@@ -11,6 +11,7 @@
 namespace TheLgbtWhip\Api\Controller;
 
 use Exception;
+use TheLgbtWhip\Api\External\AllConstituenciesRetrieverInterface;
 use TheLgbtWhip\Api\External\ConstituencyIdResolverInterface;
 use TheLgbtWhip\Api\External\ConstituencyNameResolverInterface;
 use TheLgbtWhip\Api\External\ExternalServiceException;
@@ -29,6 +30,12 @@ use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 class ConstituencyController extends AbstractSerializingController
 {
 
+    /**
+     *
+     * @var AllConstituenciesRetrieverInterface
+     */
+    private $allConstituenciesRetriever;
+    
     /**
      *
      * @var PostcodeToConstituencyMappingInterface
@@ -51,13 +58,14 @@ class ConstituencyController extends AbstractSerializingController
 
     /**
      * 
+     * @param AllConstituenciesRetrieverInterface $allConstituenciesRetriever
      * @param PostcodeToConstituencyMappingInterface $postcodeToConstituencyMapper
      * @param ConstituencyIdResolverInterface $constituencyIdResolver
      * @param ConstituencyNameResolverInterface $constituencyNameResolver
-     * @param ConstituencyRepository $constituencyRepository
      * @param ContentTypeSerializerWrapper $serializerWrapper
      */
     public function __construct(
+        AllConstituenciesRetrieverInterface $allConstituenciesRetriever,
         PostcodeToConstituencyMappingInterface $postcodeToConstituencyMapper,
         ConstituencyIdResolverInterface $constituencyIdResolver,
         ConstituencyNameResolverInterface $constituencyNameResolver,
@@ -65,9 +73,23 @@ class ConstituencyController extends AbstractSerializingController
     ) {
         parent::__construct($serializerWrapper);
         
+        $this->allConstituenciesRetriever = $allConstituenciesRetriever;
         $this->postcodeToConstituencyMapper = $postcodeToConstituencyMapper;
         $this->constituencyIdResolver = $constituencyIdResolver;
         $this->constituencyNameResolver = $constituencyNameResolver;
+    }
+    
+    /**
+     * 
+     * @return ConstituencyWrapper
+     */
+    public function getAll()
+    {
+        return $this->response->setBody(
+            $this->serializerWrapper->serialize(
+                $this->allConstituenciesRetriever->getAllConstituencies()
+            )
+        );
     }
     
     /**

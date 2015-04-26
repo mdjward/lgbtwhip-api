@@ -21,6 +21,7 @@ services:
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
+            allConstituenciesRetriever:     @thelgbtwhip.api.external.loader.constituency
             postcodeToConstituencyMapper:   @thelgbtwhip.api.external.loader.constituency
             constituencyIdResolver:         @thelgbtwhip.api.external.loader.constituency
             constituencyNameResolver:       @thelgbtwhip.api.external.loader.constituency

@@ -36,6 +36,11 @@ $app->group('/constituency', function() use ($app, $container) {
     require_once __DIR__ . '/routing/constituency.routing.php';
 });
 
+// Handle [all] constituencies route
+$app->group('/constituencies', function() use ($app, $container) {
+    require_once __DIR__ . '/routing/constituencies.routing.php';
+});
+
 // Handle candidate routes
 $app->group('/candidate', function() use ($app, $container) {
     require_once __DIR__ . '/routing/candidate.routing.php';
