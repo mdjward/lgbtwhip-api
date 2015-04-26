@@ -183,17 +183,9 @@ class PersistingConstituencyLoader
     protected function persistConstituencyAndCandidates(Constituency $constituency = null)
     {
         if ($constituency !== null) {
-            try {
-                return $this->populateConstituencyWithCandidates(
-                    $this->constituencyManager->saveConstituency($constituency)
-                );
-            } catch (Exception $ex) {
-                try {
-                    $this->constituencyManager->saveConstituency($constituency);
-                } catch (Exception $ex) {
-                    $this->constituencyManager->saveConstituency($constituency);
-                }
-            }
+            return $this->populateConstituencyWithCandidates(
+                $this->constituencyManager->saveConstituency($constituency)
+            );
         }
         
         return null;
@@ -213,17 +205,15 @@ class PersistingConstituencyLoader
              * Persist the party first, and set the managed object within the
              * candidate prior to persisting the candidate
              */
-            // try {
-                $this->candidateAndPartyManager->saveCandidate(
-                    $candidate->setParty(
-                        $this->candidateAndPartyManager->saveParty(
-                            $candidate->getParty() 
-                        )
+            $this->candidateAndPartyManager->saveCandidate(
+                $candidate->setParty(
+                    $this->candidateAndPartyManager->saveParty(
+                        $candidate->getParty() 
                     )
-                );
-            /*} catch (\Exception $ex) {
-                $this->candidateAndPartyManager->saveCandidate($candidate);
-            }*/
+                )
+            );
+            
+            $constituency->addCandidate($candidate);
         }
         
         return $constituency;
