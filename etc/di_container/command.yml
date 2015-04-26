@@ -1,0 +1,13 @@
+services:
+    
+    thelgbtwhip.api.command.hydrate_constituencies:
+        class: TheLgbtWhip\Api\Command\HydrateConstituenciesCommand
+        arguments:
+            allConstituenciesRetriever: @thelgbtwhip.api.external.loader.constituency
+    
+    thelgbtwhip.api.commands:
+        class: SplFixedArray
+        arguments:
+            size: 1
+        calls:
+            - [offsetSet, [0, @thelgbtwhip.api.command.hydrate_constituencies]]

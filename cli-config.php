@@ -20,7 +20,8 @@ $container = require_once $optPath . '/bootstrap.php';
 if (isset($commands)) {
     $commands = array_merge(
         $commands,
-        $container->get('thelgbtwhip.api.migrations.commands')->toArray()
+        $container->get('thelgbtwhip.api.migrations.commands')->toArray(),
+        $container->get('thelgbtwhip.api.commands')->toArray()
     );
 }
 
