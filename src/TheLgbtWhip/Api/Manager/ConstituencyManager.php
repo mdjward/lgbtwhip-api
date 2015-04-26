@@ -47,6 +47,35 @@ class ConstituencyManager extends AbstractModelManager
     
     /**
      * 
+     * @return array
+     */
+    public function findAll()
+    {
+        return $this->constituencyRepository->findAll();
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     * @return Constituency|null
+     */
+    public function findOneById($id)
+    {
+        return $this->constituencyRepository->find($id);
+    }
+    
+    /**
+     * 
+     * @param string $name
+     * @return Constituency|null
+     */
+    public function findOneByName($name)
+    {
+        return $this->constituencyRepository->findOneByName($name);
+    }
+    
+    /**
+     * 
      * @param Constituency $constituency
      * @return Constituency
      */

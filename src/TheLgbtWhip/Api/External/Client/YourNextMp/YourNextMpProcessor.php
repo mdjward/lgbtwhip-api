@@ -30,18 +30,6 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
     
     /**
      *
-     * @var PastMpTermRetrieverInterface
-     */
-    protected $pastMpTermsRetriever;
-    
-    /**
-     * 
-     * @var CandidateVoteRetrieverInterface
-     */
-    protected $candidateVoteRetriever;
-    
-    /**
-     *
      * @var integer
      */
     protected $targetElectionYear;
@@ -52,17 +40,18 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
      * 
      * @param integer $targetElectionYear
      */
-    public function __construct(
-        PastMpTermRetrieverInterface $pastMpTermsRetriever,
-        CandidateVoteRetrieverInterface $candidateVoteRetriever,
-        $targetElectionYear
-    ) {
-        $this->pastMpTermsRetriever = $pastMpTermsRetriever;
-        $this->candidateVoteRetriever = $candidateVoteRetriever;
-        
+    public function __construct($targetElectionYear)
+    {
         $this->targetElectionYear = $targetElectionYear;
     }
     
+    /**
+     * 
+     * @param Constituency $constituency
+     * @param ResponseInterface $response
+     * @return array
+     * @throws YourNextMpException
+     */
     public function processCandidates(Constituency $constituency, ResponseInterface $response)
     {
         $responseData = $response->json();
@@ -77,12 +66,10 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
         
         foreach ($responseData['result']['memberships'] as $membershipData) {
             try {
-                $candidate = $this->augmentCandidateWithVotes(
-                    $this->buildCandidate(
-                        $response,
-                        $membershipData['person_id'],
-                        $constituency
-                    )
+                $candidate = $this->buildCandidate(
+                    $response,
+                    $membershipData['person_id'],
+                    $constituency
                 );
                 
                 $candidates[$candidate->getId()] = $candidate;
@@ -129,16 +116,37 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             );
         }
         
-        return $this->augmentCandidateWithVotes(
-            $this->buildCandidate(
+        return $this->buildCandidate(
+            $response,
+            $candidateData,
+            $this->buildConstituencyFromCandidateSearch(
                 $response,
-                $candidateData,
-                $this->buildConstituencyFromCandidateSearch(
-                    $response,
-                    $candidateData['standing_in'][$this->targetElectionYear]
-                )
+                $candidateData['standing_in'][$this->targetElectionYear]
             )
         );
+    }
+    
+    public function processAllConstituencyResults(ResponseInterface $response)
+    {
+        $responseData = $response->json();
+        
+        if (!isset($responseData['result']) || !is_array($responseData['result'])) {
+            throw new YourNextMpException(
+                $response,
+                'No result data available'
+            );
+        }
+        
+        $constituencies = [];
+        
+        foreach ($responseData['result'] as $constituencyData) {
+            $constituencies[] = $this->buildConstituency(
+                $response,
+                $constituencyData
+            );
+        }
+        
+        return $constituencies;
     }
     
     /**
@@ -300,33 +308,6 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             ->setName($constituencyData['name'])
             ->setId($constituencyData['post_id'])
         ;
-    }
-    
-    /**
-     * 
-     * @param Candidate $candidate
-     * @return Candidate
-     */
-    protected function augmentCandidateWithVotes(Candidate $candidate)
-    {
-        // Need to augment the candidate with their past terms as a prerequisite
-        $candidate = $this->augmentCandidateWithPastTermsAsMp($candidate);
-        
-        foreach ($this->candidateVoteRetriever->getVotesForCandidate($candidate) as $vote) {
-            $candidate->addVote($vote);
-        }
-        
-        return $candidate;
-    }
-    
-    /**
-     * 
-     * @param Candidate $candidate
-     * @return Candidate
-     */
-    protected function augmentCandidateWithPastTermsAsMp(Candidate $candidate)
-    {
-        return $candidate;
     }
     
 }

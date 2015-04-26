@@ -62,6 +62,10 @@ class CandidateAdapter implements CandidateAdapterInterface
             ->setId($candidate->getId())
         ;
         
+        foreach ($candidate->getTermsAsMp() as $term) {
+            $adaptedCandidate->addTermAsMp($term);
+        }
+        
         /* @var $issue AdaptedIssue */
         foreach ($this->issueAdapter->adaptVotesAndViews($candidate) as $issue) {
             $adaptedCandidate->addIssue($issue);

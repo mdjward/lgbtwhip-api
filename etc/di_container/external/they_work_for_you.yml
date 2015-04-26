@@ -1,19 +1,89 @@
 parameters:
 
-services:
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format: 'Y-m-d H:i:s'
 
-    thelgbtwhip.api.external.client.they_work_for_you.http_client:
-        class: %thelgbtwhip.api.external.client.http_client.class%
-        arguments: [{base_url: %they_work_for_you.base_url%}]
+services:
+    
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract:
+        abstract: true
+        factory:
+            - DateTime
+            - createFromFormat
+
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2010:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '2010-05-07 00:00:00'
+        
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2005:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '2005-05-06 00:00:00'
+            
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2001:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '2001-06-09 00:00:00'
+            
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1997:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '1997-05-02 00:00:00'
+            
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1992:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '1992-04-10 00:00:00'
+            
+    thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1987:
+        class: DateTime
+        parent: thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.abstract
+        arguments:
+            - %thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.format%
+            - '1987-06-12 00:00:00'
+            
+    
+    
+    thelgbtwhip.api.external.client.they_work_For_you.past_parliament_cache:
+        class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\PastMpCache
+        calls:
+            - [addPastParliamentDate, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2010]]
+            - [addPastParliamentDate, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2005]]
+            - [addPastParliamentDate, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1997]]
+            - [addPastParliamentDate, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1992]]
+            - [addPastParliamentDate, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1987]]
         tags:
             - { name: cacheable, type: filesystem }
-            
+
     thelgbtwhip.api.external.client.they_work_for_you.processor:
         class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouProcessor
 
+    thelgbtwhip.api.external.client.they_work_for_you.http_client:
+        class: %thelgbtwhip.api.external.client.http_client.class%
+        arguments: [{base_url:%they_work_for_you.base_url%}]
+        tags:
+            - { name:cacheable, type:filesystem }
+            
     thelgbtwhip.api.external.client.they_work_for_you:
         class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouClient
         arguments:
             httpClient: @thelgbtwhip.api.external.client.they_work_for_you.http_client
-            processor:  @thelgbtwhip.api.external.client.they_work_for_you.processor
-            apiKey:     %they_work_for_you.api_key%
+            processor: @thelgbtwhip.api.external.client.they_work_for_you.processor
+            pastMpCache: @thelgbtwhip.api.external.client.they_work_For_you.past_parliament_cache
+            apiKey: %they_work_for_you.api_key%
+        calls:
+            - [getListOfPastMps, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2010]]
+            - [getListOfPastMps, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_2005]]
+            - [getListOfPastMps, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1997]]
+            - [getListOfPastMps, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1992]]
+            - [getListOfPastMps, [@thelgbtwhip.api.external.client.they_work_for_you.past_parliaments.election_1987]]

@@ -27,7 +27,6 @@ interface ThePublicWhipProcessorInterface
     const VOTE_DATA_KEY_VOTE_CAST = 'voteCast';
     
     
-    
     /**
      * 
      * @param Issue $issue

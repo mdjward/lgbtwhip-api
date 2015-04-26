@@ -38,6 +38,13 @@ interface YourNextMpProcessorInterface
     /**
      * 
      * @param ResponseInterface $response
+     * @return array
+     */
+    public function processAllConstituencyResults(ResponseInterface $response);
+    
+    /**
+     * 
+     * @param ResponseInterface $response
      * @return Constituency
      */
     public function processConstituencySearchResults(ResponseInterface $response);

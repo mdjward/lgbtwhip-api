@@ -21,12 +21,12 @@ use TheLgbtWhip\Api\Model\Candidate;
  */
 interface PastMpTermRetrieverInterface
 {
-    
+
     /**
      * 
      * @param Candidate $candidate
      * @return array
      */
     public function findPastTermsForCandidate(Candidate $candidate);
-    
+
 }

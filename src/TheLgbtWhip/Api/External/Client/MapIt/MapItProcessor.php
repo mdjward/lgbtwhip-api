@@ -9,7 +9,6 @@
 namespace TheLgbtWhip\Api\External\Client\MapIt;
 
 use GuzzleHttp\Message\ResponseInterface;
-use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\Model\Constituency;
 
 /**
@@ -21,47 +20,11 @@ class MapItProcessor implements MapItProcessorInterface
 {
     
     /**
-     *
-     * @var ConstituencyCandidatesRetrieverInterface
-     */
-    protected $constituencyCandidateRetriever;
-    
-    
-    
-    /**
-     * 
-     * @param ConstituencyCandidatesRetrieverInterface $constituencyCandidateRetriever
-     */
-    public function __construct(
-        ConstituencyCandidatesRetrieverInterface $constituencyCandidateRetriever
-    ) {
-        $this->constituencyCandidateRetriever = $constituencyCandidateRetriever;
-    }
-    
-    /**
      * 
      * @param ResponseInterface $response
      * @return Constituency
      */
     public function processConstituencyData(ResponseInterface $response)
-    {
-        $constituency = $this->buildConstituencyFromResponse($response);
-        
-        foreach ($this->constituencyCandidateRetriever->getCandidatesForConstituency($constituency) as $candidate) {
-            $constituency->addCandidate($candidate);
-        }
-        
-        return $constituency;
-    }
-    
-    /**
-     * 
-     * @param ResponseInterface $response
-     * @return Constituency
-     * @throws PostcodeResolutionException
-     * @throws PostcodeInvalidResponseException
-     */
-    protected function buildConstituencyFromResponse(ResponseInterface $response)
     {
         $constituencyData = $response->json();
         

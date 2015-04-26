@@ -1,0 +1,15 @@
+TheLgbtWhip\Api\Model\Wrapper\CandidateWrapper:
+    exclusion_policy: ALL
+    xml_root_name: candidate_list
+    access_type: public_method
+        
+    properties:
+        constituencies:
+            type: ArrayCollection<TheLgbtWhip\Api\Model\Candidate>
+            accessor:
+                getter: getCandidates
+            expose: true
+            read_only: true
+            xml_list:
+                inline: false
+                entry_name: candidate

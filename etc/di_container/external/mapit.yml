@@ -1,18 +1,7 @@
 services:
 
-    thelgbtwhip.api.external.client.mapit:
-        class: TheLgbtWhip\Api\External\Client\MapIt\MapItClient
-        arguments:
-            httpClient: @thelgbtwhip.api.external.client.mapit.http_client
-            processor:  @thelgbtwhip.api.external.client.mapit.processor
-
-    thelgbtwhip.api.external.client.mapit.cacheable:
-        class: TheLgbtWhip\Api\External\Client\MapIt\MapItCachingClient
-        arguments:
-            mapItClient:            @thelgbtwhip.api.external.client.mapit
-            constituencyRepository: @thelgbtwhip.api.orm.repository.constituency
-        tags:
-            - { name: cacheable, type: filesystem }
+    thelgbtwhip.api.external.client.mapit.processor:
+        class: TheLgbtWhip\Api\External\Client\MapIt\MapItProcessor
 
     thelgbtwhip.api.external.client.mapit.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
@@ -20,8 +9,8 @@ services:
         tags:
             - { name: cacheable, type: filesystem }
 
-    thelgbtwhip.api.external.client.mapit.processor:
-        class: TheLgbtWhip\Api\External\Client\MapIt\MapItPersistingProcessor
+    thelgbtwhip.api.external.client.mapit:
+        class: TheLgbtWhip\Api\External\Client\MapIt\MapItClient
         arguments:
-            constituencyCandidateRetriever: @thelgbtwhip.api.external.client.your_next_mp
-            constituencyManager:            @thelgbtwhip.api.orm.manager.constituency
+            httpClient: @thelgbtwhip.api.external.client.mapit.http_client
+            processor:  @thelgbtwhip.api.external.client.mapit.processor

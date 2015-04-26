@@ -1,0 +1,28 @@
+services:
+    
+    thelgbtwhip.api.external.loader.constituency:
+        class: TheLgbtWhip\Api\External\Loader\PersistingConstituencyLoader
+        arguments:
+            allConstituenciesRetriever:         @thelgbtwhip.api.external.client.your_next_mp
+            postcodeConstituencyMapper:         @thelgbtwhip.api.external.client.mapit
+            constituencyIdResolver:             @thelgbtwhip.api.external.client.your_next_mp
+            constituencyNameResolver:           @thelgbtwhip.api.external.client.your_next_mp
+            constituencyCandidatesRetriever:    @thelgbtwhip.api.external.client.your_next_mp
+            constituencyManager:                @thelgbtwhip.api.orm.manager.constituency
+            candidateAndPartyManager:           @thelgbtwhip.api.orm.manager.candidate
+        tags:
+            - { name: cacheable, type: filesystem }
+    
+    thelgbtwhip.api.external.loader.candidate:
+        class: TheLgbtWhip\Api\External\Loader\PersistingCandidateLoader
+        arguments:
+            candidateIdResolver:                @thelgbtwhip.api.external.client.your_next_mp
+            candidateNameResolver:              @thelgbtwhip.api.external.client.your_next_mp
+            candidateNameSearcher:              @thelgbtwhip.api.external.client.your_next_mp
+            constituencyCandidatesRetriever:    @thelgbtwhip.api.external.client.your_next_mp
+            candidateIssueVoteChecker:          @thelgbtwhip.api.external.client.they_work_for_you
+            pastMpTermsRetriever:               @thelgbtwhip.api.external.client.they_work_for_you
+            constituencyManager:                @thelgbtwhip.api.orm.manager.constituency
+            candidateManager:                   @thelgbtwhip.api.orm.manager.candidate
+        tags:
+            - { name: cacheable, type: filesystem }

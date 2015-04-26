@@ -6,7 +6,7 @@ use TheLgbtWhip\Api\Adapter\CandidateAdapterInterface;
 use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
 use TheLgbtWhip\Api\External\ExternalServiceException;
-use TheLgbtWhip\Api\Manager\CandidateAndPartyManager;
+use TheLgbtWhip\Api\Manager\CandidateManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
@@ -22,7 +22,7 @@ class CandidateController extends AbstractSerializingController
     
     /**
      *
-     * @var CandidateAndPartyManager 
+     * @var CandidateManager 
      */
     protected $candidateAndPartyManager;
     
@@ -48,14 +48,14 @@ class CandidateController extends AbstractSerializingController
     
     /**
      * 
-     * @param CandidateAndPartyManager $candidateAndPartyManager
+     * @param CandidateManager $candidateAndPartyManager
      * @param CandidateIdResolverInterface $candidateIdResolver
      * @param CandidateNameResolverInterface $candidateNameResolver
      * @param CandidateAdapterInterface $candidateAdapter
      * @param ContentTypeSerializerWrapper $serializerWrapper
      */
     public function __construct(
-        CandidateAndPartyManager $candidateAndPartyManager,
+        CandidateManager $candidateAndPartyManager,
         CandidateIdResolverInterface $candidateIdResolver,
         CandidateNameResolverInterface $candidateNameResolver,
         CandidateAdapterInterface $candidateAdapter,

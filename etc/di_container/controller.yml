@@ -10,11 +10,9 @@ services:
     thelgbtwhip.api.controller.candidate:
         class: TheLgbtWhip\Api\Controller\CandidateController
         arguments:
-            candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate_and_party
-#            candidateIdResolver:        @thelgbtwhip.api.external.client.your_next_mp.cacheable
-#            candidateNameResolver:      @thelgbtwhip.api.external.client.your_next_mp.cacheable
-            candidateIdResolver:        @thelgbtwhip.api.external.client.your_next_mp
-            candidateNameResolver:      @thelgbtwhip.api.external.client.your_next_mp
+            candidateAndPartyManager:   @thelgbtwhip.api.orm.manager.candidate
+            candidateIdResolver:        @thelgbtwhip.api.external.loader.candidate
+            candidateNameResolver:      @thelgbtwhip.api.external.loader.candidate
             candidateAggregator:        @thelgbtwhip.api.adapter.candidate
             serializer:                 @thelgbtwhip.api.serializer.candidate.content_type_wrapper
         tags:
@@ -23,11 +21,9 @@ services:
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
-            postcodeToConstituencyMapper:   @thelgbtwhip.api.external.client.mapit.cacheable
-#            constituencyIdResolver:         @thelgbtwhip.api.external.client.your_next_mp.cacheable
-#            constituencyNameResolver:       @thelgbtwhip.api.external.client.your_next_mp.cacheable
-            constituencyIdResolver:         @thelgbtwhip.api.external.client.your_next_mp
-            constituencyNameResolver:       @thelgbtwhip.api.external.client.your_next_mp
+            postcodeToConstituencyMapper:   @thelgbtwhip.api.external.loader.constituency
+            constituencyIdResolver:         @thelgbtwhip.api.external.loader.constituency
+            constituencyNameResolver:       @thelgbtwhip.api.external.loader.constituency
             serializerWrapper:              @thelgbtwhip.api.serializer.constituency.content_type_wrapper
         tags:
             - { name: controller }
@@ -35,7 +31,7 @@ services:
     thelgbtwhip.api.controller.issue:
         class: TheLgbtWhip\Api\Controller\IssueController
         arguments:
-            thePublicWhipClient:    @thelgbtwhip.api.external.client.the_public_whip.client
+            issueRepository:        @thelgbtwhip.api.external.client.the_public_whip.client
             serializer:             @thelgbtwhip.api.serializer.candidate
         tags:
             - { name: controller }

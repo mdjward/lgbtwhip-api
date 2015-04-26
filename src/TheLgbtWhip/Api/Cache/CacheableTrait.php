@@ -26,7 +26,7 @@ trait CacheableTrait
      *
      * @var Cache
      */
-    protected $cache;
+    private $cache;
     
     /**
      * 
@@ -38,6 +38,29 @@ trait CacheableTrait
         $this->cache = $cache;
         
         return $this;
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    final protected function hasCache()
+    {
+        return ($this->cache !== null);
+    }
+    
+    /**
+     * 
+     * @return Cache
+     * @throws CacheNotInitialisedException
+     */
+    final protected function getCache()
+    {
+        if ($this->hasCache()) {
+            return $this->cache;
+        }
+        
+        throw new CacheNotInitialisedException();
     }
     
 }

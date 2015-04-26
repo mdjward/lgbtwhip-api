@@ -10,6 +10,7 @@
  */
 namespace TheLgbtWhip\Api\External\Client\TheyWorkForYou;
 
+use DateTime;
 use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\Model\Candidate;
 
@@ -22,6 +23,17 @@ use TheLgbtWhip\Api\Model\Candidate;
  */
 interface TheyWorkForYouProcessorInterface
 {
+    
+    public function processListOfPastMps(
+        ResponseInterface $response,
+        DateTime $parliamentStartDate,
+        PastMpCache $cache
+    );
+    
+    public function processMpHistory(
+        Candidate $candidate,
+        ResponseInterface $response
+    );
     
     public function checkCandidateWasMpOnDate(
         Candidate $candidate,

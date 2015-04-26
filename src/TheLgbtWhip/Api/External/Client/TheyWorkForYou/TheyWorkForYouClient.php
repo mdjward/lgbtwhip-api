@@ -10,6 +10,7 @@
  */
 namespace TheLgbtWhip\Api\External\Client\TheyWorkForYou;
 
+use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Query;
 use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
@@ -41,6 +42,12 @@ class TheyWorkForYouClient
     
     /**
      *
+     * @var PastMpCache
+     */
+    protected $pastMpCache;
+    
+    /**
+     *
      * @var string
      */
     protected $apiKey;
@@ -51,17 +58,43 @@ class TheyWorkForYouClient
      * 
      * @param Client $httpClient
      * @param TheyWorkForYouProcessorInterface $processor
-     * @param string $apiKey
+     * @param PastMpCache $pastMpCache
+     * @param type $apiKey
      */
     public function __construct(
         Client $httpClient,
         TheyWorkForYouProcessorInterface $processor,
+        PastMpCache $pastMpCache,
         $apiKey
     ) {
         parent::__construct($httpClient);
         
         $this->processor = $processor;
+        $this->pastMpCache = $pastMpCache;
         $this->apiKey = $apiKey;
+    }
+    
+    /**
+     * 
+     * @param DateTime $parliamentStartDate
+     * @return ListOfPastMps
+     */
+    public function getListOfPastMps(DateTime $parliamentStartDate)
+    {
+        if ($this->pastMpCache->containsListOfPastMps($parliamentStartDate)) {
+            return $this->pastMpCache->getListOfPastMps($parliamentStartDate);
+        }
+        
+        $request = $this->httpClient->createRequest('GET', 'getMps');
+        
+        $query = $this->setQueryDefaults($request->getQuery());
+        $query->set('date', $parliamentStartDate->format('Y-m-d'));
+        
+        return $this->processor->processListOfPastMps(
+            $this->httpClient->send($request),
+            $parliamentStartDate,
+            $this->pastMpCache
+        );
     }
     
     /**
@@ -85,18 +118,30 @@ class TheyWorkForYouClient
         );
     }
     
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return Candidate
+     * @throws MissingConstituencyException
+     */
     public function findPastTermsForCandidate(Candidate $candidate)
     {
-        if (!(($constituency = $candidate->getConstituency())) instanceof Constituency) {
-            throw new MissingConstituencyException('Unable to derive constituency from candidate');
+        $personId = $this->pastMpCache->findPastMpId($candidate);
+        
+        if ($personId === null) {
+            return [];
         }
         
-        $request = $this->httpClient->createRequest('GET', 'getMp');
+        $request = $this->httpClient->createRequest('GET', 'getMP');
         
         $query = $this->setQueryDefaults($request->getQuery());
-        $query->set('constituency', $constituency->getName());
+        $query->set('id', $personId);
         
-        return $this->httpClient->send($request)->json();
+        return $this->processor->processMpHistory(
+            $candidate,
+            $this->httpClient->send($request)
+        );
+        
     }
     
     /**

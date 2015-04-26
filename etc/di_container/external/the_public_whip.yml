@@ -2,9 +2,7 @@ parameters:
 
     thelgbtwhip.api.external.client.the_public_whip.scraper.class:                  TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipScraper 
     thelgbtwhip.api.external.client.the_public_whip.processor.class:                TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipProcessor
-    thelgbtwhip.api.external.client.the_public_whip.persisting_processor.class:     TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipPersistingProcessor
     thelgbtwhip.api.external.client.the_public_whip.client.class:                   TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClient
-    thelgbtwhip.api.external.client.the_public_whip.persisting_client.class:        TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipPersistingClient
 
 services:
 
@@ -18,15 +16,6 @@ services:
 
     thelgbtwhip.api.external.client.the_public_whip.processor:
         class: %thelgbtwhip.api.external.client.the_public_whip.processor.class%
-
-    thelgbtwhip.api.external.client.the_public_whip.persisting_processor:
-        class: %thelgbtwhip.api.external.client.the_public_whip.persisting_processor.class%
-        arguments:
-            entityManager:              @thelgbtwhip.api.orm.entity_manager
-            candidateRepository:        @thelgbtwhip.api.orm.entity.candidate.repository
-            constituencyRepository:     @thelgbtwhip.api.orm.entity.constituency.repository
-            candidateIssueManager:      @thelgbtwhip.api.orm.manager.candidate_issue
-            candidateIssueVoteChecker:  @thelgbtwhip.api.external.client.they_work_for_you
 
     thelgbtwhip.api.external.client.the_public_whip.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
@@ -49,15 +38,3 @@ services:
             baseUrl:    @thelgbtwhip.api.external.client.the_public_whip.base_url
             processor:  @thelgbtwhip.api.external.client.the_public_whip.processor
             scraper:    @thelgbtwhip.api.external.client.the_public_whip.scraper
-
-    thelgbtwhip.api.external.client.the_public_whip.persisting_client:
-        class: %thelgbtwhip.api.external.client.the_public_whip.persisting_client.class%
-        arguments:
-            httpClient:             @thelgbtwhip.api.external.client.the_public_whip.http_client
-            baseUrl:                @thelgbtwhip.api.external.client.the_public_whip.base_url
-            processor:              @thelgbtwhip.api.external.client.the_public_whip.persisting_processor
-            scraper:                @thelgbtwhip.api.external.client.the_public_whip.scraper
-            candidateRepository:    @thelgbtwhip.api.orm.repository.candidate
-            issueRepository:        @thelgbtwhip.api.orm.repository.issue
-            voteRepository:         @thelgbtwhip.api.orm.repository.vote
-            candidateIssueManager:  @thelgbtwhip.api.orm.manager.candidate_issue

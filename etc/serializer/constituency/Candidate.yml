@@ -46,12 +46,3 @@ TheLgbtWhip\Api\Model\Candidate:
             expose: true
             xml_element:
                 cdata: false
-            
-        termsAsMp:
-            type: ArrayCollection<TheLgbtWhip\Api\Model\Term>
-            accessor:
-                getter: getTermsAsMp
-            expose: true
-            read_only: true
-            xml_list:
-                entry_name: term

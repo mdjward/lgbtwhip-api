@@ -10,8 +10,10 @@
  */
 namespace TheLgbtWhip\Api\External\Client\TheyWorkForYou;
 
+use DateTime;
 use GuzzleHttp\Message\ResponseInterface;
 use TheLgbtWhip\Api\Model\Candidate;
+use TheLgbtWhip\Api\Model\Term;
 
 
 
@@ -22,6 +24,51 @@ use TheLgbtWhip\Api\Model\Candidate;
  */
 class TheyWorkForYouProcessor implements TheyWorkForYouProcessorInterface
 {
+    
+    public function processListOfPastMps(
+        ResponseInterface $response,
+        DateTime $parliamentStartDate,
+        PastMpCache $cache
+    ) {
+        $responseData = $response->json();
+        
+        $listOfMps = new ListOfPastMps($parliamentStartDate);
+        
+        foreach ($responseData as $mp) {
+            $listOfMps->addMpDetails($mp);
+        }
+        
+        $cache->addListOfPastMps($listOfMps);
+        
+        return $listOfMps;
+    }
+    
+    public function processMpHistory(
+        Candidate $candidate,
+        ResponseInterface $response
+    ) {
+        $responseData = $response->json();
+        
+        $termsAsMp = [];
+        
+        foreach ($responseData as $response) {
+            $term = new Term();
+            
+            $term
+                ->setCandidate($candidate)
+                ->setStartDate(
+                    DateTime::createFromFormat('Y-m-d', $response['entered_house'])
+                )
+                ->setEndDate(
+                    DateTime::createFromFormat('Y-m-d', $response['left_house'])
+                )
+            ;
+            
+            $termsAsMp[] = $term;
+        }
+        
+        return $termsAsMp;
+    }
     
     public function checkCandidateWasMpOnDate(
         Candidate $candidate,

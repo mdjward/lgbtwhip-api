@@ -43,6 +43,15 @@ abstract class AbstractModelManager
     
     /**
      * 
+     * @return ObjectManager
+     */
+    public function getObjectManager()
+    {
+        return $this->objectManager;
+    }
+    
+    /**
+     * 
      * @param object $object
      * @return object
      * @throws InvalidArgumentException
@@ -61,7 +70,7 @@ abstract class AbstractModelManager
         
         $this->objectManager->flush($managedObject);
         
-        return $object;
+        return $managedObject;
     }
     
 }

@@ -1,7 +1,7 @@
 <?php
 /**
- * CandidateIssueManager.php
- * Definition of class CandidateIssueManager
+ * CandidateManager.php
+ * Definition of class CandidateManager
  * 
  * Created 23-Apr-2015 13:28:38
  *
@@ -19,11 +19,11 @@ use TheLgbtWhip\Api\Repository\VoteRepository;
 
 
 /**
- * CandidateIssueManager
+ * CandidateManager
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class CandidateIssueManager extends AbstractModelManager
+class CandidateManager extends AbstractModelManager
 {
     
     /**
@@ -32,11 +32,6 @@ class CandidateIssueManager extends AbstractModelManager
      */
     protected $candidateRepository;
     
-    /**
-     *
-     * @var VoteRepository
-     */
-    protected $voteRepository;
     
     
     
@@ -55,38 +50,6 @@ class CandidateIssueManager extends AbstractModelManager
         
         $this->candidateRepository = $candidateRepository;
         $this->voteRepository = $voteRepository;
-    }
-    
-    /**
-     * 
-     * @param View $view
-     * @return View
-     */
-    public function saveView(View $view)
-    {
-        return $this->mergeOrPersistObject($view);
-    }
-    
-    /**
-     * 
-     * @param Vote $vote
-     * @return Vote
-     */
-    public function saveVote(Vote $vote)
-    {
-        $existingVote = $this->voteRepository->findOneByCandidateAndIssue(
-            $vote->getCandidate(),
-            $vote->getIssue()
-        );
-        
-        if ($existingVote instanceof $vote) {
-            return $existingVote;
-        }
-        
-        $this->objectManager->persist($vote);
-        $this->objectManager->flush($vote);
-        
-        return $vote;
     }
     
 }

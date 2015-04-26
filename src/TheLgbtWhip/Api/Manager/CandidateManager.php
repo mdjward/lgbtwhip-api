@@ -1,7 +1,7 @@
 <?php
 /**
- * CandidateAndPartyManager.php
- * Definition of class CandidateAndPartyManager
+ * CandidateManager.php
+ * Definition of class CandidateManager
  * 
  * Created 20-Apr-2015 18:20:45
  *
@@ -13,17 +13,20 @@ namespace TheLgbtWhip\Api\Manager;
 use Doctrine\Common\Persistence\ObjectManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Party;
+use TheLgbtWhip\Api\Model\View;
+use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
 use TheLgbtWhip\Api\Repository\PartyRepository;
+use TheLgbtWhip\Api\Repository\VoteRepository;
 
 
 
 /**
- * CandidateAndPartyManager
+ * CandidateManager
  * 
  * @author M.D.Ward <matthew.ward@byng-systems.com>
  */
-class CandidateAndPartyManager extends AbstractModelManager
+class CandidateManager extends AbstractModelManager
 {
     /**
      *
@@ -37,6 +40,13 @@ class CandidateAndPartyManager extends AbstractModelManager
      */
     protected $partyRepository;
     
+    /**
+     *
+     * @var VoteRepository
+     */
+    protected $voteRepository;
+    
+    
     
     
     /**
@@ -44,16 +54,19 @@ class CandidateAndPartyManager extends AbstractModelManager
      * @param ObjectManager $objectManager
      * @param CandidateRepository $candidateRepository
      * @param PartyRepository $partyRepository
+     * @param VoteRepository $voteRepository
      */
     public function __construct(
         ObjectManager $objectManager,
         CandidateRepository $candidateRepository,
-        PartyRepository $partyRepository
+        PartyRepository $partyRepository,
+        VoteRepository $voteRepository
     ) {
         parent::__construct($objectManager);
         
         $this->candidateRepository = $candidateRepository;
         $this->partyRepository = $partyRepository;
+        $this->voteRepository = $voteRepository;
     }
     
     /**
@@ -63,7 +76,16 @@ class CandidateAndPartyManager extends AbstractModelManager
      */
     public function saveCandidate(Candidate $candidate)
     {
-        return $this->mergeOrPersistObject($candidate);
+        $candidateId = $candidate->getId();
+        
+        if (($existingCandidate = $this->candidateRepository->find($candidateId)) instanceof Candidate) {
+            return $existingCandidate;
+        }
+        
+        $this->objectManager->persist($candidate);
+        $this->objectManager->flush($candidate);
+        
+        return $candidate;
     }
     
     /**
@@ -86,6 +108,38 @@ class CandidateAndPartyManager extends AbstractModelManager
         $this->objectManager->flush($party);
         
         return $party;
+    }
+    
+    /**
+     * 
+     * @param View $view
+     * @return View
+     */
+    public function saveView(View $view)
+    {
+        return $this->mergeOrPersistObject($view);
+    }
+    
+    /**
+     * 
+     * @param Vote $vote
+     * @return Vote
+     */
+    public function saveVote(Vote $vote)
+    {
+        $existingVote = $this->voteRepository->findOneByCandidateAndIssue(
+            $vote->getCandidate(),
+            $vote->getIssue()
+        );
+        
+        if ($existingVote instanceof $vote) {
+            return $existingVote;
+        }
+        
+        $this->objectManager->persist($vote);
+        $this->objectManager->flush($vote);
+        
+        return $vote;
     }
     
 }

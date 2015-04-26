@@ -15,4 +15,4 @@ TheLgbtWhip\Api\Model\Constituency:
         candidates:
             targetEntity: Candidate
             mappedBy: constituency
-            cascade: ["persist", "merge"]
+            #cascade: ["persist", "merge"]

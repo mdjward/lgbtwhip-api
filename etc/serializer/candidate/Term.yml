@@ -12,14 +12,6 @@ TheLgbtWhip\Api\Model\Term:
             expose: true
             max_depth: 1
 
-        candidate:
-            type: TheLgbtWhip\Api\Model\Candidate
-            accessor:
-                getter: getCandidate
-                setter: setCandidate
-            expose: true
-            max_depth: 1
-
         startDate:
             type: DateTime<'Y-m-d', 'Europe/London'>
             accessor:

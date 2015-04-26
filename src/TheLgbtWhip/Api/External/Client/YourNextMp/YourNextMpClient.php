@@ -9,14 +9,15 @@ namespace TheLgbtWhip\Api\External\Client\YourNextMp;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\RequestInterface;
-use TheLgbtWhip\Api\Cache\Cacheable;
-use TheLgbtWhip\Api\Cache\CacheableTrait;
+use TheLgbtWhip\Api\External\AllConstituenciesRetrieverInterface;
 use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
+use TheLgbtWhip\Api\External\CandidateNameSearcherInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\External\ConstituencyIdResolverInterface;
 use TheLgbtWhip\Api\External\ConstituencyNameResolverInterface;
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
 
 
@@ -30,9 +31,11 @@ class YourNextMpClient
     extends
         AbstractRestServiceClient
     implements
+        AllConstituenciesRetrieverInterface,
         ConstituencyCandidatesRetrieverInterface,
         CandidateIdResolverInterface,
         CandidateNameResolverInterface,
+        CandidateNameSearcherInterface,
         ConstituencyIdResolverInterface,
         ConstituencyNameResolverInterface
 {    
@@ -108,16 +111,56 @@ class YourNextMpClient
     
     /**
      * 
+     * @param string $name
+     * @return array
+     */
+    public function searchCandidatesByName($name)
+    {
+        return [];
+    }
+    
+    /**
+     * 
      * @param RequestInterface $request
      * @return Candidate
      */
     protected function resolveCandidate(RequestInterface $request)
     {
-        $candidate = $this->processor->processCandidateSearchResults(
+        return $this->processor->processCandidateSearchResults(
             $this->httpClient->send($request)
         );
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getAllConstituencies()
+    {
+        $constituencies = [];
+        
+        $currentPage = 0;
+        $hasMore = true;
+        
+        do {
+            $currentPage++;
+            
+            $request = $this->httpClient->createRequest('GET', 'posts');
+            $request->getQuery()->set('page', $currentPage);
 
-        return $candidate;
+            $response = $this->httpClient->send($request);
+            $responseData = $response->json();
+            
+            $constituencies = array_merge(
+                $constituencies,
+                $this->processor->processAllConstituencyResults($response)
+            );
+            
+            $hasMore = (isset($responseData['has_more']) ? $responseData['has_more'] : false);
+            
+        } while ($hasMore === true);
+        
+        return $constituencies;
     }
     
     /**
@@ -153,15 +196,9 @@ class YourNextMpClient
      */
     protected function resolveConstituency(RequestInterface $request)
     {
-        $constituency = $this->processor->processConstituencySearchResults(
+        return $this->processor->processConstituencySearchResults(
             $this->httpClient->send($request)
         );
-
-        foreach ($this->getCandidatesForConstituency($constituency) as $candidate) {
-            $constituency->addCandidate($candidate);
-        }
-        
-        return $constituency;
     }
     
 }

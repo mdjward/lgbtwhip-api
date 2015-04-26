@@ -21,12 +21,3 @@ Exception:
             expose: true
             xml_element:
                 cdata: false
-
-        previous:
-            type: Exception
-            access_type: public_method
-            accessor:
-                getter: getCode
-            expose: true
-            xml_attribute: true
-            max_depth: 2
