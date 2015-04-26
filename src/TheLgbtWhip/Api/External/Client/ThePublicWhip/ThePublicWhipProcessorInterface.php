@@ -1,6 +1,7 @@
 <?php
 namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
 
 /**
@@ -33,5 +34,12 @@ interface ThePublicWhipProcessorInterface
      * @param array $votes
      */
     public function processVoteData(Issue $issue, array $votes);
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param array $votes
+     */
+    public function findCandidateInVotes(Candidate $candidate, array $votes);
     
 }

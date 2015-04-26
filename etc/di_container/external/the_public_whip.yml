@@ -31,7 +31,7 @@ services:
         arguments:
             url: %the_public_whip.base_url%
 
-    thelgbtwhip.api.external.client.the_public_whip.client:
+    thelgbtwhip.api.external.client.the_public_whip:
         class: %thelgbtwhip.api.external.client.the_public_whip.client.class%
         arguments:
             httpClient: @thelgbtwhip.api.external.client.the_public_whip.http_client

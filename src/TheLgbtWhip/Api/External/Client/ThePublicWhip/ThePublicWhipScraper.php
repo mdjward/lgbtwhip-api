@@ -79,10 +79,11 @@ class ThePublicWhipScraper
             }
             
             $name = $this->convertNameString($nameElements);
+            $constituency = trim($constituencyElements->item(0)->nodeValue);
             
-            $votes[$name] = [
+            $votes[$name . ' - ' . $constituency] = [
                 ThePublicWhipProcessorInterface::VOTE_DATA_KEY_NAME         =>  $name,
-                ThePublicWhipProcessorInterface::VOTE_DATA_KEY_CONSTITUENCY =>  trim($constituencyElements->item(0)->nodeValue),
+                ThePublicWhipProcessorInterface::VOTE_DATA_KEY_CONSTITUENCY =>  $constituency,
                 ThePublicWhipProcessorInterface::VOTE_DATA_KEY_VOTE_CAST    =>  $voteElements->item(0)->nodeValue
             ];
         }
@@ -98,7 +99,7 @@ class ThePublicWhipScraper
     protected function convertNameString(DOMNodeList $nameElements)
     {
         return preg_replace(
-            '#^(?:(?:Mr)|(?:Mrs)|(?:Ms)|(?:Miss)|(?:Sir))\.?\s(.+)$#i',
+            '#^(?:(?:Prof)|(?:Dr)|(?:Mr)|(?:Mrs)|(?:Ms)|(?:Miss)|(?:Sir))\.?\s(.+)$#i',
             '\1',
             trim($nameElements->item(0)->nodeValue)
         );

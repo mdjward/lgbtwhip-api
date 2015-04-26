@@ -25,9 +25,9 @@ class ThePublicWhipProcessor implements ThePublicWhipProcessorInterface
     {
         $processedVotes = [];
         
-        foreach ($votes as $voteData)
+        foreach ($votes as $key => $voteData)
         {
-            $processedVotes[] = $this->buildVote(
+            $processedVotes[$key] = $this->buildVote(
                 $voteData,
                 $this->buildCandidate(
                     $voteData,
@@ -38,6 +38,25 @@ class ThePublicWhipProcessor implements ThePublicWhipProcessorInterface
         }
         
         return $processedVotes;
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param array $votes
+     * @return null
+     */
+    public function findCandidateInVotes(Candidate $candidate, array $votes)
+    {
+        $constituency = $candidate->getConstituency();
+        
+        $key = $candidate->getName() . ' - ' . $constituency->getName();
+        
+        if (isset($votes[$key])) {
+            return $votes[$key];
+        }
+        
+        return null;
     }
     
     /**

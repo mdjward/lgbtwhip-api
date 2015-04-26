@@ -4,19 +4,6 @@ TheLgbtWhip\Api\Model\Vote:
     access_type: public_method
     
     properties:
-        candidate:
-            type: TheLgbtWhip\Api\Model\Candidate
-            accessor:
-                getter: getCandidate
-                setter: setCandidate
-            expose: true
-        
-#        issue:
-#            type: TheLgbtWhip\Api\Model\Issue
-#            accessor:
-#                getter: getIssue
-#                setter: setIssue
-#            expose: true
 
         voteCast:
             type: string

@@ -11,6 +11,7 @@
 namespace TheLgbtWhip\Api\External;
 
 use TheLgbtWhip\Api\Model\Candidate;
+use TheLgbtWhip\Api\Model\Issue;
 
 
 
@@ -25,8 +26,11 @@ interface CandidateVoteRetrieverInterface
     /**
      * 
      * @param Candidate $candidate
-     * @return array
+     * @return Vote|null
      */
-    public function getVotesForCandidate(Candidate $candidate);
+    public function getVoteForCandidate(
+        Candidate $candidate,
+        Issue $issue
+    );
     
 }

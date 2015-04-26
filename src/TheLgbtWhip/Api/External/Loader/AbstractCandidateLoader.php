@@ -14,6 +14,7 @@ use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameSearcherInterface;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 
@@ -62,6 +63,12 @@ abstract class AbstractCandidateLoader
     protected $candidateIssueVoteChecker;
     
     /**
+     *
+     * @var CandidateVoteRetrieverInterface
+     */
+    protected $candidateVoteRetriever;
+    
+    /**
      * 
      * @var PastMpTermRetrieverInterface
      */
@@ -76,6 +83,7 @@ abstract class AbstractCandidateLoader
      * @param CandidateNameSearcherInterface $candidateNameSearcher
      * @param ConstituencyCandidatesRetrieverInterface $constituencyCandidatesRetriever
      * @param CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker
+     * @param CandidateVoteRetrieverInterface $candidateVoteRetriever
      * @param PastMpTermRetrieverInterface $pastMpTermsRetriever
      */
     public function __construct(
@@ -84,6 +92,7 @@ abstract class AbstractCandidateLoader
         CandidateNameSearcherInterface $candidateNameSearcher,
         ConstituencyCandidatesRetrieverInterface $constituencyCandidatesRetriever,
         CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker,
+        CandidateVoteRetrieverInterface $candidateVoteRetriever,
         PastMpTermRetrieverInterface $pastMpTermsRetriever
     ) {
         $this->candidateIdResolver = $candidateIdResolver;
@@ -91,6 +100,7 @@ abstract class AbstractCandidateLoader
         $this->candidateNameSearcher = $candidateNameSearcher;
         $this->constituencyCandidatesRetriever = $constituencyCandidatesRetriever;
         $this->candidateIssueVoteChecker = $candidateIssueVoteChecker;
+        $this->candidateVoteRetriever = $candidateVoteRetriever;
         $this->pastMpTermsRetriever = $pastMpTermsRetriever;
     }
     

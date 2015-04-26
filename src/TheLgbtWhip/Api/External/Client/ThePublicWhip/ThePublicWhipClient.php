@@ -4,10 +4,12 @@ namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Url;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipProcessorInterface;
 use TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipScraper;
 use TheLgbtWhip\Api\External\VoteRetrieverInterface;
+use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
 
 /**
@@ -17,7 +19,7 @@ use TheLgbtWhip\Api\Model\Issue;
  */
 class ThePublicWhipClient
     extends AbstractRestServiceClient
-    implements VoteRetrieverInterface
+    implements VoteRetrieverInterface, CandidateVoteRetrieverInterface
 {
     
     /**
@@ -76,7 +78,21 @@ class ThePublicWhipClient
         
         return $this->processor->processVoteData(
             $issue,
-            $this->scraper->parse($this->httpClient->get($url))
+            $this->scraper->parse($this->httpClient->get($url)->getBody(true))
+        );
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param Issue $issue
+     * @return Vote|null
+     */
+    public function getVoteForCandidate(Candidate $candidate, Issue $issue)
+    {
+        return $this->processor->findCandidateInVotes(
+            $candidate,
+            $this->getVotesForIssue($issue)
         );
     }
     

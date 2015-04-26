@@ -16,6 +16,7 @@ use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
 use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
 use TheLgbtWhip\Api\External\CandidateNameResolverInterface;
 use TheLgbtWhip\Api\External\CandidateNameSearcherInterface;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\ConstituencyCandidatesRetrieverInterface;
 use TheLgbtWhip\Api\External\Loader\AbstractCandidateLoader;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
@@ -23,6 +24,7 @@ use TheLgbtWhip\Api\Manager\CandidateManager;
 use TheLgbtWhip\Api\Manager\ConstituencyManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
+use TheLgbtWhip\Api\Repository\IssueRepository;
 
 
 
@@ -49,6 +51,12 @@ class PersistingCandidateLoader
      */
     protected $candidateManager;
     
+    /**
+     *
+     * @var IssueRepository
+     */
+    protected $issueRepository;
+    
     
     
     /**
@@ -58,6 +66,7 @@ class PersistingCandidateLoader
      * @param CandidateNameSearcherInterface $candidateNameSearcher
      * @param ConstituencyCandidatesRetrieverInterface $constituencyCandidatesRetriever
      * @param CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker
+     * @param CandidateVoteRetrieverInterface $candidateVoteRetriever
      * @param PastMpTermRetrieverInterface $pastMpTermsRetriever
      * @param ConstituencyManager $constituencyManager
      * @param CandidateManager $candidateManager
@@ -68,9 +77,11 @@ class PersistingCandidateLoader
         CandidateNameSearcherInterface $candidateNameSearcher,
         ConstituencyCandidatesRetrieverInterface $constituencyCandidatesRetriever,
         CandidateIssueVoteCheckerInterface $candidateIssueVoteChecker,
+        CandidateVoteRetrieverInterface $candidateVoteRetriever,
         PastMpTermRetrieverInterface $pastMpTermsRetriever,
         ConstituencyManager $constituencyManager,
-        CandidateManager $candidateManager
+        CandidateManager $candidateManager,
+        IssueRepository $issueRepository
     ) {
         parent::__construct(
             $candidateIdResolver,
@@ -78,11 +89,13 @@ class PersistingCandidateLoader
             $candidateNameSearcher,
             $constituencyCandidatesRetriever,
             $candidateIssueVoteChecker,
+            $candidateVoteRetriever,
             $pastMpTermsRetriever
         );
         
         $this->constituencyManager = $constituencyManager;
         $this->candidateManager = $candidateManager;
+        $this->issueRepository = $issueRepository;
     }
     
     public function getCandidatesForConstituency(Constituency $constituency)
@@ -116,6 +129,22 @@ class PersistingCandidateLoader
     {
         foreach ($this->pastMpTermsRetriever->findPastTermsForCandidate($candidate) as $term) {
             $candidate->addTermAsMp($term);
+        }
+        
+        foreach ($this->issueRepository->findAll() as $issue) {
+            if (!$this->candidateIssueVoteChecker->checkCandidateCouldHaveVoted($candidate, $issue)) {
+                continue;
+            }
+            
+            $vote = $this->candidateVoteRetriever->getVoteForCandidate(
+                $candidate,
+                $issue
+            );
+            
+            if ($vote !== null) {
+                $candidate->addVote($vote);
+                $issue->addVote($vote);
+            }
         }
         
         return $candidate;

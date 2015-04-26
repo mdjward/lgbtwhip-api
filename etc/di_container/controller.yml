@@ -32,7 +32,7 @@ services:
     thelgbtwhip.api.controller.issue:
         class: TheLgbtWhip\Api\Controller\IssueController
         arguments:
-            issueRepository:        @thelgbtwhip.api.external.client.the_public_whip.client
+            issueRepository:        @thelgbtwhip.api.orm.repository.issue
             serializer:             @thelgbtwhip.api.serializer.candidate
         tags:
             - { name: controller }

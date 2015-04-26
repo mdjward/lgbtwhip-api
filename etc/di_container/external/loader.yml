@@ -21,8 +21,10 @@ services:
             candidateNameSearcher:              @thelgbtwhip.api.external.client.your_next_mp
             constituencyCandidatesRetriever:    @thelgbtwhip.api.external.client.your_next_mp
             candidateIssueVoteChecker:          @thelgbtwhip.api.external.client.they_work_for_you
+            candidateVoteRetriever:             @thelgbtwhip.api.external.client.the_public_whip
             pastMpTermsRetriever:               @thelgbtwhip.api.external.client.they_work_for_you
             constituencyManager:                @thelgbtwhip.api.orm.manager.constituency
             candidateManager:                   @thelgbtwhip.api.orm.manager.candidate
+            issueRepository:                    @thelgbtwhip.api.orm.repository.issue
         tags:
             - { name: cacheable, type: filesystem }

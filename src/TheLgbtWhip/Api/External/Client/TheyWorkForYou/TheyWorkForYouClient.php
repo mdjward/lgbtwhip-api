@@ -14,10 +14,10 @@ use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Query;
 use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
+use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Model\Candidate;
-use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Issue;
 
 
@@ -29,9 +29,7 @@ use TheLgbtWhip\Api\Model\Issue;
  */
 class TheyWorkForYouClient
     extends AbstractRestServiceClient
-    implements
-        PastMpTermRetrieverInterface,
-        CandidateIssueVoteCheckerInterface
+    implements PastMpTermRetrieverInterface, CandidateIssueVoteCheckerInterface
 {
     
     /**
@@ -85,7 +83,7 @@ class TheyWorkForYouClient
             return $this->pastMpCache->getListOfPastMps($parliamentStartDate);
         }
         
-        $request = $this->httpClient->createRequest('GET', 'getMps');
+        $request = $this->httpClient->createRequest('GET', 'getMPs');
         
         $query = $this->setQueryDefaults($request->getQuery());
         $query->set('date', $parliamentStartDate->format('Y-m-d'));
@@ -114,7 +112,7 @@ class TheyWorkForYouClient
         
         return $this->processor->checkCandidateWasMpOnDate(
             $candidate,
-            $this->httpClient->send($request)->json()
+            $this->httpClient->send($request)
         );
     }
     
