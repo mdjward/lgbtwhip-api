@@ -1,4 +1,4 @@
-TheLgbtWhip\Api\Model\Wrapper\ConstituencyWrapper:
+TheLgbtWhip\Api\Model\Wrapper\ConstituenciesWrapper:
     exclusion_policy: ALL
     xml_root_name: constituency_list
     access_type: public_method

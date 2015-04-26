@@ -62,8 +62,6 @@ class AbstractSerializingController extends AbstractController
         try {
             if (($format = $this->request->get('format')) !== null) {
                 $this->serializerWrapper->setFormat($format);
-
-                return;
             }
         } catch (UnexpectedValueException $ex) {
             // Do nothing - proceed to the declaration below

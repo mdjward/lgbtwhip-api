@@ -1,4 +1,4 @@
-TheLgbtWhip\Api\Model\Wrapper\CandidateWrapper:
+TheLgbtWhip\Api\Model\Wrapper\CandidatesWrapper:
     exclusion_policy: ALL
     xml_root_name: candidate_list
     access_type: public_method

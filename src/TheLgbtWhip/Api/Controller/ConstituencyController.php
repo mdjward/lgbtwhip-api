@@ -16,8 +16,8 @@ use TheLgbtWhip\Api\External\ConstituencyIdResolverInterface;
 use TheLgbtWhip\Api\External\ConstituencyNameResolverInterface;
 use TheLgbtWhip\Api\External\ExternalServiceException;
 use TheLgbtWhip\Api\External\PostcodeToConstituencyMappingInterface;
+use TheLgbtWhip\Api\Model\ArrayWrapper\ConstituenciesWrapper;
 use TheLgbtWhip\Api\Model\Constituency;
-use TheLgbtWhip\Api\Repository\ConstituencyRepository;
 use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
 
@@ -87,7 +87,9 @@ class ConstituencyController extends AbstractSerializingController
     {
         return $this->response->setBody(
             $this->serializerWrapper->serialize(
-                $this->allConstituenciesRetriever->getAllConstituencies()
+                new ConstituenciesWrapper(
+                    $this->allConstituenciesRetriever->getAllConstituencies()
+                )
             )
         );
     }
