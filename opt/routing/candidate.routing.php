@@ -11,6 +11,7 @@
 use Slim\Http\Request;
 use Slim\Slim;
 use TheLgbtWhip\Api\Controller\CandidateController;
+use TheLgbtWhip\Api\Controller\IssueController;
 
 
 
@@ -26,7 +27,7 @@ $app->get(
     '/',
     function() use ($app, $request, $controller) {
     
-        if (($id = $request->get('id')) !== null) {
+        if (($id = $request->get('id', $request->get('candidateId'))) !== null) {
             return $controller->resolveByIdAction($id);
         }
         
@@ -37,3 +38,30 @@ $app->get(
         $app->pass();
     }
 );
+
+$app->group(
+    '/view',
+    function() use ($app, $request, $container) {
+    
+        /* @var $controller IssueController */
+        $controller = $container->get('thelgbtwhip.api.controller.issue');
+        
+        $id = $request->get('candidateId');
+        
+        $callback = function($issueUriKey) use ($app, $controller, $id) {
+            if ($id !== null) {
+                return $controller->saveView($id, $issueUriKey);
+            }
+            
+            $app->pass();
+        };
+        
+        foreach (['put', 'post'] as $requestMethod) {
+            $app->$requestMethod('/:issueUriKey', $callback);
+        }
+    }
+);
+
+$app->get('/:id', function($id) use ($controller) {
+    return $controller->resolveByIdAction($id);
+});

@@ -1,0 +1,38 @@
+parameters:
+    
+    thelgbtwhip.api.serializer.issue.builder.cache_dir:      %cache_dir%/serializer/constituency
+    thelgbtwhip.api.serializer.issue.namespace_mappings:
+        TheLgbtWhip\Api\Model:              %config_dir%/serializer/issue
+    
+services:
+    
+    thelgbtwhip.api.serializer.issue.builder:
+        class: JMS\Serializer\SerializerBuilder
+        factory:
+            - JMS\Serializer\SerializerBuilder
+            - create
+        calls:
+            - [setDebug, [%mode.debug%]]
+            - [setCacheDir, [%thelgbtwhip.api.serializer.issue.builder.cache_dir%]]
+            - [setMetadataDirs, [%thelgbtwhip.api.serializer.issue.namespace_mappings%]]
+            - [setPropertyNamingStrategy, [@thelgbtwhip.api.serializer.naming_strategy]]
+    
+    thelgbtwhip.api.serializer.issue.real:
+        class: %thelgbtwhip.api.serializer.real.class%
+        factory:
+            - @thelgbtwhip.api.serializer.issue.builder
+            - build
+
+    thelgbtwhip.api.serializer.issue.depth_respecting_wrapper:
+        class: %thelgbtwhip.api.serializer.depth_respecting_wrapper.class%
+        arguments:
+            realSerializer: @thelgbtwhip.api.serializer.issue.real
+            
+    thelgbtwhip.api.serializer.issue:
+        alias: thelgbtwhip.api.serializer.issue.depth_respecting_wrapper
+        
+    thelgbtwhip.api.serializer.issue.content_type_wrapper:
+        class: %thelgbtwhip.api.serializer.content_type_wrapper.class%
+        arguments:
+            serializer: @thelgbtwhip.api.serializer.issue
+            contentType: "@=service('thelgbtwhip.api.request.headers').get('Accept', 'text/json')"

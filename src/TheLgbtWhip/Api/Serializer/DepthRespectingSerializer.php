@@ -80,11 +80,11 @@ class DepthRespectingSerializer implements SerializerInterface
         $format,
         DeserializationContext $context = null
     ) {
-        return $this->realSerializer->serialize(
+        return $this->realSerializer->deserialize(
             $data,
             $type,
             $format,
-            ($context ?: $this->createSerializationContext())
+            ($context ?: $this->createDeserializationContext())
         );
     }
     
@@ -92,7 +92,18 @@ class DepthRespectingSerializer implements SerializerInterface
     {
         $context = new SerializationContext();
         
-        return $context->enableMaxDepthChecks();
+        return $context
+            ->enableMaxDepthChecks()
+        ;
+    }
+    
+    protected function createDeserializationContext()
+    {
+        $context = new DeserializationContext();
+        
+        return $context
+            ->enableMaxDepthChecks()
+        ;
     }
     
 }

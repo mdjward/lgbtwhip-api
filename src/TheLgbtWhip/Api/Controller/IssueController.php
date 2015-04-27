@@ -1,14 +1,13 @@
 <?php
 namespace TheLgbtWhip\Api\Controller;
 
-use DateTime;
+use Exception;
 use JMS\Serializer\SerializerInterface;
-use ReflectionClass;
-use TheLgbtWhip\Api\Model\Candidate;
-use TheLgbtWhip\Api\Model\Constituency;
-use TheLgbtWhip\Api\Model\Issue;
-use TheLgbtWhip\Api\Model\Vote;
+use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
+use TheLgbtWhip\Api\Manager\CandidateManager;
+use TheLgbtWhip\Api\Model\View;
 use TheLgbtWhip\Api\Repository\IssueRepository;
+use TheLgbtWhip\Api\Serializer\ContentTypeSerializerWrapper;
 
 
 
@@ -17,8 +16,22 @@ use TheLgbtWhip\Api\Repository\IssueRepository;
  *
  * @author matt
  */
-class IssueController extends AbstractController
+class IssueController extends AbstractSerializingController
 {
+    
+    
+    
+    /**
+     *
+     * @var CandidateIdResolverInterface
+     */
+    protected $candidateIdResolver;
+    
+    /**
+     *
+     * @var CandidateManager
+     */
+    protected $candidateManager;
     
     /**
      *
@@ -28,97 +41,63 @@ class IssueController extends AbstractController
     
     /**
      *
-     * @var SerializerInterface
+     * @var ContentTypeSerializerWrapper
      */
-    protected $serializer;
+    protected $incomingSerializerWrapper;
     
     
     
     /**
      * 
+     * @param CandidateIdResolverInterface $candidateIdResolver
+     * @param CandidateManager $candidateManager
      * @param IssueRepository $issueRepository
-     * @param SerializerInterface $serializer
+     * @param ContentTypeSerializerWrapper $incomingSerializerWrapper
+     * @param ContentTypeSerializerWrapper $outgoingSerializerWrapper
      */
     public function __construct(
+        CandidateIdResolverInterface $candidateIdResolver,
+        CandidateManager $candidateManager,
         IssueRepository $issueRepository,
-        SerializerInterface $serializer
+        ContentTypeSerializerWrapper $incomingSerializerWrapper,
+        ContentTypeSerializerWrapper $outgoingSerializerWrapper
     ) {
+        parent::__construct($outgoingSerializerWrapper);
+        
+        $this->candidateIdResolver = $candidateIdResolver;
+        $this->candidateManager = $candidateManager;
         $this->issueRepository = $issueRepository;
-        $this->serializer = $serializer;
+        $this->incomingSerializerWrapper = $incomingSerializerWrapper;
     }
     
-    /**
-     * 
-     * @param integer $number
-     * @param string $date
-     */
-    public function testAction($number, $date)
+    public function saveView($candidateId, $issueUriKey)
     {
-        $candidateReflection = new ReflectionClass('TheLgbtWhip\Api\Model\Candidate');
-        $idProperty = $candidateReflection->getProperty('id');
-        $idProperty->setAccessible(true);
+        if (($candidate = $this->candidateIdResolver->resolveCandidateById($candidateId)) === null) {
+            throw new Exception('Unrecognised candidate ID', 404);
+        }
         
-        $issue = new Issue();
-        $issue
-            ->setTitle('Arbitrary issue')
-            ->setDescription('Description of an arbitrary issue')
-            ->setRelevantAct('Arbitrary Act of 2015')
-            ->setPublicWhipId(12345)
-            ->setPublicWhipDate(DateTime::createFromFormat('Y-m-d', '2015-01-01'))
-            ->setIsProgressiveStance(true)
+        if (($issue = $this->issueRepository->findOneByUriKey($issueUriKey)) === null) {
+            throw new Exception('Unrecognised issue URI string', 404);
+        }
+        
+        $body = $this->request->getBody();
+        
+        /* @var $view View */
+        $view = $this->incomingSerializerWrapper->deserialize(
+            $body,
+            View::class
+        );
+        
+        $view
+            ->setCandidate($candidate)
+            ->setIssue($issue)
         ;
         
-        $candidate1 = new Candidate();
-        $idProperty->setValue($candidate1, 1);
-        $candidate1->setName("CANDIDATE 1");
+        $this->candidateManager->saveView($view);
         
-        $candidate2 = new Candidate();
-        $idProperty->setValue($candidate2, 2);
-        $candidate2->setName("CANDIDATE 2");
-        
-        $candidate1Vote = new Vote();
-        $candidate1Vote->setIssue($issue)->setCandidate($candidate1)->setVoteCast(Vote::AYE);
-        $candidate1->addVote($candidate1Vote);
-        $issue->addVote($candidate1Vote);
-        
-        $candidate2Vote = new Vote();
-        $candidate2Vote->setIssue($issue)->setCandidate($candidate2)->setVoteCast(Vote::NAY);
-        $candidate2->addVote($candidate2Vote);
-        $issue->addVote($candidate2Vote);
-        
-        $constituency = new Constituency();
-        $constituency->setName("CONSTITUENCY");
-        
-        $constituency->addCandidate($candidate1)->addCandidate($candidate2);
-        $candidate1->setConstituency($constituency);
-        $candidate2->setConstituency($constituency);
-
-        $constituencyJson = $this->serializer->serialize($constituency, 'json');
-        $constituencyXml = $this->serializer->serialize($constituency, 'xml');
-        
-        $candidateJson = $this->serializer->serialize($candidate1, 'json');
-        $candidateXml = $this->serializer->serialize($candidate1, 'xml');
-        
-        $issue = new Issue();
-        $issue
-            ->setTitle('Same Sex Marriage')
-            ->setRelevantAct('Marriage (Same-sex Couples) Bill')
-            ->setDescription('Third reading in the House of Commons')
-            ->setIsProgressiveStance(true)
-            ->setPublicWhipId($number)
-            ->setPublicWhipDate(DateTime::createFromFormat('Y-m-d', $date))
-        ;
-        
-        foreach ($this->thePublicWhipClient->getVotesForIssue($issue) as $vote) {
-            $issue->addVote($vote);
-        };
-        
-        $this->response->headers->set('Content-Type', 'text/json');
-        $this->response->setBody(
-            $this->serializer->serialize($issue, 'json')
+        return $this->response->setBody(
+            $this->serializerWrapper->serialize($candidate->addView($view))
         );
     }
-    
-    
     
 }

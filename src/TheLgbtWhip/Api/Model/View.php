@@ -22,19 +22,19 @@ class View extends AbstractModelWithId
      * Indicates that the candidate would support the LGBT community
      * in legislation regarding this issue
      */
-    const SUPPORTS = -1;
+    const SUPPORTS = 'supports';
     
     /**
      * Indicates that the candidate would not support the LGBT community
      * in legislation regarding this issue
      */
-    const DOES_NOT_SUPPORT = -2;
+    const DOES_NOT_SUPPORT = 'does not support';
     
     /**
      * Indicates that the candidate declined to answer when asked (due to party
      * policy, as an example)
      */
-    const DECLINED_TO_ANSWER = -3;
+    const DECLINED_TO_ANSWER = 'declined to answer';
     
     
     
@@ -116,15 +116,6 @@ class View extends AbstractModelWithId
      * 
      * @return string
      */
-    public function getHistoricSupportAsString()
-    {
-        return $this->formatSupport($this->historicSupport);
-    }
-    
-    /**
-     * 
-     * @return string
-     */
     public function getCurrentStance()
     {
         return $this->currentStance;
@@ -137,15 +128,6 @@ class View extends AbstractModelWithId
     public function getCurrentSupport()
     {
         return $this->currentSupport;
-    }
-    
-    /**
-     * 
-     * @return string
-     */
-    public function getCurrentSupportAsString()
-    {
-        return $this->formatSupport($this->currentSupport);
     }
     
     /**
@@ -226,39 +208,18 @@ class View extends AbstractModelWithId
         
     /**
      * 
-     * @param integer $support
-     * @return string|null
-     */
-    private function formatSupport($support)
-    {
-        switch ($support) {
-            case self::SUPPORTS:
-                return 'supports';
-            case self::DOES_NOT_SUPPORT:
-                return 'does not support';
-            case self::DECLINED_TO_ANSWER:
-                return 'declined to answer';
-        }
-        
-        return null;
-    }
-
-    /**
-     * 
      * @param mixed $givenSupportValue
-     * @return integer
+     * @return string
      * @throws InvalidArgumentException
      * @throws UnexpectedValueException
      */
     private function validateSupport($givenSupportValue)
     {
-        if (!is_numeric($givenSupportValue)) {
+        if (!is_string($givenSupportValue)) {
             throw new InvalidArgumentException(
                 'Given support value should be provided as an integer'
             );
         }
-        
-        $givenSupportValue = (int) $givenSupportValue;
         
         switch ($givenSupportValue) {
             case self::SUPPORTS:
@@ -268,7 +229,7 @@ class View extends AbstractModelWithId
         }
         
         throw new UnexpectedValueException(
-            'Unrecognised support constant' . $givenSupportValue
+            "Unrecognised support value '{$givenSupportValue}'"
         );
     }
 

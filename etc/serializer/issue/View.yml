@@ -29,5 +29,5 @@ TheLgbtWhip\Api\Model\View:
             type: string
             accessor:
                 getter: getCurrentSupport
-                getter: setCurrentSupport
+                setter: setCurrentSupport
             expose: true

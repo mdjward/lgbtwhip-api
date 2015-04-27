@@ -9,14 +9,30 @@ TheLgbtWhip\Api\Model\View:
             generator:
                 strategy: auto
     fields:
+        historicSupport:
+            column: historic_support
+            type: string
+            nullable: true
+            
         historicStance:
             column: historic_stance
             type: text
-            nullable: false
+            nullable: true
+            
+        currentSupport:
+            column: current_support
+            type: string
+            nullable: true
+            
         currentStance:
             column: current_stance
             type: text
-            nullable: false
+            nullable: true
+            
+    uniqueConstraints:
+        issue_candidate:
+            columns: [issue_id, candidate_id]
+
     manyToOne:
         candidate:
             targetEntity: Candidate

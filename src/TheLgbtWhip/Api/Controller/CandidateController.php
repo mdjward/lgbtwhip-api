@@ -110,5 +110,5 @@ class CandidateController extends AbstractSerializingController
             throw new Exception($ex->getMessage(), 404, $ex);
         }
     }
-
+    
 }
