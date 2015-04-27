@@ -12,8 +12,10 @@ namespace TheLgbtWhip\Api\Repository;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
+use TheLgbtWhip\Api\Model\Vote;
 
 
 
@@ -58,18 +60,22 @@ class VoteRepository extends EntityRepository
         $expr = $queryBuilder->expr();
         
         return $queryBuilder
-            ->join('v.candidate', 'c')
-            ->join('v.issue', 'i')
-            ->where(
-                $expr->andX(
-                    $expr->eq('v.candidate', ':candidate'),
-                    $expr->eq('v.issue', ':issue')
-                )
+            ->join(
+                'v.candidate',
+                'c',
+                Join::WITH,
+                $expr->eq('c.id', ':candidateId')
             )
-                
-            ->setParameter('candidate', $candidate, Type::OBJECT)
-            ->setParameter('issue', $issue, Type::OBJECT)
-            
+            ->join(
+                'v.issue',
+                'i',
+                Join::WITH,
+                $expr->eq('i.id', ':issueId')
+            )
+
+            ->setParameter(':candidateId', $candidate->getId(), Type::INTEGER)
+            ->setParameter(':issueId', $issue->getId(), Type::INTEGER)
+
             ->getQuery()
             ->getOneOrNullResult()
         ;

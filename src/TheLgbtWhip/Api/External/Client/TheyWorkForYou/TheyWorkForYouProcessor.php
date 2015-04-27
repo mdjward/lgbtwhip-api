@@ -12,6 +12,7 @@ namespace TheLgbtWhip\Api\External\Client\TheyWorkForYou;
 
 use DateTime;
 use GuzzleHttp\Message\ResponseInterface;
+use TheLgbtWhip\Api\External\Client\VotedNameFormatter;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Term;
 
@@ -25,6 +26,30 @@ use TheLgbtWhip\Api\Model\Term;
 class TheyWorkForYouProcessor implements TheyWorkForYouProcessorInterface
 {
     
+    /**
+     *
+     * @var VotedNameFormatter
+     */
+    protected $votedNameFormatter;
+    
+    
+    
+    /**
+     * 
+     * @param VotedNameFormatter $votedNameFormatter
+     */
+    public function __construct(VotedNameFormatter $votedNameFormatter)
+    {
+        $this->votedNameFormatter = $votedNameFormatter;
+    }
+    
+    /**
+     * 
+     * @param ResponseInterface $response
+     * @param DateTime $parliamentStartDate
+     * @param PastMpCache $cache
+     * @return ListOfPastMps
+     */
     public function processListOfPastMps(
         ResponseInterface $response,
         DateTime $parliamentStartDate,
@@ -43,6 +68,12 @@ class TheyWorkForYouProcessor implements TheyWorkForYouProcessorInterface
         return $listOfMps;
     }
     
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param ResponseInterface $response
+     * @return Term
+     */
     public function processMpHistory(
         Candidate $candidate,
         ResponseInterface $response
@@ -70,6 +101,12 @@ class TheyWorkForYouProcessor implements TheyWorkForYouProcessorInterface
         return $termsAsMp;
     }
     
+    /**
+     * 
+     * @param Candidate $candidate
+     * @param ResponseInterface $response
+     * @return boolean
+     */
     public function checkCandidateWasMpOnDate(
         Candidate $candidate,
         ResponseInterface $response
@@ -80,7 +117,7 @@ class TheyWorkForYouProcessor implements TheyWorkForYouProcessorInterface
         $constituencyName = $constituency->getName();
         
         foreach ($response->json() as $mpData) {
-            $mpName = $mpData['name'];
+            $mpName = $this->votedNameFormatter->convertNameString($mpData['name']);
             $mpConstituency = $mpData['constituency'];
             
             if ($mpName === $candidateName && $mpConstituency === $constituencyName) {

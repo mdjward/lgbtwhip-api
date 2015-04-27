@@ -1,3 +1,8 @@
 parameters:
     
     thelgbtwhip.api.external.client.http_client.class:  TheLgbtWhip\Api\External\Client\CachingHttpClient
+
+services:
+
+    thelgbtwhip.api.external.client.voted_name_formatter:
+        class: TheLgbtWhip\Api\External\Client\VotedNameFormatter

@@ -67,6 +67,8 @@ services:
 
     thelgbtwhip.api.external.client.they_work_for_you.processor:
         class: TheLgbtWhip\Api\External\Client\TheyWorkForYou\TheyWorkForYouProcessor
+        arguments:
+            votedNameFormatter: @thelgbtwhip.api.external.client.voted_name_formatter
 
     thelgbtwhip.api.external.client.they_work_for_you.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%

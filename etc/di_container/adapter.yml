@@ -8,4 +8,6 @@ services:
     thelgbtwhip.api.adapter.issue:
         class: TheLgbtWhip\Api\Adapter\IssueAdapter
         arguments:
-            issueRepository: @thelgbtwhip.api.orm.repository.issue
+            issueRepository:    @thelgbtwhip.api.orm.repository.issue
+            voteRepository:     @thelgbtwhip.api.orm.repository.vote
+            viewRepository:     @thelgbtwhip.api.orm.repository.view

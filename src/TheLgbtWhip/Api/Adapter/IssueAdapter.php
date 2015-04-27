@@ -13,7 +13,11 @@ namespace TheLgbtWhip\Api\Adapter;
 use TheLgbtWhip\Api\Model\Adapted\Issue as AdaptedIssue;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Issue;
+use TheLgbtWhip\Api\Model\View;
+use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\IssueRepository;
+use TheLgbtWhip\Api\Repository\ViewRepository;
+use TheLgbtWhip\Api\Repository\VoteRepository;
 
 
 
@@ -24,49 +28,68 @@ use TheLgbtWhip\Api\Repository\IssueRepository;
  */
 class IssueAdapter implements IssueAdapterInterface
 {
-    
+
     /**
      *
      * @var IssueRepository
      */
     protected $issueRepository;
     
+    /**
+     *
+     * @var VoteRepository
+     */
+    protected $voteRepository;
     
-    
+    /**
+     *
+     * @var ViewRepository
+     */
+    protected $viewRepository;
+
+
+
     /**
      * 
      * @param IssueRepository $issueRepository
+     * @param VoteRepository $voteRepository
+     * @param ViewRepository $viewRepository
      */
-    public function __construct(IssueRepository $issueRepository)
-    {
+    public function __construct(
+        IssueRepository $issueRepository,
+        VoteRepository $voteRepository,
+        ViewRepository $viewRepository
+    ) {
         $this->issueRepository = $issueRepository;
+        $this->voteRepository = $voteRepository;
+        $this->viewRepository = $viewRepository;
     }
-    
+
     public function adaptVotesAndViews(Candidate $candidate)
     {
         $adaptedIssues = [];
-        
+
         foreach ($candidate->getVotes() as $vote) {
             $issue = $vote->getIssue();
             
             $adaptedIssues[$issue->getId()] = $this->buildAdaptedIssue(
-                $issue,
-                $candidate
+                $candidate,
+                $issue
             );
         }
-        
+
         /* @var $candidate Issue */
         foreach ($this->issueRepository->findByCandidate($candidate) as $issue) {
             $adaptedIssues[$issue->getId()] = $this->buildAdaptedIssue(
-                $issue,
-                $candidate
+                $candidate,
+                $issue
             );
         }
-        
+
         return $adaptedIssues;
     }
     
-    protected function buildAdaptedIssue(Issue $issue)
+    protected function buildAdaptedIssue(Candidate $candidate, Issue $issue)
     {
         $adaptedIssue = new AdaptedIssue();
         
@@ -81,14 +104,14 @@ class IssueAdapter implements IssueAdapterInterface
             ->setUriKey($issue->getUriKey())
         ;
         
-        foreach ($issue->getVotes() as $vote) {
+        $vote = $this->voteRepository->findOneByCandidateAndIssue($candidate, $issue);
+        if ($vote instanceof Vote) {
             $adaptedIssue->setVote($vote);
-            break;
         }
         
-        foreach ($issue->getViews() as $view) {
+        $view = $this->viewRepository->findOneByIssueAndCandidate($candidate, $issue);
+        if ($view instanceof View) {
             $adaptedIssue->setView($view);
-            break;
         }
         
         return $adaptedIssue;

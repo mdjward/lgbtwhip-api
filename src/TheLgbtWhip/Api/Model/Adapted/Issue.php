@@ -70,10 +70,10 @@ class Issue extends BaseIssue
 
     /**
      * 
-     * @param View $view
+     * @param View|null $view
      * @return Issue
      */
-    public function setView(View $view)
+    public function setView(View $view = null)
     {
         $this->view = $view;
         
@@ -82,10 +82,10 @@ class Issue extends BaseIssue
 
     /**
      * 
-     * @param Vote $pastVote
+     * @param Vote|null $pastVote
      * @return Issue
      */
-    public function setVote(Vote $vote)
+    public function setVote(Vote $vote = null)
     {
         $this->vote = $vote;
         

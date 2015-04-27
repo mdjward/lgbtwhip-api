@@ -2,8 +2,8 @@
 namespace TheLgbtWhip\Api\External\Client\ThePublicWhip;
 
 use DOMImplementation;
-use DOMNodeList;
 use DOMXPath;
+use TheLgbtWhip\Api\External\Client\VotedNameFormatter;
 
 
 
@@ -21,15 +21,25 @@ class ThePublicWhipScraper
      */
     protected $domImplementation;
     
+    /**
+     *
+     * @var VotedNameFormatter
+     */
+    protected $votedNameFormatter;
+    
     
     
     /**
      * 
      * @param DOMImplementation $domImplementation
+     * @param VotedNameFormatter $votedNameFormatter
      */
-    public function __construct(DOMImplementation $domImplementation)
-    {
+    public function __construct(
+        DOMImplementation $domImplementation,
+        VotedNameFormatter $votedNameFormatter
+    ) {
         $this->domImplementation = $domImplementation;
+        $this->votedNameFormatter = $votedNameFormatter;
     }
     
     /**
@@ -78,7 +88,10 @@ class ThePublicWhipScraper
                 }
             }
             
-            $name = $this->convertNameString($nameElements);
+            $name = $this->votedNameFormatter->convertNameString(
+                $nameElements->item(0)->nodeValue
+            );
+            
             $constituency = trim($constituencyElements->item(0)->nodeValue);
             
             $votes[$name . ' - ' . $constituency] = [
@@ -89,20 +102,6 @@ class ThePublicWhipScraper
         }
         
         return $votes;
-    }
-    
-    /**
-     * 
-     * @param DOMNodeList $nameElements
-     * @return string
-     */
-    protected function convertNameString(DOMNodeList $nameElements)
-    {
-        return preg_replace(
-            '#^(?:(?:Prof)|(?:Dr)|(?:Mr)|(?:Mrs)|(?:Ms)|(?:Miss)|(?:Sir))\.?\s(.+)$#i',
-            '\1',
-            trim($nameElements->item(0)->nodeValue)
-        );
     }
     
 }

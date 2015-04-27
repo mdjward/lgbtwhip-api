@@ -52,7 +52,7 @@ TheLgbtWhip\Api\Model\Issue:
             cascade: ["persist", "merge"]
             fetch: EXTRA_LAZY
         views:
-            targetEntity: Vote
+            targetEntity: View
             mappedBy: issue
             cascade: ["persist", "merge"]
             fetch: EXTRA_LAZY

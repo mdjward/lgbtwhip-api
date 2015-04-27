@@ -24,6 +24,7 @@ use TheLgbtWhip\Api\Manager\CandidateManager;
 use TheLgbtWhip\Api\Manager\ConstituencyManager;
 use TheLgbtWhip\Api\Model\Candidate;
 use TheLgbtWhip\Api\Model\Constituency;
+use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\IssueRepository;
 
 
@@ -105,7 +106,7 @@ class PersistingCandidateLoader
         );
         
         foreach ($candidates as $candidate) {
-            $this->hydrateCandidatesWithTermsAndVotes($candidate);
+            $this->hydrateCandidate($candidate);
         }
         
         return $candidates;
@@ -113,37 +114,110 @@ class PersistingCandidateLoader
     
     public function resolveCandidateById($candidateId)
     {
-        return $this->hydrateCandidatesWithTermsAndVotes(
-            $this->candidateIdResolver->resolveCandidateById($candidateId)
-        );
-    }
-    
-    public function resolveCandidateByName($candidateName)
-    {
-        return $this->hydrateCandidatesWithTermsAndVotes(
-            $this->candidateNameResolver->resolveCandidateByName($candidateName)
-        );
-    }
-    
-    protected function hydrateCandidatesWithTermsAndVotes(Candidate $candidate)
-    {
-        foreach ($this->pastMpTermsRetriever->findPastTermsForCandidate($candidate) as $term) {
-            $candidate->addTermAsMp($term);
+        $candidate = $this->candidateManager->findOneById($candidateId);
+        
+        if (!($candidate instanceof Candidate)) {
+            $candidate = $this->persistCandidate(
+                $this->candidateNameResolver->resolveCandidateById($candidateName)
+            );
         }
         
+        return $this->hydrateCandidate($candidate);
+    }
+    
+    /**
+     * 
+     * @param type $candidateName
+     * @return type
+     */
+    public function resolveCandidateByName($candidateName)
+    {
+        $candidate = $this->candidateManager->findOneByName($candidateName);
+        
+        if (!($candidate instanceof Candidate)) {
+            $candidate = $this->persistCandidate(
+                $this->candidateNameResolver->resolveCandidateByName($candidateName)
+            );
+        }
+        
+        return $this->hydrateCandidate($candidate);
+    }
+    
+    /**
+     * 
+     * @param Candidate $candidate
+     * @return Candidate
+     */
+    protected function persistCandidate(Candidate $candidate)
+    {
+        $candidate
+            ->setParty(
+                $this->candidateManager->saveParty($candidate->getParty())
+            )
+            ->setConstituency(
+                $this->constituencyManager->saveConstituency($candidate->getConstituency())
+            )
+        ;
+        
+        return $this->candidateManager->saveCandidate($candidate);
+    }
+    
+    protected function hydrateCandidate(Candidate $candidate)
+    {
+        $loadedCandidate = $this->candidateManager->findOneById($candidate->getId());
+        if (!($loadedCandidate instanceof Candidate)) {
+            return $candidate;
+        }
+        
+        $cache = $this->getCache();
+        $cacheKey = 'hydrated-' . $candidate->getId();
+        
+        if ($cache->contains($cacheKey)) {
+            return $candidate;
+        }
+        
+        $this->hydrateCandidateWithTerms($candidate);
+        $this->hydrateCandidateWithVotes($candidate);
+        
+        $cache->save($cacheKey, $cache);
+        
+        return $candidate;
+    }
+    
+    protected function hydrateCandidateWithTerms(Candidate $candidate)
+    {
+        $terms = [];
+        
+        foreach ($this->pastMpTermsRetriever->findPastTermsForCandidate($candidate) as $term) {
+            $this->candidateManager->saveTerm($term);
+            
+            $terms[] = $term;
+        }
+        
+        return $terms;
+    }
+    
+    protected function hydrateCandidateWithVotes(Candidate $candidate)
+    {
         foreach ($this->issueRepository->findAll() as $issue) {
             if (!$this->candidateIssueVoteChecker->checkCandidateCouldHaveVoted($candidate, $issue)) {
                 continue;
             }
-            
+
             $vote = $this->candidateVoteRetriever->getVoteForCandidate(
                 $candidate,
                 $issue
             );
-            
+
+            /* @var $vote Vote */
             if ($vote !== null) {
-                $candidate->addVote($vote);
-                $issue->addVote($vote);
+                $this->candidateManager->saveVote(
+                    $vote->setCandidate(
+                        $this->candidateManager->findOneById(
+                            $candidate->getId()
+                        )
+                    )
+                );
             }
         }
         

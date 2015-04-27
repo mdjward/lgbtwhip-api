@@ -12,7 +12,9 @@ namespace TheLgbtWhip\Api\Manager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use TheLgbtWhip\Api\Model\Candidate;
+use TheLgbtWhip\Api\Model\Constituency;
 use TheLgbtWhip\Api\Model\Party;
+use TheLgbtWhip\Api\Model\Term;
 use TheLgbtWhip\Api\Model\View;
 use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
@@ -67,6 +69,50 @@ class CandidateManager extends AbstractModelManager
         $this->candidateRepository = $candidateRepository;
         $this->partyRepository = $partyRepository;
         $this->voteRepository = $voteRepository;
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     * @return Candidate|null
+     */
+    public function findOneById($id)
+    {
+        return $this->candidateRepository->find($id);
+    }
+    
+    /**
+     * 
+     * @param string $name
+     * @return Candidate|null
+     */
+    public function findOneByName($name)
+    {
+        return $this->candidateRepository->findOneByName($name);
+    }
+    
+    /**
+     * 
+     * @param string $name
+     * @param Constituency $constituency
+     * @return Candidate
+     */
+    public function findOneByNameAndConstituency($name, Constituency $constituency)
+    {
+        return $this->candidateRepository->findOneByNameAndConstituency(
+            $name,
+            $constituency
+        );
+    }
+    
+    /**
+     * 
+     * @param Term $term
+     * @return Term
+     */
+    public function saveTerm(Term $term)
+    {
+        return $this->mergeOrPersistObject($term);
     }
     
     /**

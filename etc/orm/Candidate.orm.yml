@@ -41,6 +41,7 @@ TheLgbtWhip\Api\Model\Candidate:
             targetEntity: Party
             inversedBy: candidates
             fetch: EAGER
+            cascade: ["persist", "merge"]
             joinColumns:
                 party_id:
                     referencedColumnName: party_id
@@ -49,6 +50,7 @@ TheLgbtWhip\Api\Model\Candidate:
             targetEntity: Constituency
             inversedBy: candidates
             fetch: EAGER
+            cascade: ["persist", "merge"]
             joinColumns:
                 constituency_id:
                     referencedColumnName: constituency_id

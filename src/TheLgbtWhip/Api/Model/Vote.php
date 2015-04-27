@@ -21,7 +21,7 @@ class Vote extends AbstractModelWithId
     /**
      * 
      */
-    const NAY = 'nay';
+    const NAY = 'no';
     
     /**
      * 

@@ -1,21 +1,16 @@
-parameters:
-
-    thelgbtwhip.api.external.client.the_public_whip.scraper.class:                  TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipScraper 
-    thelgbtwhip.api.external.client.the_public_whip.processor.class:                TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipProcessor
-    thelgbtwhip.api.external.client.the_public_whip.client.class:                   TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClient
-
 services:
 
     thelgbtwhip.api.external.client.the_public_whip.scraper.dom_implementation:
         class: DomImplementation
 
     thelgbtwhip.api.external.client.the_public_whip.scraper:
-        class: %thelgbtwhip.api.external.client.the_public_whip.scraper.class%
+        class: TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipScraper
         arguments:
             domImplementation:  @thelgbtwhip.api.external.client.the_public_whip.scraper.dom_implementation
+            votedNameFormatter: @thelgbtwhip.api.external.client.voted_name_formatter
 
     thelgbtwhip.api.external.client.the_public_whip.processor:
-        class: %thelgbtwhip.api.external.client.the_public_whip.processor.class%
+        class: TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipProcessor
 
     thelgbtwhip.api.external.client.the_public_whip.http_client:
         class: %thelgbtwhip.api.external.client.http_client.class%
@@ -32,7 +27,7 @@ services:
             url: %the_public_whip.base_url%
 
     thelgbtwhip.api.external.client.the_public_whip:
-        class: %thelgbtwhip.api.external.client.the_public_whip.client.class%
+        class: TheLgbtWhip\Api\External\Client\ThePublicWhip\ThePublicWhipClient
         arguments:
             httpClient: @thelgbtwhip.api.external.client.the_public_whip.http_client
             baseUrl:    @thelgbtwhip.api.external.client.the_public_whip.base_url

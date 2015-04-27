@@ -21,6 +21,15 @@ TheLgbtWhip\Api\Model\Issue:
             expose: true
             xml_element:
                 cdata: false
+                
+        isProgressiveStance:
+            type: boolean
+            accessor:
+                getter: getIsProgressiveStance
+                setter: setIsProgressiveStance
+            expose: true
+            xml_element:
+                cdata: false
   
         relevantAct:
             type: string

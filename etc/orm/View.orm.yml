@@ -1,6 +1,7 @@
 TheLgbtWhip\Api\Model\View:
     type: entity
     table: views
+    repositoryClass: TheLgbtWhip\Api\Repository\ViewRepository
     id:
         id:
             column: view_id
