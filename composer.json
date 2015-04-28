@@ -11,7 +11,8 @@
         "symfony/expression-language": "2.*",
         "jms/serializer": "0.16.*",
         "icanboogie/inflector": "1.2",
-        "guzzlehttp/guzzle": "~5.2"
+        "guzzlehttp/guzzle": "~5.2",
+        "gregwar/image": "2.0.19"
     },
     "require-dev": {
         "hafriedlander/phockito": "~1.0",
