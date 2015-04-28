@@ -387,5 +387,5 @@ class Candidate extends AbstractModelWithSettableId
         
         return $this;
     }
-
+    
 }

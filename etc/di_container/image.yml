@@ -1,0 +1,13 @@
+services:
+    
+    thelgbtwhip.api.image.processor:
+        class: Gregwar\Image\Image
+        calls:
+            - [setCacheDir, [%cache_dir%/image/candidate/photo]]
+    
+    thelgbtwhip.api.image.manager.candidate:
+        class: TheLgbtWhip\Api\Image\CandidateImageManager
+        arguments:
+            candidateManager:       @thelgbtwhip.api.orm.manager.candidate
+            imageProcessor:         @thelgbtwhip.api.image.processor
+            base64DecoderCallback:  base64_decode

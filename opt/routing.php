@@ -47,7 +47,7 @@ $app->group('/candidate', function() use ($app, $container) {
 });
 
 // Handle issue routes
-$app->group('/issue', function() use ($app, $container) {
+$app->group('/issues', function() use ($app, $container) {
     require_once __DIR__ . '/routing/issue.routing.php';
 });
 

@@ -11,7 +11,6 @@
 use Slim\Http\Request;
 use Slim\Slim;
 use TheLgbtWhip\Api\Controller\CandidateController;
-use TheLgbtWhip\Api\Controller\IssueController;
 
 
 
@@ -39,29 +38,16 @@ $app->get(
     }
 );
 
-$app->group(
-    '/view',
-    function() use ($app, $request, $container) {
-    
-        /* @var $controller IssueController */
-        $controller = $container->get('thelgbtwhip.api.controller.issue');
-        
-        $id = $request->get('candidateId');
-        
-        $callback = function($issueUriKey) use ($app, $controller, $id) {
-            if ($id !== null) {
-                return $controller->saveView($id, $issueUriKey);
-            }
-            
-            $app->pass();
-        };
-        
-        foreach (['put', 'post'] as $requestMethod) {
-            $app->$requestMethod('/:issueUriKey', $callback);
-        }
-    }
-);
+$app->group('/view', function() use ($app, $request, $container) {
+    require_once __DIR__ . '/candidate.view.routing.php';
+});
+
+foreach (['image', 'photo'] as $routePrefix) {
+    $app->group('/' . $routePrefix, function() use ($app, $request, $container) {
+        require_once __DIR__ . '/candidate.image.routing.php';
+    });
+}
 
 $app->get('/:id', function($id) use ($controller) {
     return $controller->resolveByIdAction($id);
-});
+})->conditions(['id' => '\d+']);

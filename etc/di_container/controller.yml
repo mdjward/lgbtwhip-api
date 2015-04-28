@@ -18,6 +18,25 @@ services:
         tags:
             - { name: controller }
 
+    thelgbtwhip.api.controller.candidate_image:
+        class: TheLgbtWhip\Api\Controller\CandidateImageController
+        arguments:
+            candidateIdResolver:    @thelgbtwhip.api.external.loader.candidate
+            candidateImageManager:  @thelgbtwhip.api.image.manager.candidate
+        tags:
+           - { name: controller }
+
+    thelgbtwhip.api.controller.candidate_view:
+        class: TheLgbtWhip\Api\Controller\CandidateViewController
+        arguments:
+            candidateIdResolver:    @thelgbtwhip.api.external.loader.candidate
+            candidateManager:       @thelgbtwhip.api.orm.manager.candidate
+            issueRepository:        @thelgbtwhip.api.orm.repository.issue
+            incomingSerializer:     @thelgbtwhip.api.serializer.view.content_type_wrapper
+            outgoingSerializer:     @thelgbtwhip.api.serializer.candidate.content_type_wrapper
+        tags:
+            - { name: controller }
+
     thelgbtwhip.api.controller.constituency:
         class: TheLgbtWhip\Api\Controller\ConstituencyController
         arguments:
@@ -32,10 +51,7 @@ services:
     thelgbtwhip.api.controller.issue:
         class: TheLgbtWhip\Api\Controller\IssueController
         arguments:
-            candidateIdResolver:    @thelgbtwhip.api.external.loader.candidate
-            candidateManager:       @thelgbtwhip.api.orm.manager.candidate
-            issueRepository:        @thelgbtwhip.api.orm.repository.issue
-            incomingSerializer:     @thelgbtwhip.api.serializer.issue.content_type_wrapper
-            outgoingSerializer:     @thelgbtwhip.api.serializer.candidate.content_type_wrapper
+            issueRepository:    @thelgbtwhip.api.orm.repository.issue
+            serializerWrapper:  @thelgbtwhip.api.serializer.issue.content_type_wrapper
         tags:
-            - { name: controller }
+           - { name: controller }

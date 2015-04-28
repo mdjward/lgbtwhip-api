@@ -118,10 +118,15 @@ class CandidateManager extends AbstractModelManager
     /**
      * 
      * @param Candidate $candidate
+     * @param boolean $mergeIfExists
      * @return Candidate
      */
-    public function saveCandidate(Candidate $candidate)
+    public function saveCandidate(Candidate $candidate, $mergeIfExists = false)
     {
+        if ($mergeIfExists === true) {
+            return $this->mergeOrPersistObject($candidate);
+        }
+        
         $candidateId = $candidate->getId();
         
         if (($existingCandidate = $this->candidateRepository->find($candidateId)) instanceof Candidate) {
