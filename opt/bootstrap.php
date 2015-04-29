@@ -85,7 +85,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($configPat
 
 
 $envConfigFile = new SplFileInfo($baseConfigPath . '/config.yml');
-$distConfigFile = new SplFileObject($baseConfigPath . '/config.yml.dist');
+$distConfigFile = new SplFileInfo($baseConfigPath . '/config.yml.dist');
 
 if ($distConfigFile->isFile() && !$envConfigFile->isFile()) {
     copy($distConfigFile->getPathname(), $envConfigFile->getPathname());
