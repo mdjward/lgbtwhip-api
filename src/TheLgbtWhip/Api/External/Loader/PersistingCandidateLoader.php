@@ -118,7 +118,7 @@ class PersistingCandidateLoader
         
         if (!($candidate instanceof Candidate)) {
             $candidate = $this->persistCandidate(
-                $this->candidateNameResolver->resolveCandidateById($candidateName)
+                $this->candidateNameResolver->resolveCandidateById($candidateId)
             );
         }
         
