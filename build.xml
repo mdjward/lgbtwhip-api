@@ -56,8 +56,7 @@
         <delete dir="${VENDOR_DIR}"/>
     </target>
 
-    <!--<target name="build" depends="prepare,lint,composer-install,test"/>-->
-    <target name="build" depends="prepare,lint,composer-install"/>
+    <target name="build" depends="prepare,lint,composer-install,test"/>
     
     <!-- Creates a project distributable -->
     <target name="dist" depends="build">
@@ -119,9 +118,7 @@
         </exec>
     </target>
     
-    
-    
-    <target name="test">
+    <target name="test" depends="lint,composer-install">
         <exec executable="${PHPUNIT_EXECUTABLE}" dir="${basedir}" failonerror="true">
             <arg value="-c"/>
             <arg path="${CONF_DIR}"/>
