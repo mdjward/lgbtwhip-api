@@ -183,10 +183,17 @@ class YourNextMpProcessor implements YourNextMpProcessorInterface
             );
         }
         
-        if (!isset($personData['standing_in'][$this->targetElectionYear])) {
+        if (!isset($personData['standing_in'][$this->targetElectionYear]['post_id'])) {
             throw new YourNextMpException(
                 $response,
                 'Person is not a candidate in the target election'
+            );
+        }
+        
+        if ($personData['standing_in'][$this->targetElectionYear]['post_id'] !== $constituency->getId()) {
+            throw new YourNextMpException(
+                $response,
+                'Person is not standing for this constituency in the target election'
             );
         }
         
