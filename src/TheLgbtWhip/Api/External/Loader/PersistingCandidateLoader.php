@@ -10,6 +10,7 @@
  */
 namespace TheLgbtWhip\Api\External\Loader;
 
+use Exception;
 use TheLgbtWhip\Api\Cache\Cacheable;
 use TheLgbtWhip\Api\Cache\CacheableTrait;
 use TheLgbtWhip\Api\External\CandidateIdResolverInterface;
@@ -189,9 +190,12 @@ class PersistingCandidateLoader
         $terms = [];
         
         foreach ($this->pastMpTermsRetriever->findPastTermsForCandidate($candidate) as $term) {
-            $this->candidateManager->saveTerm($term);
+            try{
+                $this->candidateManager->saveTerm($term);
+                $terms[] = $term;
+            } catch (Exception $ex) {
+            }
             
-            $terms[] = $term;
         }
         
         return $terms;
@@ -211,13 +215,16 @@ class PersistingCandidateLoader
 
             /* @var $vote Vote */
             if ($vote !== null) {
-                $this->candidateManager->saveVote(
-                    $vote->setCandidate(
-                        $this->candidateManager->findOneById(
-                            $candidate->getId()
+                try {
+                    $this->candidateManager->saveVote(
+                        $vote->setCandidate(
+                            $this->candidateManager->findOneById(
+                                $candidate->getId()
+                            )
                         )
-                    )
-                );
+                    );
+                } catch (Exception $ex) {
+                }
             }
         }
         
