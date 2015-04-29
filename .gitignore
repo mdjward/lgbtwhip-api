@@ -1,5 +1,7 @@
 /build
 /build/**
+/dist
+/dist/**
 /var/cache/**
 /lib
 /lib/**

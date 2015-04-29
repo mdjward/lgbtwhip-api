@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="LGBTWhip Api" default="build">
+<project name="TheLGBTWhip Api" default="build">
     <property name="CONF_DIR" value="${basedir}/etc"/>
     <property name="SRC_DIR" value="${basedir}/src"/>
     <property name="TEST_DIR" value="${basedir}/test"/>
     <property name="BUILD_DIR" value="${basedir}/build"/>
+    <property name="DIST_DIR" value="${basedir}/dist"/>
     <property name="VENDOR_DIR" value="${basedir}/lib"/>
     
     <taskdef name="parallel-apply" classname="co.byng.antparallelapply.taskdefs.optional.ParallelApply"/>
@@ -21,23 +22,70 @@
     <condition property="PHPUNIT_EXECUTABLE" else="phpunit">
         <isset property="PHPUNIT_EXECUTABLE"/>
     </condition>
+    
+    <condition property="DIST_FILE" else="lgbtwhip-api.tar.bz2">
+        <isset property="DIST_FILE"/>
+    </condition>
+    
+    <condition property="ENV" else="prod">
+        <and>
+            <isset property="ENV"/>
+            <or>
+                <equals arg1="${ENV}" arg2="dev"/>
+                <equals arg1="${ENV}" arg2="prod"/>
+            </or>
+        </and>
+    </condition>
+    
+    <condition property="ENV_IS_DEV" value="true" else="false">
+        <equals arg1="${ENV}" arg2="dev"/>
+    </condition>
+
+    <condition property="ENV_IS_PROD" value="true" else="false">
+        <equals arg1="${ENV}" arg2="prod"/>
+    </condition>
 
 
 
     <target name="clean" depends="clean-composer">
         <delete dir="${BUILD_DIR}"/>
+        <delete dir="${DIST_DIR}"/>
     </target>
 
     <target name="clean-composer">
         <delete dir="${VENDOR_DIR}"/>
     </target>
 
-    <target name="build" depends="prepare,lint,composer-install,test"/>
+    <!--<target name="build" depends="prepare,lint,composer-install,test"/>-->
+    <target name="build" depends="prepare,lint,composer-install"/>
     
+    <!-- Creates a project distributable -->
+    <target name="dist" depends="build">
+        <tar destfile="${DIST_DIR}/${DIST_FILE}" compression="bzip2" longfile="gnu">
+            <tarfileset dir="${basedir}" defaultexcludes="false">
+                <exclude name="**/.git/**"/>
+                <exclude name="build/"/>
+                <exclude name="cookbooks/"/>
+                <exclude name="dist/"/>
+                <exclude name="etc/config.yml"/>
+                <exclude name="etc/config.yml.dist"/>
+                <exclude name="etc/phpunit.xml"/>
+                <exclude name="test/"/>
+                <exclude name="var/cache/**"/>
+                <exclude name=".gitignore"/>
+                <exclude name="Vagrantfile"/>
+                <exclude name="build.xml"/>
+                <exclude name="composer.json"/>
+                <exclude name="composer.lock"/>
+            </tarfileset>
+        </tar>
+    </target>
+
     <target name="prepare">
         <mkdir dir="${BUILD_DIR}"/>
+        <mkdir dir="${DIST_DIR}"/>
     </target>
-    
+
     <target name="lint">
         <parallel-apply logThreshold="1" threadCount="80" executable="${PHP_EXECUTABLE}" failonerror="true">
             <arg value="-l"/>
@@ -48,14 +96,33 @@
         </parallel-apply>
     </target>
     
-    <target name="composer-install">
-        <exec executable="${COMPOSER_EXECUTABLE}" dir="${basedir}">
+    <target name="composer-install" depends="composer-install-dev,composer-install-prod"/>
+    
+    <target name="composer-install-dev" if="${ENV_IS_DEV}">
+        <exec executable="${COMPOSER_EXECUTABLE}" dir="${basedir}" failonerror="true">
             <arg value="install"/>
+            <arg value="--no-interaction"/>
+            <arg value="--prefer-source"/>
+            <arg value="--dev"/>
+            <arg value="-vvvv"/>
         </exec>
     </target>
     
+    <target name="composer-install-prod" if="${ENV_IS_PROD}">
+        <exec executable="${COMPOSER_EXECUTABLE}" dir="${basedir}" failonerror="true">
+            <arg value="install"/>
+            <arg value="--no-interaction"/>
+            <arg value="--prefer-dist"/>
+            <arg value="--no-dev"/>
+            <arg value="--optimize-autoloader"/>
+            <arg value="--ignore-platform-reqs"/>
+        </exec>
+    </target>
+    
+    
+    
     <target name="test">
-        <exec executable="${PHPUNIT_EXECUTABLE}" dir="${basedir}">
+        <exec executable="${PHPUNIT_EXECUTABLE}" dir="${basedir}" failonerror="true">
             <arg value="-c"/>
             <arg path="${CONF_DIR}"/>
         </exec>

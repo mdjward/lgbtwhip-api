@@ -47,6 +47,11 @@ if (file_exists($compiledContainerPath)) {
 
 
 
+// Create the cache dir if it does not exist
+if (!file_exists($cacheDir)) {
+    mkdir($cacheDir, 0755, true);
+}
+
 // Establish base configuration directory, and container config path
 $baseConfigPath = $rootDir . '/etc';;
 $configPath = $baseConfigPath . '/di_container';
