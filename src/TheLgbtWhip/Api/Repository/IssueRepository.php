@@ -18,6 +18,28 @@ use TheLgbtWhip\Api\Model\Issue;
 class IssueRepository extends EntityRepository
 {
     
+    public function findAllPast()
+    {
+        $queryBuilder = $this->createQueryBuilder('i');
+        
+        return $queryBuilder
+            ->where($queryBuilder->expr()->isNotNull('i.relevant_act'))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+    public function findAllCurrent()
+    {
+        $queryBuilder = $this->createQueryBuilder('i');
+        
+        return $queryBuilder
+            ->where($queryBuilder->expr()->isNull('i.relevant_act'))
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
     /**
      * 
      * @param integer $thePublicWhipId

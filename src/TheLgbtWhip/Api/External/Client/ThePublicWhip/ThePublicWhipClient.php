@@ -69,11 +69,15 @@ class ThePublicWhipClient
      */
     public function getVotesForIssue(Issue $issue)
     {
+        if (($publicWhipId = $issue->getPublicWhipId()) === null) {
+            return [];
+        }
+        
         $url = clone $this->baseUrl;
         $query = $url->getQuery();
         
         $query->set('display', 'allvotes');
-        $query->set("number", $issue->getPublicWhipId());
+        $query->set("number", $publicWhipId);
         $query->set("date", $issue->getPublicWhipDate()->format('Y-m-d'));
         
         return $this->processor->processVoteData(

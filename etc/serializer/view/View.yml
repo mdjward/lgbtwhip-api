@@ -4,20 +4,6 @@ TheLgbtWhip\Api\Model\View:
     access_type: public_method
 
     properties:
-        historicSupport:
-            type: string
-            accessor:
-                getter: getHistoricSupport
-                getter: setHistoricSupport
-            expose: true
-
-        historicStance:
-            type: string
-            accessor:
-                getter: getHistoricStance
-                setter: setHistoricStance
-            expose: true
-
         currentStance:
             type: string
             accessor:

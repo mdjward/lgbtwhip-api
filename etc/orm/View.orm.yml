@@ -9,16 +9,6 @@ TheLgbtWhip\Api\Model\View:
             generator:
                 strategy: auto
     fields:
-        historicSupport:
-            column: historic_support
-            type: string
-            nullable: true
-            
-        historicStance:
-            column: historic_stance
-            type: text
-            nullable: true
-            
         currentSupport:
             column: current_support
             type: string

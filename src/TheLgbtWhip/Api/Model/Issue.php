@@ -52,13 +52,13 @@ class Issue extends AbstractModelWithId
     
     /**
      *
-     * @var id
+     * @var id|null
      */
     protected $publicWhipId;
     
     /**
      *
-     * @var DateTime
+     * @var DateTime|null
      */
     protected $publicWhipDate;
     
@@ -140,7 +140,7 @@ class Issue extends AbstractModelWithId
 
     /**
      * 
-     * @return integer
+     * @return integer|null
      */
     public function getPublicWhipId()
     {
@@ -149,7 +149,7 @@ class Issue extends AbstractModelWithId
 
     /**
      * 
-     * @return DateTime
+     * @return DateTime|null
      */
     public function getPublicWhipDate()
     {
@@ -247,10 +247,10 @@ class Issue extends AbstractModelWithId
 
     /**
      * 
-     * @param integer $publicWhipId
+     * @param integer|null $publicWhipId
      * @return Issue
      */
-    public function setPublicWhipId($publicWhipId)
+    public function setPublicWhipId($publicWhipId = null)
     {
         $this->publicWhipId = $publicWhipId;
         
@@ -259,10 +259,10 @@ class Issue extends AbstractModelWithId
     
     /**
      * 
-     * @param DateTime $publicWhipDate
+     * @param DateTime|null $publicWhipDate
      * @return Issue
      */
-    public function setPublicWhipDate(DateTime $publicWhipDate)
+    public function setPublicWhipDate(DateTime $publicWhipDate = null)
     {
         $this->publicWhipDate = $publicWhipDate;
         

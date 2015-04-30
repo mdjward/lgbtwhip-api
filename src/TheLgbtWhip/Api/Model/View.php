@@ -22,13 +22,18 @@ class View extends AbstractModelWithId
      * Indicates that the candidate would support the LGBT community
      * in legislation regarding this issue
      */
-    const SUPPORTS = 'supports';
+    const SUPPORT = 'support';
     
     /**
-     * Indicates that the candidate would not support the LGBT community
-     * in legislation regarding this issue
+     * Indicates that the candidate would abstain in a vote for legislation
+     * on this issue
      */
-    const DOES_NOT_SUPPORT = 'does not support';
+    const ABSTAIN = 'abstain';
+    
+    /**
+     * Indicates that the candidate oppose legislation regarding this issue
+     */
+    const OPPOSE = 'oppose';
     
     /**
      * Indicates that the candidate declined to answer when asked (due to party
@@ -49,18 +54,6 @@ class View extends AbstractModelWithId
      * @var Issue
      */
     protected $issue;
-    
-    /**
-     *
-     * @var string
-     */
-    protected $historicStance;
-    
-    /**
-     *
-     * @var integer
-     */
-    protected $historicSupport;
     
     /**
      *
@@ -94,24 +87,6 @@ class View extends AbstractModelWithId
         return $this->issue;
     }
 
-    /**
-     * 
-     * @return string
-     */
-    public function getHistoricStance()
-    {
-        return $this->historicStance;
-    }
-
-    /**
-     * 
-     * @return integer|null
-     */
-    public function getHistoricSupport()
-    {
-        return $this->historicSupport;
-    }
-    
     /**
      * 
      * @return string
@@ -156,32 +131,6 @@ class View extends AbstractModelWithId
     
     /**
      * 
-     * @param string $historicStance
-     * @return View
-     */
-    public function setHistoricStance($historicStance)
-    {
-        $this->historicStance = $historicStance;
-        
-        return $this;
-    }
-    
-    /**
-     * 
-     * @param integer $historicSupport
-     * @return View
-     * @throws InvalidArgumentException
-     * @throws UnexpectedValueException
-     */
-    public function setHistoricSupport($historicSupport)
-    {
-        $this->historicSupport = $this->validateSupport($historicSupport);
-        
-        return $this;
-    }
-
-    /**
-     * 
      * @param string $currentStance
      * @return View
      */
@@ -217,19 +166,33 @@ class View extends AbstractModelWithId
     {
         if (!is_string($givenSupportValue)) {
             throw new InvalidArgumentException(
-                'Given support value should be provided as an integer'
+                'Given support value should be provided as a string'
             );
         }
         
         switch ($givenSupportValue) {
-            case self::SUPPORTS:
-            case self::DOES_NOT_SUPPORT:
+            case self::SUPPORT:
+            case self::OPPOSE:
+            case self::ABSTAIN:
             case self::DECLINED_TO_ANSWER:
                 return $givenSupportValue;
         }
         
         throw new UnexpectedValueException(
-            "Unrecognised support value '{$givenSupportValue}'"
+            sprintf(
+                "Unrecognised support value '%s'; expected: one of '%s'",
+                $givenSupportValue,
+                implode(
+                    "', '",
+                    [
+                        self::SUPPORT,
+                        self::OPPOSE,
+                        self::ABSTAIN,
+                        self::DECLINED_TO_ANSWER,
+                    ]
+                )
+            )
+            
         );
     }
 

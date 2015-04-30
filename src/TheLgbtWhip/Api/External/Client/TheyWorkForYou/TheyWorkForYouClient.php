@@ -14,7 +14,6 @@ use DateTime;
 use GuzzleHttp\Client;
 use GuzzleHttp\Query;
 use TheLgbtWhip\Api\External\CandidateIssueVoteCheckerInterface;
-use TheLgbtWhip\Api\External\CandidateVoteRetrieverInterface;
 use TheLgbtWhip\Api\External\Client\AbstractRestServiceClient;
 use TheLgbtWhip\Api\External\PastMpTermRetrieverInterface;
 use TheLgbtWhip\Api\Model\Candidate;
@@ -107,8 +106,12 @@ class TheyWorkForYouClient
     ) {
         $request = $this->httpClient->createRequest('GET', 'getMps');
         
+        if (!(($voteDate = $issue->getPublicWhipDate()) instanceof DateTime)) {
+            return false;
+        }
+        
         $query = $this->setQueryDefaults($request->getQuery());
-        $query->set('date', $issue->getPublicWhipDate()->format('Y-m-d'));
+        $query->set('date', $voteDate->format('Y-m-d'));
         
         return $this->processor->checkCandidateWasMpOnDate(
             $candidate,
