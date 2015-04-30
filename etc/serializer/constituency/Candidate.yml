@@ -38,6 +38,15 @@ TheLgbtWhip\Api\Model\Candidate:
             xml_element:
                 cdata: false
 
+        twitter:
+            type: string
+            accessor:
+                getter: getTwitter
+                setter: setTwitter
+            expose: true
+            xml_element:
+                cdata: false
+
         email:
             type: string
             accessor:
