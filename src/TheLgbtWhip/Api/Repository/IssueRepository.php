@@ -18,6 +18,17 @@ use TheLgbtWhip\Api\Model\Issue;
 class IssueRepository extends EntityRepository
 {
     
+    public function findAll()
+    {
+        $queryBuilder = $this->createQueryBuilder('i');
+        
+        return $queryBuilder
+            ->orderBy('i.id')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
     public function findAllPast()
     {
         $queryBuilder = $this->createQueryBuilder('i');
@@ -104,6 +115,7 @@ class IssueRepository extends EntityRepository
                 $expr->eq('vw.candidate', ':candidate')
             )
             ->setParameter(':candidate', $candidate, Type::OBJECT)
+            ->orderBy('i.id')
         ;
         
         return $queryBuilder->getQuery()->getResult();
