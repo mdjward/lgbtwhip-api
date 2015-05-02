@@ -6,7 +6,7 @@ TheLgbtWhip\Api\Model\Adapted\Candidate:
     
     properties:
         issues:
-            type: ArrayCollection<TheLgbtWhip\Api\Model\Adapted\Issue>
+            type: array<TheLgbtWhip\Api\Model\Adapted\Issue>
             accessor:
                 getter: getIssues
             expose: true

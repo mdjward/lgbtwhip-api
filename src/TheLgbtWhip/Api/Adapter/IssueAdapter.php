@@ -94,6 +94,7 @@ class IssueAdapter implements IssueAdapterInterface
         $adaptedIssue = new AdaptedIssue();
         
         $adaptedIssue
+            ->setId($issue->getId())
             ->setTitle($issue->getTitle())
             ->setDescription($issue->getDescription())
             ->setRelevantAct($issue->getRelevantAct())

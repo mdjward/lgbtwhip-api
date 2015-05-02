@@ -26,9 +26,9 @@ class Candidate extends BaseCandidate
     
     /**
      *
-     * @var Collection 
+     * @var array 
      */
-    protected $issues;
+    protected $issues = [];
     
     
     
@@ -38,17 +38,17 @@ class Candidate extends BaseCandidate
     public function __construct()
     {
         parent::__construct();
-        
-        $this->issues = new ArrayCollection();
     }
     
     /**
      * 
-     * @return Collection
+     * @return array
      */
     public function getIssues()
     {
-        return $this->issues;
+        ksort($this->issues);
+        
+        return array_values($this->issues);
     }
     
     /**
@@ -58,7 +58,7 @@ class Candidate extends BaseCandidate
      */
     public function addIssue(Issue $issue)
     {
-        $this->issues->add($issue);
+        $this->issues[$issue->getId()] = $issue;
         
         return $this;
     }
@@ -70,7 +70,11 @@ class Candidate extends BaseCandidate
      */
     public function removeIssue(Issue $issue)
     {
-        $this->issues->removeElement($issue);
+        $issueId = $issue->getId();
+        
+        if (isset($this->issues[$issueId])) {
+            unset($this->issues[$issueId]);
+        }
         
         return $this;
     }
