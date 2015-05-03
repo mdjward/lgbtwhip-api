@@ -17,6 +17,10 @@ TheLgbtWhip\Api\Model\Term:
             type: date
             nullable: true
 
+    uniqueConstraints:
+        candidate_start_date:
+            columns: [candidate_id, start_date]
+
     manyToOne:
         candidate:
             targetEntity: Candidate
