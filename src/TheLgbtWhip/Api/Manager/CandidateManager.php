@@ -19,6 +19,7 @@ use TheLgbtWhip\Api\Model\View;
 use TheLgbtWhip\Api\Model\Vote;
 use TheLgbtWhip\Api\Repository\CandidateRepository;
 use TheLgbtWhip\Api\Repository\PartyRepository;
+use TheLgbtWhip\Api\Repository\ViewRepository;
 use TheLgbtWhip\Api\Repository\VoteRepository;
 
 
@@ -48,6 +49,12 @@ class CandidateManager extends AbstractModelManager
      */
     protected $voteRepository;
     
+    /**
+     * 
+     * @var ViewRepository
+     */
+    protected $viewRepository;
+    
     
     
     
@@ -57,18 +64,21 @@ class CandidateManager extends AbstractModelManager
      * @param CandidateRepository $candidateRepository
      * @param PartyRepository $partyRepository
      * @param VoteRepository $voteRepository
+     * @param ViewRepository $viewRepository
      */
     public function __construct(
         ObjectManager $objectManager,
         CandidateRepository $candidateRepository,
         PartyRepository $partyRepository,
-        VoteRepository $voteRepository
+        VoteRepository $voteRepository,
+        ViewRepository $viewRepository
     ) {
         parent::__construct($objectManager);
         
         $this->candidateRepository = $candidateRepository;
         $this->partyRepository = $partyRepository;
         $this->voteRepository = $voteRepository;
+        $this->viewRepository = $viewRepository;
     }
     
     /**
@@ -168,7 +178,25 @@ class CandidateManager extends AbstractModelManager
      */
     public function saveView(View $view)
     {
-        return $this->mergeOrPersistObject($view);
+        $existingView = $this->viewRepository->findOneByIssueAndCandidate(
+            $view->getCandidate(),
+            $view->getIssue()
+        );
+        
+        if ($existingView instanceof View) {
+            $existingView
+                ->setCurrentSupport($view->getCurrentSupport())
+                ->setCurrentStance($view->getCurrentStance())
+            ;
+            
+            $view = $existingView;
+        } else {
+            $this->objectManager->persist($view);
+        }
+        
+        $this->objectManager->flush($view);
+        
+        return $view;
     }
     
     /**
@@ -183,7 +211,7 @@ class CandidateManager extends AbstractModelManager
             $vote->getIssue()
         );
         
-        if ($existingVote instanceof $vote) {
+        if ($existingVote instanceof Vote) {
             return $existingVote;
         }
         

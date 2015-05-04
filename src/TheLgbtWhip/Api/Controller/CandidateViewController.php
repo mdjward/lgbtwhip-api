@@ -93,7 +93,7 @@ class CandidateViewController extends AbstractSerializingController
         ;
         
         $this->candidateManager->saveView($view);
-        
+
         return $this->response->setBody(
             $this->serializerWrapper->serialize($candidate->addView($view))
         );
